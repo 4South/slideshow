@@ -1,3 +1,4 @@
 window.App = Ember.Application.create()
 
-require('controllers/ApplicationController.js')
+#import the router module
+require('router/Router.js')

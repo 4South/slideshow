@@ -1,3 +1,3 @@
 window.App = Ember.Application.create();
 
-require('controllers/ApplicationController.js');
+require('router/Router.js');
