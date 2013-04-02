@@ -1,0 +1,10 @@
+Here are the slides
+<ul style="list-style-type: none;">
+{{#each slide in controller.content}}
+  <li>
+  {{#linkTo "slide" slide}}
+    {{slide.name}}
+  {{/linkTo}}
+  </li>
+{{/each}}
+</ul>

@@ -30,10 +30,21 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 Ember.TEMPLATES["baseslide"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
   
+  var hashTypes;
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  }
 
-
-  data.buffer.push("<h3>Heading</h3>\n<p class=\"lead\">Content goes here</p>\n");
+  data.buffer.push("<h3>Heading</h3>\n");
+  hashTypes = {};
+  stack1 = helpers['with'].call(depth0, "view", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n<p class=\"lead\">Content goes here</p>\n");
+  return buffer;
   
 });
 

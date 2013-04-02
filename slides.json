@@ -1,0 +1,14 @@
+{
+  "slides": [{
+    "id": "1",
+    "slideNumber": "1",
+    "templateName": "introslide",
+    "name": "introduction"
+    },{
+    "id": "2",
+    "slideNumber": "2",
+    "templateName": "baseslide",
+    "name": "firstslide"
+    } 
+  ]
+}
