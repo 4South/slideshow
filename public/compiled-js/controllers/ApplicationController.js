@@ -1,3 +1,13 @@
 App.ApplicationController = Ember.Controller.extend({
-  sampleText: "hey this application controller is sure neat"
+  needs: ['slides', 'slide'],
+  cheatcode: '',
+  enterCheat: function() {
+    if (this.get('cheatcode') === 'iddqd') {
+      Ember.set('App.godMode', true);
+    }
+    return this.set('cheatcode', '');
+  },
+  abdicate: function() {
+    return Ember.set('App.godMode', false);
+  }
 });

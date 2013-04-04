@@ -1,0 +1,13 @@
+<form>
+  <fieldset>
+    <legend class="lead">Create New Slide</legend>
+    <label>Slide Title</label>
+    {{view Ember.TextField valueBinding="controllers.slides.newSlideName"}}
+  </fieldset>
+  <button class="btn btn-primary"{{action 'create' target="controllers.slides"}}>
+    <b class="lead">create</b>
+  </button>
+  <button class="btn btn-warning"{{action 'abdicate'}}>
+    <b class="lead">abdicate</b>
+  </button>
+</form>

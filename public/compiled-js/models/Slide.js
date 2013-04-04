@@ -5,7 +5,8 @@ Ember.RecordArray = Ember.ArrayProxy.extend(Ember.Evented, Ember.DeferredMixin, 
 App.Slide = Em.Object.extend(Ember.DeferredMixin, {
   templateName: "baseslide",
   name: "default slide",
-  slideNumber: null
+  slideNumber: null,
+  active: true
 });
 
 App.Slide.reopenClass({
@@ -16,15 +17,24 @@ App.Slide.reopenClass({
     var slides;
 
     slides = Ember.RecordArray.create();
-    Ember.$.getJSON('slides.json', (function(results) {
-      var _ref;
+    Ember.$.ajax({
+      contentType: "application/json",
+      url: "slides",
+      method: 'GET',
+      context: slides,
+      success: function(results) {
+        return Ember.run(this, function() {
+          var result, _i, _len, _results;
 
-      console.log("json response was " + (JSON.stringify(results)));
-      slides.pushObjects(Em.A((_ref = results.slides) != null ? _ref.map(function(item) {
-        return App.Slide.create(item);
-      }) : void 0));
-      return slides;
-    }));
+          _results = [];
+          for (_i = 0, _len = results.length; _i < _len; _i++) {
+            result = results[_i];
+            _results.push(this.pushObject(App.Slide.create(result)));
+          }
+          return _results;
+        });
+      }
+    });
     return slides;
   }
 });

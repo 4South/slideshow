@@ -1,2 +1,6 @@
 App.SlideView = Em.View.extend
-  templateName: "baseslide"
+
+  layoutName: 'slideframe'
+  templateName: (->
+    return 'slides/' + @get('content.templateName')
+  ).property()

@@ -1,3 +1,6 @@
 App.SlideView = Em.View.extend({
-  templateName: "baseslide"
+  layoutName: 'slideframe',
+  templateName: (function() {
+    return 'slides/' + this.get('content.templateName');
+  }).property()
 });

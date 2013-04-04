@@ -1,3 +1,7 @@
+body {
+  background-color: #2f96b4;
+}
+
 div.slides-thumbnail {
   border: 2px solid black;
   border-radius: 5px;
@@ -5,4 +9,25 @@ div.slides-thumbnail {
 
 div.slides-thumbnail.highlighted {
   border: 2px solid red;
+}
+
+div.slide {
+  background-color: #333333;
+  width: 800px;
+  height: 600px;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+}
+
+div.slides {
+  position: relative;
+  left: 250px;
+}
+div.slides ul {
+  list-style-type: none;
+}
+
+div.sidebar {
+  position: fixed;
 }

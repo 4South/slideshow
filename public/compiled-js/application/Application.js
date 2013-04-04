@@ -1,3 +1,5 @@
-window.App = Ember.Application.create();
+window.App = Ember.Application.create({
+  godMode: false
+});
 
 require('router/Router.js');

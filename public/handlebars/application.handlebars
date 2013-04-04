@@ -1,14 +1,13 @@
-<div class="row">
-  <div class="span12">
-    <h1>Ember SlideShow</h1>
-  </div>
-</div>
-
 <div class="container-fluid">
-  <div class="span2">
-    {{outlet slidelist}}
+  <div class="span3 sidebar">
+    {{#if App.godMode}}
+      {{partial slidecreate}}  
+    {{else}}
+      {{partial secretcode}} 
+    {{/if}}
+    {{partial thumbnails}}
   </div>
-  <div class="span10">
-    {{outlet slide}}
+  <div class="span9 slides">
+    {{partial slides}}
   </div>
 </div>

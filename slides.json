@@ -3,11 +3,13 @@
     "id": "1",
     "slideNumber": "1",
     "templateName": "introslide",
+    "slideHTML": "<h1>Boobies</h1>",
     "name": "introduction"
     },{
     "id": "2",
     "slideNumber": "2",
     "templateName": "baseslide",
+    "slideHTML": "<h1>Luls</h1>",
     "name": "firstslide"
     } 
   ]
