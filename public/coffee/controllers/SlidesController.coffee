@@ -1,60 +1,77 @@
 App.SlidesController = Em.ArrayController.extend
-  
+
+  needs: ['application']
+
   newSlideName: ""
-  
+
   #determines if current "new slide" name is valid for creation
   nameIsValid: (->
     name = @get('newSlideName')
     if (name.indexOf(" ") is -1) and name isnt ""
       return true
     else return false
-  ).property('newSlideName')
+  ).property('newSlideName').cacheable()
 
-
-  #list of slides whose active attribute is true
-  activeSlides: (->
-    return @get('content').filterProperty('active')
-  ).property('content.@each.active')
+  #index of currently active slide
+  activeSlideIndex: 0
   
-  #callback method for create CRUD success
-  createNewSlide: (slide) ->
-    Ember.run(@, -> (
-      @pushObject App.Slide.create( name: slide.name,
-                                    templateName: slide.name,
-                                    id: slide.id )))
+  activeSlide: (->
+    if @get('atleastOneSlide')
+      return @get('content').objectAt(@get('activeSlideIndex'))
+    else
+      return null
+  ).property('activeSlideIndex', 'content.@each').cacheable()
+ 
+  atleastOneSlide: (->
+    if @get('content').toArray().length is 0 then return false
+    return true
+  ).property('content.@each').cacheable()
 
-  #callback method for delete CRUD success
-  deleteSlide: (deletedSlide) ->
-    Ember.run(@, -> (
-      delSlide = @filterProperty('id', deletedSlide.id)[0]
-      @removeObject delSlide))
-    
+  #boolean helpers
+  atEnd: (->
+    index = @get('activeSlideIndex')
+    contentLength = @get('content').toArray().length
+    return if (index == contentLength-1) then true else false
+  ).property('activeSlideIndex', 'content.@each').cacheable()
+
+  atStart: (->
+    index = @get('activeSlideIndex')
+    return if (index == 0) then true else false
+  ).property('activeSlideIndex', 'content.@each').cacheable()
+  
+  #start the slideshow
+  startShow: () ->
+    if @get('activeSlide')?
+      @transitionToRoute('slide', @get('activeSlide'))
+
+  pauseShow: () ->
+    @transitionToRoute('slides')
+
+  forward: () ->
+    if @get('atEnd') then return
+    else
+      @incrementProperty('activeSlideIndex')
+      @transitionToRoute('slide', @get('activeSlide'))
+
+  back: () ->
+    if @get('atStart') then return
+    else
+      @decrementProperty('activeSlideIndex')
+      @transitionToRoute('slide', @get('activeSlide'))
+
+  
   #create CRUD operation
   create: () ->
-    name = @get('newSlideName')
-    if not @get('nameIsValid')
-      alert('name may not contain spaces and must be defined')
+    if @get('nameIsValid')
+      App.Slide.createRecord
+                name: @get('newSlideName')
+                position: 0
+      @get('store').commit()
+      @set('newSlideName', '')
     else
-      data = JSON.stringify(name: name, templateName: name)
-      Ember.$.ajax(
-        contentType: "application/json",
-        url: "create",
-        method: 'POST',
-        data: data,
-        context: @,
-        success: @createNewSlide
-      )
-      @set "newSlideName", ""
+      alert ('name must contain at least one character and no spaces')
 
   #delete CRUD operation
   delete: (slide) ->
-    if not confirm('Delete this slide/handlebars template?')
-      return
-    Ember.$.ajax(
-      contentType: "application/json",
-      url: "delete",
-      method: 'DELETE',
-      data: JSON.stringify(slide),
-      context: @,
-      success: @deleteSlide
-    )
+    slide.deleteRecord()
+    @get('store').commit()

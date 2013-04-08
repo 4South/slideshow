@@ -1,13 +1,8 @@
-<div class="container-fluid">
-  <div class="span3 sidebar">
-    {{#if App.godMode}}
-      {{partial slidecreate}}  
-    {{else}}
-      {{partial secretcode}} 
-    {{/if}}
-    {{partial thumbnails}}
-  </div>
-  <div class="span9 slides">
-    {{partial slides}}
-  </div>
-</div>
+<aside class="leftbar">
+  {{outlet sidebar}}
+  {{partial thumbnails}}
+</aside>
+<section class="slides">
+  {{outlet controls}}
+  {{outlet slides}}
+</section>

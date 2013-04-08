@@ -7,21 +7,63 @@ require('models/Slide.js')
 
 require('views/SlidesView.js')
 require('views/SlideView.js')
+require('views/SlidedetailView.js')
 require('views/SlideThumbnailsView.js')
 require('views/SlideThumbnailView.js')
 
 #main router definition
 App.Router.map () ->
-  @resource "slides"
 
-#default route when application loads. redirects to 'slides' route
+  @resource "slides"
+  @resource "slide", {path: 'slides/:slide_id'}
+
+App.ApplicationRoute = Ember.Route.extend
+  
+  setupController: () ->
+    @controllerFor('slides').set('content', App.Slide.find())
+
 App.IndexRoute = Ember.Route.extend
+
   redirect: () ->
-    #same as "transitionTo" except does not log w/ history tracker
     @replaceWith "slides"
 
 #route for this viewing slides as thumbnails
 App.SlidesRoute = Ember.Route.extend
-  #set the content using our model's custom find method (not ember-data)
+
+  #set the content using our model's custom 
+  #find method (not ember-data)
   setupController: (controller) ->
-    controller.set "content", App.Slide.find()
+    controller.set('content', App.Slide.find())
+
+  renderTemplate: (controller) ->
+    @render "slides",
+                    into: 'application'
+                    outlet: 'slides'
+                    controller: controller
+
+    @render "maincontrols",
+                    into: 'application'
+                    outlet: 'controls'
+                    controller: controller
+
+    @render "sidebar",
+                    into: 'application'
+                    outlet: 'sidebar'
+                    controller: controller
+
+App.SlideRoute = Ember.Route.extend
+
+  renderTemplate: (controller) ->
+    @render "showcontrols",
+                    into: 'application'
+                    outlet: 'controls'
+                    controller: 'slides'
+    @render "slidedetail",
+                    into: 'application'
+                    outlet: 'slides'
+                    controller: controller
+
+    @render "thumbnailheader",
+                    into: 'application'
+                    outlet: 'sidebar'
+                    controller: 'slides'

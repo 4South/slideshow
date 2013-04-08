@@ -14,20 +14,34 @@ div.slides-thumbnail.highlighted {
 div.slide {
   background-color: #333333;
   width: 800px;
-  height: 600px;
+  height: 200px;
   border-radius: 10px;
   margin: 10px;
   padding: 10px;
 }
 
-div.slides {
-  position: relative;
-  left: 250px;
+h1 {
+  color: green;
+  text-align: center;
 }
-div.slides ul {
+
+section.slides {
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+}
+section.slides ul {
   list-style-type: none;
 }
 
-div.sidebar {
-  position: fixed;
+aside.leftbar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 300px;
+}
+
+div.controls {
+  margin-left: 40px;
+  margin-top: 10px;
 }

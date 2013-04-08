@@ -1,0 +1,9 @@
+<div class="row controls">
+  {{#if controller.atleastOneSlide}}
+    <button class="btn btn-success" {{action startShow}}>
+      Play
+    </button>
+  {{else}}
+    <p class="lead">No Slides</p>
+  {{/if}}
+</div>

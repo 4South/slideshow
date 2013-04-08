@@ -1,1 +1,4 @@
-App.SlideController = Em.ObjectController.extend()
+App.SlideController = Em.ObjectController.extend
+  
+  save: () ->
+    @get('store').commit()

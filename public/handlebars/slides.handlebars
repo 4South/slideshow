@@ -1,9 +1,5 @@
-<ul style="list-style-type: none;">
-{{#each slide in controller.content}}
-  <li>
-  {{#linkTo "slide" slide}}
-    {{slide.name}}
-  {{/linkTo}}
-  </li>
+{{#each slide in content}}
+  {{view "App.SlideView" contentBinding=slide}}
+{{else}}
+<div class="lead">No Slides</div>
 {{/each}}
-</ul>

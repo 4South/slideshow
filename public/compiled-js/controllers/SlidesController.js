@@ -1,4 +1,5 @@
 App.SlidesController = Em.ArrayController.extend({
+  needs: ['application'],
   newSlideName: "",
   nameIsValid: (function() {
     var name;
@@ -9,61 +10,80 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return false;
     }
-  }).property('newSlideName'),
-  activeSlides: (function() {
-    return this.get('content').filterProperty('active');
-  }).property('content.@each.active'),
-  createNewSlide: function(slide) {
-    return Ember.run(this, function() {
-      return this.pushObject(App.Slide.create({
-        name: slide.name
-      }, {
-        templateName: slide.name,
-        id: slide.id
-      }));
-    });
-  },
-  deleteSlide: function(deletedSlide) {
-    return Ember.run(this, function() {
-      var delSlide;
+  }).property('newSlideName').cacheable(),
+  activeSlideIndex: 0,
+  activeSlide: (function() {
+    if (this.get('atleastOneSlide')) {
+      return this.get('content').objectAt(this.get('activeSlideIndex'));
+    } else {
+      return null;
+    }
+  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  atleastOneSlide: (function() {
+    if (this.get('content').toArray().length === 0) {
+      return false;
+    }
+    return true;
+  }).property('content.@each').cacheable(),
+  atEnd: (function() {
+    var contentLength, index;
 
-      delSlide = this.filterProperty('id', deletedSlide.id)[0];
-      return this.removeObject(delSlide);
-    });
+    index = this.get('activeSlideIndex');
+    contentLength = this.get('content').toArray().length;
+    if (index === contentLength - 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  atStart: (function() {
+    var index;
+
+    index = this.get('activeSlideIndex');
+    if (index === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  startShow: function() {
+    if (this.get('activeSlide') != null) {
+      return this.transitionToRoute('slide', this.get('activeSlide'));
+    }
+  },
+  pauseShow: function() {
+    return this.transitionToRoute('slides');
+  },
+  forward: function() {
+    if (this.get('atEnd')) {
+
+    } else {
+      this.incrementProperty('activeSlideIndex');
+      return this.transitionToRoute('slide', this.get('activeSlide'));
+    }
+  },
+  back: function() {
+    if (this.get('atStart')) {
+
+    } else {
+      this.decrementProperty('activeSlideIndex');
+      return this.transitionToRoute('slide', this.get('activeSlide'));
+    }
   },
   create: function() {
-    var data, name;
-
-    name = this.get('newSlideName');
-    if (!this.get('nameIsValid')) {
-      return alert('name may not contain spaces and must be defined');
+    if (this.get('nameIsValid')) {
+      App.Slide.createRecord({
+        name: this.get('newSlideName'),
+        position: 0
+      });
+      this.get('store').commit();
+      return this.set('newSlideName', '');
     } else {
-      data = JSON.stringify({
-        name: name,
-        templateName: name
-      });
-      Ember.$.ajax({
-        contentType: "application/json",
-        url: "create",
-        method: 'POST',
-        data: data,
-        context: this,
-        success: this.createNewSlide
-      });
-      return this.set("newSlideName", "");
+      return alert('name must contain at least one character and no spaces');
     }
   },
   "delete": function(slide) {
-    if (!confirm('Delete this slide/handlebars template?')) {
-      return;
-    }
-    return Ember.$.ajax({
-      contentType: "application/json",
-      url: "delete",
-      method: 'DELETE',
-      data: JSON.stringify(slide),
-      context: this,
-      success: this.deleteSlide
-    });
+    slide.deleteRecord();
+    return this.get('store').commit();
   }
 });

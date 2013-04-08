@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 
 var Slides = new mongoose.Schema({
-  number: Number,
   name: String,
-  templateName: String 
+  position: Number,
+  title: String,
+  content: String
 });
 
 var Slide = mongoose.model('Slide', Slides);

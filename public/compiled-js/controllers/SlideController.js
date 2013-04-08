@@ -1,1 +1,5 @@
-App.SlideController = Em.ObjectController.extend();
+App.SlideController = Em.ObjectController.extend({
+  save: function() {
+    return this.get('store').commit();
+  }
+});

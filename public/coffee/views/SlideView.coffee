@@ -1,6 +1,14 @@
 App.SlideView = Em.View.extend
 
   layoutName: 'slideframe'
-  templateName: (->
-    return 'slides/' + @get('content.templateName')
-  ).property()
+  classNames: ['slide']
+  
+  init: () ->
+    @_super()
+    name = "slides/" + @get('content.name')
+    if Ember.TEMPLATES[name]
+      @set('templateName', name)
+    else
+      @set('template',
+        Ember.Handlebars.compile('<h1 style="color:red;">whatev</h1>'))
+      

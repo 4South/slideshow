@@ -1,6 +1,4 @@
 {{#if App.godMode}}
   <button class="btn btn-danger"{{action 'delete' view.content}}>X</button>
-  {{view Ember.Checkbox checkedBinding="view.content.active"}}
 {{/if}}
-
 <span class="lead">{{view.content.name}}</span>
