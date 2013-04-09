@@ -16,3 +16,11 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value));
   }
 });
+
+Em.TextField.reopen({
+  keyUp: function(event) {
+    if (event.keyCode === 13) {
+      return this.get('controller').enterCheat();
+    }
+  }
+});

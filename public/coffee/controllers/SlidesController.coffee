@@ -20,10 +20,10 @@ App.SlidesController = Em.ArrayController.extend
   
   activeSlide: (->
     if @get('atleastOneSlide')
-      return @get('content').objectAt(@get('activeSlideIndex'))
+      return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
     else
       return null
-  ).property('activeSlideIndex', 'content.@each').cacheable()
+  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
  
   atleastOneSlide: (->
     if @get('content').toArray().length is 0 then return false
@@ -33,14 +33,14 @@ App.SlidesController = Em.ArrayController.extend
   #boolean helpers
   atEnd: (->
     index = @get('activeSlideIndex')
-    contentLength = @get('content').toArray().length
+    contentLength = @get('arrangedContent').toArray().length
     return if (index == contentLength-1) then true else false
-  ).property('activeSlideIndex', 'content.@each').cacheable()
+  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
 
   atStart: (->
     index = @get('activeSlideIndex')
     return if (index == 0) then true else false
-  ).property('activeSlideIndex', 'content.@each').cacheable()
+  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
   
   #start the slideshow
   startShow: () ->

@@ -4,9 +4,11 @@ App.SlideThumbnailView = Em.View.extend({
   attributeBindings: ['style'],
   classNameBindings: ['highlighted'],
   classNames: ['slides-thumbnail'],
-  highlighted: false,
-  height: 40,
-  style: (function() {
-    return "height:" + (this.get('height')) + "px; width: 100%;";
-  }).property('height', 'width')
+  highlighted: (function() {
+    if (this.get('content.id') === this.get('controller.activeSlide.id')) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('controller.activeSlide').cacheable()
 });

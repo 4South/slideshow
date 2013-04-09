@@ -1,7 +1,8 @@
 App.SlidethumbnailsController = Em.ArrayController.extend
 
-  needs: ['slides']
+  needs: ['slides', 'slide']
   contentBinding: "controllers.slides.content"
+  activeSlideBinding: "controllers.slide.content"
   sortProperties: ['position']
   sortAscending: true
 

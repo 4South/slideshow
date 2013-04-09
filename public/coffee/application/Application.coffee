@@ -13,3 +13,7 @@ Ember.Handlebars.registerBoundHelper('markdown', (value) ->
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
 )
 
+Em.TextField.reopen
+  keyUp: (event)->
+    if event.keyCode is 13
+      @get('controller').enterCheat()

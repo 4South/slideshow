@@ -5,6 +5,7 @@ $lightred: #fff0f0
 $mediumred: #ff6a57
 $darkred: #e60000
 $lightorange: #ffae57
+$lightblue: #2e74ff
 
 div.slide
   min-height: 200px
@@ -14,13 +15,10 @@ div.slide
   text-align: left 
   font-family: 'Jacques Francois', serif   
   h1
-    color: #0044cc 
-    font-weight: normal
-    font-family: 'Share Tech Mono', serif
-    font-size: 5em
+    @include fontsettings (normal, 'Share Tech Mono', 5em, $lightblue)
     padding: .5em
   h2
-    color: #2e74ff 
+    @include fontsettings (normal, 'Jacques Francois', 3em, $lightblue)
     font-weight: normal
     font-family: 'Jacques Francois', serif
     font-size: 3.5em
@@ -29,10 +27,8 @@ div.slide
   pre
     text-align: left
     width: 90%
-    margin-right: auto
-    margin-left: auto
-    background: none
-    border: none
+    @include center
+    @include bareBGandBorder
     code
       font-size: 2.5em
       color: white
