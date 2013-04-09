@@ -270,7 +270,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, hashTypes;
-  data.buffer.push("\r\n  <div id = \"slideSummary\">\r\n    ");
+  data.buffer.push("\r\n  <div class = \"slide\">\r\n    ");
   hashTypes = {'contentBinding': "STRING"};
   stack1 = helpers.view.call(depth0, {hash:{
     'contentBinding': ("slide")
@@ -286,7 +286,7 @@ function program2(depth0,data) {
   hashTypes = {};
   options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "presentationslide", options) : helperMissing.call(depth0, "partial", "presentationslide", options))));
-  data.buffer.push("\r\n    ");
+  data.buffer.push("\r\n      <hr>\r\n    ");
   return buffer;
   }
 
