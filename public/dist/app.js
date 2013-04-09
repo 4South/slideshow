@@ -128,6 +128,18 @@ App.SlidesController = Em.ArrayController.extend({
       return this.transitionToRoute('slide', this.get('activeSlide'));
     }
   },
+  savedStatus: (function() {
+    var cont, slide, _i, _len;
+
+    cont = this.get('content').toArray();
+    for (_i = 0, _len = cont.length; _i < _len; _i++) {
+      slide = cont[_i];
+      if (slide.get('isDirty')) {
+        return "Unsaved Changes";
+      }
+    }
+    return "All Changes Saved";
+  }).property('content.@each.isDirty'),
   create: function() {
     if (this.get('nameIsValid')) {
       App.Slide.createRecord({

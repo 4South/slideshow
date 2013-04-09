@@ -85,20 +85,20 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<form id = \"slidecreate\">\r\n  <fieldset>\r\n    <legend class = \"formlabel\">Create New Slide</legend>\r\n    <label>Slide Title</label>\r\n    ");
+  data.buffer.push("<form id = \"slidecreate\">\r\n  <fieldset>\r\n    <legend class = \"formlabel\">Create New</legend>\r\n    <label>New Slide Title</label>\r\n    \r\n    ");
   hashTypes = {'valueBinding': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.TextField", {hash:{
     'valueBinding': ("newSlideName")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n  </fieldset>\r\n  <button class=\"btn btn-primary\"");
+  data.buffer.push("      \r\n  </fieldset>\r\n  \r\n  <button class=\"btn btn-primary\"");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "create", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\r\n    <b>create</b>\r\n  </button>\r\n  <button class=\"btn btn-warning\"");
+  data.buffer.push(">\r\n    <b>create</b>\r\n  </button>\r\n  \r\n  <button class=\"btn btn-warning\"");
   hashTypes = {'target': "STRING"};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "abdicate", {hash:{
     'target': ("controllers.application")
   },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\r\n    <b>abdicate</b>\r\n  </button>\r\n</form>\r\n");
+  data.buffer.push(">\r\n    <b>abdicate</b>\r\n  </button>\r\n\r\n  </form>\r\n");
   return buffer;
   
 });
@@ -109,7 +109,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<form>\r\n  <fieldset>\r\n    <legend>Edit Slide </legend>\r\n    <label> Slide Title </label>\r\n      ");
+  data.buffer.push("<form id = \"slidecreate\">\r\n  <fieldset>\r\n    <legend class = \"formlabel\">Edit Slide </legend>\r\n    <label> Slide Title </label>\r\n      ");
   hashTypes = {'valueBinding': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.TextField", {hash:{
     'valueBinding': ("controllers.slide.content.title")
@@ -124,7 +124,10 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{
     'target': ("controllers.slide")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("> \r\n      Save \r\n    </button>\r\n  </fieldset>\r\n</form>");
+  data.buffer.push("> \r\n      Save \r\n    </button>\r\n    \r\n    <div id = \"savedStatus\"> ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller.savedStatus", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(" </div>\r\n    \r\n  </fieldset>\r\n</form>");
   return buffer;
   
 });

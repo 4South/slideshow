@@ -62,6 +62,13 @@ App.SlidesController = Em.ArrayController.extend
       @decrementProperty('activeSlideIndex')
       @transitionToRoute('slide', @get('activeSlide'))
 
+  savedStatus: (->
+    cont = @get('content').toArray()
+    for slide in cont
+      if slide.get('isDirty')
+        return "Unsaved Changes"      
+    return "All Changes Saved"
+  ).property('content.@each.isDirty')
   
   #create CRUD operation
   create: () ->

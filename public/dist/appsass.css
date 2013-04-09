@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body, html {
   background: url("../assets/images/sandbackground.jpg");
   background-size: cover;
@@ -5,12 +9,38 @@ body, html {
   height: 100%;
 }
 
+.navbar {
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  height: 40px;
+}
+
+.navbar-inverse .navbar-inner {
+  background-color: rgba(0, 0, 0, 0.4);
+  background-image: none;
+  border: none;
+  height: 40px;
+}
+
+textarea {
+  min-height: 250px;
+  padding: none;
+  margin: none;
+}
+
+ul, li {
+  padding: 0px;
+  margin: 0px;
+}
+
 li.slides-thumbnail {
   border-radius: 5px;
   list-style: none;
+  margin: auto;
   margin-top: 5px;
   box-sizing: border-box;
   height: 55px;
+  width: 180px;
   background: #f0f0f0;
   color: black;
 }
@@ -121,20 +151,26 @@ span#slidesList {
   margin-top: 15px;
 }
 
+aside {
+  margin-top: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+  height: 100%;
+}
+
 aside.leftbar {
   position: absolute;
-  padding-left: 5px;
   left: 0;
-  top: 60px;
-  width: 200px;
+  width: 225px;
+  padding-top: 10px;
 }
 
 aside.rightbar {
   position: absolute;
-  padding-left: 5px;
+  padding-left: 10px;
+  padding-right: 4px;
+  top: 40px;
   right: 0;
-  top: 60px;
-  width: 250px;
+  width: 225px;
   color: white;
 }
 aside.rightbar #slidecreate {
@@ -144,6 +180,17 @@ aside.rightbar #slidecreate {
 aside.rightbar .formlabel {
   color: #2e74ff;
   font-size: 1.75em;
+}
+aside.rightbar #savedStatus {
+  height: 22px;
+  width: 140px;
+  margin-left: 5px;
+  color: white;
+  background-color: #2e74ff;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 5px;
+  text-align: center;
 }
 
 div.controls {
