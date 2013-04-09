@@ -162,8 +162,16 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
   activeSlideBinding: "controllers.slide.content",
   sortProperties: ['position'],
   sortAscending: true,
+  resort: function(slide, index, enumerable) {
+    return slide.set('position', index);
+  },
   "delete": function(slide) {
+    var pos;
+
+    pos = slide.get('position') - 1;
+    this.send('transitionAfterDeletion', pos);
     slide.deleteRecord();
+    this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
     return this.get('store').commit();
   },
   moveDown: function(slide) {
@@ -400,6 +408,9 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 App.SlidesRoute = Ember.Route.extend({
+  events: {
+    transitionAfterDeletion: function() {}
+  },
   setupController: function(controller) {
     return controller.set('content', App.Slide.find());
   },
@@ -423,6 +434,18 @@ App.SlidesRoute = Ember.Route.extend({
 });
 
 App.SlideRoute = Ember.Route.extend({
+  events: {
+    transitionAfterDeletion: function(pos) {
+      var slideAtPos;
+
+      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
+      if (slideAtPos != null) {
+        return this.replaceWith("slide", slideAtPos);
+      } else {
+        return this.replaceWith("slides");
+      }
+    }
+  },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
       into: 'application',

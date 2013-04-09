@@ -38,6 +38,9 @@ App.IndexRoute = Ember.Route.extend({
 });
 
 App.SlidesRoute = Ember.Route.extend({
+  events: {
+    transitionAfterDeletion: function() {}
+  },
   setupController: function(controller) {
     return controller.set('content', App.Slide.find());
   },
@@ -61,6 +64,18 @@ App.SlidesRoute = Ember.Route.extend({
 });
 
 App.SlideRoute = Ember.Route.extend({
+  events: {
+    transitionAfterDeletion: function(pos) {
+      var slideAtPos;
+
+      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
+      if (slideAtPos != null) {
+        return this.replaceWith("slide", slideAtPos);
+      } else {
+        return this.replaceWith("slides");
+      }
+    }
+  },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
       into: 'application',

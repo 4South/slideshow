@@ -33,6 +33,9 @@ App.IndexRoute = Ember.Route.extend
 #route for this viewing slides as thumbnails
 App.SlidesRoute = Ember.Route.extend
 
+  events:
+    transitionAfterDeletion: () ->
+      return
   #set the content using our model's custom 
   #find method (not ember-data)
   setupController: (controller) ->
@@ -55,6 +58,14 @@ App.SlidesRoute = Ember.Route.extend
                 controller: controller
 
 App.SlideRoute = Ember.Route.extend
+  
+  events:
+    transitionAfterDeletion: (pos) ->
+      slideAtPos = @controllerFor('slides').get('arrangedContent').objectAt(pos)
+      if slideAtPos?
+        @replaceWith "slide", slideAtPos
+      else
+        @replaceWith "slides"
 
   renderTemplate: (controller) ->
     @render "showcontrols",
