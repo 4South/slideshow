@@ -16,11 +16,11 @@ App.SlidesController = Em.ArrayController.extend({
   activeSlideIndex: 0,
   activeSlide: (function() {
     if (this.get('atleastOneSlide')) {
-      return this.get('content').objectAt(this.get('activeSlideIndex'));
+      return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
     } else {
       return null;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atleastOneSlide: (function() {
     if (this.get('content').toArray().length === 0) {
       return false;
@@ -31,13 +31,13 @@ App.SlidesController = Em.ArrayController.extend({
     var contentLength, index;
 
     index = this.get('activeSlideIndex');
-    contentLength = this.get('content').toArray().length;
+    contentLength = this.get('arrangedContent').toArray().length;
     if (index === contentLength - 1) {
       return true;
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atStart: (function() {
     var index;
 
@@ -47,7 +47,7 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));

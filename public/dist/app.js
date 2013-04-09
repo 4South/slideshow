@@ -13,6 +13,14 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value));
   }
 });
+
+Em.TextField.reopen({
+  keyUp: function(event) {
+    if (event.keyCode === 13) {
+      return this.get('controller').enterCheat();
+    }
+  }
+});
 });
 
 minispade.register('controllers/ApplicationController.js', function() {
@@ -58,11 +66,11 @@ App.SlidesController = Em.ArrayController.extend({
   activeSlideIndex: 0,
   activeSlide: (function() {
     if (this.get('atleastOneSlide')) {
-      return this.get('content').objectAt(this.get('activeSlideIndex'));
+      return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
     } else {
       return null;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atleastOneSlide: (function() {
     if (this.get('content').toArray().length === 0) {
       return false;
@@ -73,13 +81,13 @@ App.SlidesController = Em.ArrayController.extend({
     var contentLength, index;
 
     index = this.get('activeSlideIndex');
-    contentLength = this.get('content').toArray().length;
+    contentLength = this.get('arrangedContent').toArray().length;
     if (index === contentLength - 1) {
       return true;
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atStart: (function() {
     var index;
 
@@ -89,7 +97,7 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'content.@each').cacheable(),
+  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));
@@ -131,8 +139,9 @@ App.SlidesController = Em.ArrayController.extend({
 
 minispade.register('controllers/SlidethumbnailsController.js', function() {
 App.SlidethumbnailsController = Em.ArrayController.extend({
-  needs: ['slides'],
+  needs: ['slides', 'slide'],
   contentBinding: "controllers.slides.content",
+  activeSlideBinding: "controllers.slide.content",
   sortProperties: ['position'],
   sortAscending: true,
   "delete": function(slide) {
@@ -262,7 +271,10 @@ App.Slide = DS.Model.extend({
   name: DS.attr('string'),
   position: DS.attr('number'),
   title: DS.attr('string'),
-  content: DS.attr('string')
+  content: DS.attr('string'),
+  active: DS.attr('boolean', {
+    defaultValue: false
+  })
 });
 });
 
@@ -438,11 +450,13 @@ App.SlideThumbnailView = Em.View.extend({
   attributeBindings: ['style'],
   classNameBindings: ['highlighted'],
   classNames: ['slides-thumbnail'],
-  highlighted: false,
-  height: 40,
-  style: (function() {
-    return "height:" + (this.get('height')) + "px; width: 100%;";
-  }).property('height', 'width')
+  highlighted: (function() {
+    if (this.get('content.id') === this.get('controller.activeSlide.id')) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('controller.activeSlide').cacheable()
 });
 });
 

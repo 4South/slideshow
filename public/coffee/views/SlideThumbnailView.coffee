@@ -3,11 +3,11 @@ App.SlideThumbnailView = Em.View.extend
   tagName: 'li'
   attributeBindings: ['style']
   classNameBindings: ['highlighted']
-  classNames: ['slides-thumbnail']
+  classNames: ['slides-thumbnail']  
+  highlighted: (->
+    if @get('content.id') is @get('controller.activeSlide.id')
+      return true
+    else 
+      return false
+  ).property('controller.activeSlide').cacheable()
   
-  highlighted: false
-  height: 40
-  
-  style: (->
-    return "height:#{@get('height')}px; width: 100%;"
-  ).property('height', 'width')

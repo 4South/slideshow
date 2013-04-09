@@ -1,5 +1,11 @@
+<header class = "header" id = "mainHeader">
+  <div id = "secretCode">
+    {{partial secretcode}}
+  </div>
+  {{outlet controls}}
+</header>
+
 <aside class="leftbar">
-  {{outlet controls}} <hr>
   {{outlet sidebar}}
   {{render slidethumbnails}}
 </aside>
