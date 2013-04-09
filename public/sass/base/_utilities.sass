@@ -11,3 +11,7 @@
 @mixin bareBGandBorder
   border: none
   background: none
+
+@mixin borderProps($thickness, $style, $color, $radius: none)
+  border: $thickness $style $color
+  border-radius: $radius

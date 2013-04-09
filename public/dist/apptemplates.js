@@ -332,6 +332,7 @@ function program3(depth0,data) {
   options = {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0,depth0],types:["STRING","ID"],hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "slide", "view.content", options) : helperMissing.call(depth0, "linkTo", "slide", "view.content", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n");
   return buffer;
   
 });

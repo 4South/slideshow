@@ -1,27 +1,18 @@
-$lightbluewhite: #c2efff
-$bluewhite: #9edef5
-$darkbluewhite: #0991c3
-$lightred: #fff0f0
-$mediumred: #ff6a57
-$darkred: #e60000
-$lightorange: #ffae57
 $lightblue: #2e74ff
 
 div.slide
   min-height: 200px
   position: relative
   border-radius: 10px
-  color: $lightred 
-  text-align: left 
-  font-family: 'Jacques Francois', serif   
+  @include center
   h1
     @include fontsettings (normal, 'Share Tech Mono', 5em, $lightblue)
     padding: .5em
   h2
     @include fontsettings (normal, 'Jacques Francois', 3em, $lightblue)
-    font-weight: normal
-    font-family: 'Jacques Francois', serif
-    font-size: 3.5em
+    padding: .4em .5em 
+  h3
+    @include fontsettings (normal, 'Jacques Francois', 2.5em, white)
     padding: .4em .5em 
 
   pre
@@ -30,20 +21,23 @@ div.slide
     @include center
     @include bareBGandBorder
     code
-      font-size: 2.5em
-      color: white
-      font-family: 'Share Tech Mono', serif
+      @include fontsettings (normal, 'Share Tech Mono', 2.5em, white)
       line-height: 1em
 
   ol
     margin: none
-
+  ul
+    list-style-type: none
   li
-    color: white
-    font-size: 2.5em
+    @include fontsettings (normal, 'Jacques Francois', 2.5em, white)
     margin: .5em .5em 
     line-height: 1em
 
-  img
-    border-radius: 10px
-    border: 2px solid black 
+  p
+    text-align: center
+    img
+      border-radius: 10px
+      @include bareBGandBorder
+    a
+      @include fontsettings(normal, 'Share Tech Mono', 2em, white)
+      line-height: 1em

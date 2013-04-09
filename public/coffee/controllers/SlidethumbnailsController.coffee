@@ -6,8 +6,15 @@ App.SlidethumbnailsController = Em.ArrayController.extend
   sortProperties: ['position']
   sortAscending: true
 
+  resort: (slide, index, enumerable) ->
+    slide.set('position', index)
+
   delete: (slide) ->
+    pos = slide.get('position')-1
+    #optional transition if deleted slide is the current route's slide
+    @send 'transitionAfterDeletion', pos
     slide.deleteRecord()
+    @get('arrangedContent').forEach(@resort, @get('arrangedContent'))
     @get('store').commit()
 
   moveDown: (slide) ->
