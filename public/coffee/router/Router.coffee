@@ -2,13 +2,13 @@
 require('controllers/ApplicationController.js')
 require('controllers/SlidesController.js')
 require('controllers/SlideController.js')
+require('controllers/SlidethumbnailsController.js')
 
 require('models/Slide.js')
 
 require('views/SlidesView.js')
 require('views/SlideView.js')
 require('views/SlidedetailView.js')
-require('views/SlideThumbnailsView.js')
 require('views/SlideThumbnailView.js')
 
 #main router definition
@@ -33,7 +33,7 @@ App.SlidesRoute = Ember.Route.extend
   #set the content using our model's custom 
   #find method (not ember-data)
   setupController: (controller) ->
-    controller.set('content', App.Slide.find())
+    controller.set 'content', App.Slide.find()
 
   renderTemplate: (controller) ->
     @render "slides",
@@ -58,6 +58,7 @@ App.SlideRoute = Ember.Route.extend
                     into: 'application'
                     outlet: 'controls'
                     controller: 'slides'
+
     @render "slidedetail",
                     into: 'application'
                     outlet: 'slides'

@@ -4,6 +4,9 @@ App.SlidesController = Em.ArrayController.extend
 
   newSlideName: ""
 
+  sortProperties: ['position']
+  sortAscending: true
+
   #determines if current "new slide" name is valid for creation
   nameIsValid: (->
     name = @get('newSlideName')
@@ -65,13 +68,8 @@ App.SlidesController = Em.ArrayController.extend
     if @get('nameIsValid')
       App.Slide.createRecord
                 name: @get('newSlideName')
-                position: 0
+                position: @get('content').toArray().length
       @get('store').commit()
       @set('newSlideName', '')
     else
       alert ('name must contain at least one character and no spaces')
-
-  #delete CRUD operation
-  delete: (slide) ->
-    slide.deleteRecord()
-    @get('store').commit()

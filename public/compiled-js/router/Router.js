@@ -4,6 +4,8 @@ require('controllers/SlidesController.js');
 
 require('controllers/SlideController.js');
 
+require('controllers/SlidethumbnailsController.js');
+
 require('models/Slide.js');
 
 require('views/SlidesView.js');
@@ -11,8 +13,6 @@ require('views/SlidesView.js');
 require('views/SlideView.js');
 
 require('views/SlidedetailView.js');
-
-require('views/SlideThumbnailsView.js');
 
 require('views/SlideThumbnailView.js');
 

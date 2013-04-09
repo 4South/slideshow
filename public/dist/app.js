@@ -41,6 +41,8 @@ minispade.register('controllers/SlidesController.js', function() {
 App.SlidesController = Em.ArrayController.extend({
   needs: ['application'],
   newSlideName: "",
+  sortProperties: ['position'],
+  sortAscending: true,
   nameIsValid: (function() {
     var name;
 
@@ -114,16 +116,49 @@ App.SlidesController = Em.ArrayController.extend({
     if (this.get('nameIsValid')) {
       App.Slide.createRecord({
         name: this.get('newSlideName'),
-        position: 0
+        position: this.get('content').toArray().length
       });
       this.get('store').commit();
       return this.set('newSlideName', '');
     } else {
       return alert('name must contain at least one character and no spaces');
     }
-  },
+  }
+});
+});
+
+minispade.register('controllers/SlidethumbnailsController.js', function() {
+App.SlidethumbnailsController = Em.ArrayController.extend({
+  needs: ['slides'],
+  contentBinding: "controllers.slides.content",
+  sortProperties: ['position'],
+  sortAscending: true,
   "delete": function(slide) {
     slide.deleteRecord();
+    return this.get('store').commit();
+  },
+  moveDown: function(slide) {
+    var target;
+
+    target = this.findTarget(slide, this.get('arrangedContent'), +1, 'position');
+    if (target != null) {
+      return this.swap(target, slide, 'position');
+    }
+  },
+  moveUp: function(slide) {
+    var target;
+
+    target = this.findTarget(slide, this.get('arrangedContent'), -1, 'position');
+    if (target != null) {
+      return this.swap(slide, target, 'position');
+    }
+  },
+  findTarget: function(slide, array, relativeSearch, property) {
+    return array.objectAt(slide.get(property) + relativeSearch);
+  },
+  swap: function(decTarget, incTarget, property) {
+    decTarget.decrementProperty(property);
+    incTarget.incrementProperty(property);
     return this.get('store').commit();
   }
 });
@@ -311,7 +346,7 @@ App.Slide.reopenClass({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('models/Slide.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailsView.js');minispade.require('views/SlideThumbnailView.js');
+minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('models/Slide.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');
 
 App.Router.map(function() {
   this.resource("slides");
@@ -386,6 +421,7 @@ App.Store = DS.Store.extend({
 minispade.register('views/SlideThumbnailView.js', function() {
 App.SlideThumbnailView = Em.View.extend({
   templateName: 'slidethumbnail',
+  tagName: 'li',
   attributeBindings: ['style'],
   classNameBindings: ['highlighted'],
   classNames: ['slides-thumbnail'],
@@ -394,20 +430,6 @@ App.SlideThumbnailView = Em.View.extend({
   style: (function() {
     return "height:" + (this.get('height')) + "px; width: 100%;";
   }).property('height', 'width')
-});
-});
-
-minispade.register('views/SlideThumbnailsView.js', function() {
-App.SlideThumbnailsView = Em.CollectionView.extend({
-  tagName: 'ul',
-  attributeBindings: ['style'],
-  style: (function() {
-    return "list-style-type: none;";
-  }).property(),
-  emptyView: Ember.View.extend({
-    template: Ember.Handlebars.compile('objects loading')
-  }),
-  itemViewClass: 'App.SlideThumbnailView'
 });
 });
 

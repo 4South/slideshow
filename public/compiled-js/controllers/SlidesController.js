@@ -1,6 +1,8 @@
 App.SlidesController = Em.ArrayController.extend({
   needs: ['application'],
   newSlideName: "",
+  sortProperties: ['position'],
+  sortAscending: true,
   nameIsValid: (function() {
     var name;
 
@@ -74,16 +76,12 @@ App.SlidesController = Em.ArrayController.extend({
     if (this.get('nameIsValid')) {
       App.Slide.createRecord({
         name: this.get('newSlideName'),
-        position: 0
+        position: this.get('content').toArray().length
       });
       this.get('store').commit();
       return this.set('newSlideName', '');
     } else {
       return alert('name must contain at least one character and no spaces');
     }
-  },
-  "delete": function(slide) {
-    slide.deleteRecord();
-    return this.get('store').commit();
   }
 });
