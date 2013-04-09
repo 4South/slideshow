@@ -1,5 +1,6 @@
 App.SlideThumbnailView = Em.View.extend
   templateName: 'slidethumbnail'
+  tagName: 'li'
   attributeBindings: ['style']
   classNameBindings: ['highlighted']
   classNames: ['slides-thumbnail']
