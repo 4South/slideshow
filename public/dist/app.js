@@ -425,12 +425,6 @@ App.Store = DS.Store.extend({
 });
 });
 
-minispade.register('views/ApplicationView.js', function() {
-App.ApplicationView = Em.View.extend({
-  classNames: ['appview']
-});
-});
-
 minispade.register('views/SlideThumbnailView.js', function() {
 App.SlideThumbnailView = Em.View.extend({
   templateName: 'slidethumbnail',
