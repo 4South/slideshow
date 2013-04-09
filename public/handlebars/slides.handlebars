@@ -1,12 +1,12 @@
-<span id = "slidesList"> Slide Summary </span>
-
 {{#each slide in arrangedContent}}
   <div id = "slideSummary">
     {{#view contentBinding = "slide"}}
       {{partial presentationslide}}
     {{/view}}
   </div>
+  
 {{else}}
+  
+  <div class="lead">No Slides</div>
 
-<div class="lead">No Slides</div>
 {{/each}}

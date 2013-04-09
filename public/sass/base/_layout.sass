@@ -1,16 +1,28 @@
+*
+  box-sizing: border-box
+
 body, html
   background: url('../assets/images/sandbackground.jpg')
   background-size: cover 
   background-color: #f0f0f0
   height: 100% 
 
-header#mainHeader
-  height: 50px
-  background: #f0f0f0
-  border-bottom: 3px double white
-  box-sizing: border-box
-  vertical-align: bottom
+.navbar
+  margin-bottom: 0px
+  background-color: rgba(0, 0, 0, 0)
+  height: 40px
+
+.navbar-inverse .navbar-inner
+  background-color: rgba(0, 0, 0, 0.4)
+  background-image: none
+  border: none
+  height: 40px
+
+textarea
+  min-height: 250px
+  padding: none
+  margin: none
   
-div#secretCode
-  display: inline
-  float: right
+ul, li
+  padding: 0px
+  margin: 0px

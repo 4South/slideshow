@@ -1,3 +1,5 @@
+require('controllers/HeaderController.js');
+
 require('controllers/ApplicationController.js');
 
 require('controllers/SlidesController.js');
@@ -31,7 +33,7 @@ App.ApplicationRoute = Ember.Route.extend({
 
 App.IndexRoute = Ember.Route.extend({
   redirect: function() {
-    return this.replaceWith("slides");
+    return this.replaceWith('slides');
   }
 });
 
@@ -48,15 +50,15 @@ App.SlidesRoute = Ember.Route.extend({
       outlet: 'slides',
       controller: controller
     });
-    this.render("maincontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: controller
-    });
-    return this.render("rightbar", {
+    this.render("rightbar", {
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
+    });
+    return this.render("maincontrols", {
+      into: 'application',
+      outlet: 'controls',
+      controller: controller
     });
   }
 });
@@ -84,11 +86,6 @@ App.SlideRoute = Ember.Route.extend({
       into: 'application',
       outlet: 'slides',
       controller: controller
-    });
-    this.render("thumbnailheader", {
-      into: 'application',
-      outlet: 'sidebar',
-      controller: 'slides'
     });
     return this.render("rightbar", {
       into: 'application',
