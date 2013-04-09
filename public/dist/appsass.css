@@ -1,9 +1,6 @@
 body, html {
-  background-color: #2f96b4;
-  height: 100%;
-}
-
-.appview {
+  background: url("../assets/images/sandbackground.jpg");
+  background-size: 100% 100%;
   height: 100%;
 }
 
@@ -17,14 +14,53 @@ div.slides-thumbnail.highlighted {
 }
 
 div.slide {
-  background-color: #333333;
-  width: 100%;
-  height: 400px;
+  min-height: 200px;
   position: relative;
-  top: 200px;
   border-radius: 10px;
-  color: green;
-  text-align: center;
+  color: #fff0f0;
+  text-align: left;
+  font-family: "Jacques Francois", serif;
+}
+div.slide h1 {
+  color: #0044cc;
+  font-weight: normal;
+  font-family: "Share Tech Mono", serif;
+  font-size: 5em;
+  padding: 0.5em;
+}
+div.slide h2 {
+  color: #2e74ff;
+  font-weight: normal;
+  font-family: "Jacques Francois", serif;
+  font-size: 3.5em;
+  padding: 0.4em 0.5em;
+}
+div.slide pre {
+  text-align: left;
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+  background: none;
+  border: none;
+}
+div.slide pre code {
+  font-size: 2.5em;
+  color: white;
+  font-family: "Share Tech Mono", serif;
+  line-height: 1em;
+}
+div.slide ol {
+  margin: none;
+}
+div.slide li {
+  color: white;
+  font-size: 2.5em;
+  margin: 0.5em 0.5em;
+  line-height: 1em;
+}
+div.slide img {
+  border-radius: 10px;
+  border: 2px solid black;
 }
 
 section.slides {
