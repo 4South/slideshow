@@ -23,9 +23,6 @@ div.slide {
   position: relative;
   top: 200px;
   border-radius: 10px;
-}
-
-h1 {
   color: green;
   text-align: center;
 }
@@ -63,7 +60,7 @@ aside.leftbar {
   padding-left: 5px;
   left: 0;
   top: 0;
-  width: 250px;
+  width: 300px;
   height: 100%;
 }
 

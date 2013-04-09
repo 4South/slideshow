@@ -7,9 +7,9 @@ require('store/Store.js')
 #import the router module
 require('router/Router.js')
 
-###
 showdown = new Showdown.converter()
-Ember.Handlebars.registerBoundHelper('mdcontent', (value) ->
-  return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
+Ember.Handlebars.registerBoundHelper('markdown', (value) ->
+  if value?
+    return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
 )
-###
+

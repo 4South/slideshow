@@ -1,5 +1,5 @@
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['application'],
+  needs: ['application', 'slide'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,

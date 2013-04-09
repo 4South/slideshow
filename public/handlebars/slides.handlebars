@@ -1,6 +1,12 @@
 <span id = "slidesList"> Slide Summary </span>
+
 {{#each slide in content}}
-  {{view "App.SlideView" contentBinding=slide}}
+  <div class = "slide">
+  {{#view contentBinding = "slide"}}
+    {{partial presentationslide}}
+  {{/view}}
+  </div>
 {{else}}
+
 <div class="lead">No Slides</div>
 {{/each}}

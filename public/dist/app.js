@@ -1,16 +1,18 @@
 minispade.register('application/Application.js', function() {
+var showdown;
+
 window.App = Ember.Application.create({
   godMode: false,
   LOG_TRANSITIONS: true
 });minispade.require('store/Store.js');minispade.require('router/Router.js');
 
-/*
-showdown = new Showdown.converter()
-Ember.Handlebars.registerBoundHelper('mdcontent', (value) ->
-  return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
-)
-*/
+showdown = new Showdown.converter();
 
+Ember.Handlebars.registerBoundHelper('markdown', function(value) {
+  if (value != null) {
+    return new Ember.Handlebars.SafeString(showdown.makeHtml(value));
+  }
+});
 });
 
 minispade.register('controllers/ApplicationController.js', function() {
@@ -39,7 +41,7 @@ App.SlideController = Em.ObjectController.extend({
 
 minispade.register('controllers/SlidesController.js', function() {
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['application'],
+  needs: ['application', 'slide'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
@@ -346,11 +348,7 @@ App.Slide.reopenClass({
 });
 
 minispade.register('router/Router.js', function() {
-<<<<<<< HEAD
-minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('models/Slide.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailsView.js');minispade.require('views/SlideThumbnailView.js');
-=======
-minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('models/Slide.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');
->>>>>>> 3336f52a8ce4fd8397d99d7bb92a4131de6b9257
+minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('models/Slide.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');
 
 App.Router.map(function() {
   this.resource("slides");
@@ -445,24 +443,6 @@ App.SlideThumbnailView = Em.View.extend({
   style: (function() {
     return "height:" + (this.get('height')) + "px; width: 100%;";
   }).property('height', 'width')
-});
-});
-
-minispade.register('views/SlideView.js', function() {
-App.SlideView = Em.View.extend({
-  layoutName: 'slideframe',
-  classNames: ['slideList'],
-  init: function() {
-    var name;
-
-    this._super();
-    name = "slides/" + this.get('content.name');
-    if (Ember.TEMPLATES[name]) {
-      return this.set('templateName', name);
-    } else {
-      return this.set('template', Ember.Handlebars.compile('<h1 style="color:red;">whatev</h1>'));
-    }
-  }
 });
 });
 

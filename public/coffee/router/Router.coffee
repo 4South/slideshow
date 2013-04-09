@@ -8,7 +8,6 @@ require('models/Slide.js')
 
 require('views/ApplicationView.js')
 require('views/SlidesView.js')
-require('views/SlideView.js')
 require('views/SlidedetailView.js')
 require('views/SlideThumbnailView.js')
 
