@@ -5,6 +5,7 @@ require('controllers/SlideController.js')
 
 require('models/Slide.js')
 
+require('views/ApplicationView.js')
 require('views/SlidesView.js')
 require('views/SlideView.js')
 require('views/SlidedetailView.js')
@@ -46,10 +47,10 @@ App.SlidesRoute = Ember.Route.extend
                     outlet: 'controls'
                     controller: controller
 
-    @render "sidebar",
+    @render "rightbar",
                     into: 'application'
-                    outlet: 'sidebar'
-                    controller: controller
+                    outlet: 'rightbar'
+                    controller: "slides"
 
 App.SlideRoute = Ember.Route.extend
 
@@ -67,3 +68,8 @@ App.SlideRoute = Ember.Route.extend
                     into: 'application'
                     outlet: 'sidebar'
                     controller: 'slides'
+    
+    @render "rightbar",
+                    into: 'application'
+                    outlet: 'rightbar'
+                    controller: "slides"

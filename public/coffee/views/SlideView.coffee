@@ -1,8 +1,8 @@
 App.SlideView = Em.View.extend
 
   layoutName: 'slideframe'
-  classNames: ['slide']
-  
+  classNames: ['slideList']
+
   init: () ->
     @_super()
     name = "slides/" + @get('content.name')

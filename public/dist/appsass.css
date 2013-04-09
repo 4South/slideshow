@@ -1,5 +1,10 @@
-body {
+body, html {
   background-color: #2f96b4;
+  height: 100%;
+}
+
+.appview {
+  height: 100%;
 }
 
 div.slides-thumbnail {
@@ -13,11 +18,11 @@ div.slides-thumbnail.highlighted {
 
 div.slide {
   background-color: #333333;
-  width: 800px;
-  height: 200px;
+  width: 100%;
+  height: 400px;
+  position: relative;
+  top: 200px;
   border-radius: 10px;
-  margin: 10px;
-  padding: 10px;
 }
 
 h1 {
@@ -26,22 +31,52 @@ h1 {
 }
 
 section.slides {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
   margin-left: auto;
   margin-right: auto;
-  width: 600px;
+  width: 800px;
 }
 section.slides ul {
   list-style-type: none;
 }
 
+.slideList {
+  background-color: #333333;
+  width: 100%;
+  height: 400px;
+  position: relative;
+  border-radius: 10px;
+}
+
+span#slidesList {
+  display: block;
+  font-size: 40px;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
 aside.leftbar {
   position: absolute;
+  padding-left: 5px;
   left: 0;
   top: 0;
-  width: 300px;
+  width: 250px;
+  height: 100%;
+}
+
+aside.rightbar {
+  position: absolute;
+  padding-left: 5px;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 250px;
 }
 
 div.controls {
-  margin-left: 40px;
+  margin-left: 10px;
   margin-top: 10px;
 }

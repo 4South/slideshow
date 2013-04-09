@@ -1,8 +1,11 @@
 <aside class="leftbar">
+  {{outlet controls}} <hr>
   {{outlet sidebar}}
   {{partial thumbnails}}
 </aside>
 <section class="slides">
-  {{outlet controls}}
   {{outlet slides}}
 </section>
+<aside class = "rightbar">
+  {{outlet rightbar}}
+</aside>

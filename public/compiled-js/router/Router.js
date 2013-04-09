@@ -6,6 +6,8 @@ require('controllers/SlideController.js');
 
 require('models/Slide.js');
 
+require('views/ApplicationView.js');
+
 require('views/SlidesView.js');
 
 require('views/SlideView.js');
@@ -50,10 +52,10 @@ App.SlidesRoute = Ember.Route.extend({
       outlet: 'controls',
       controller: controller
     });
-    return this.render("sidebar", {
+    return this.render("rightbar", {
       into: 'application',
-      outlet: 'sidebar',
-      controller: controller
+      outlet: 'rightbar',
+      controller: "slides"
     });
   }
 });
@@ -70,10 +72,15 @@ App.SlideRoute = Ember.Route.extend({
       outlet: 'slides',
       controller: controller
     });
-    return this.render("thumbnailheader", {
+    this.render("thumbnailheader", {
       into: 'application',
       outlet: 'sidebar',
       controller: 'slides'
+    });
+    return this.render("rightbar", {
+      into: 'application',
+      outlet: 'rightbar',
+      controller: "slides"
     });
   }
 });

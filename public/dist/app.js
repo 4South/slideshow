@@ -311,7 +311,7 @@ App.Slide.reopenClass({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('models/Slide.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailsView.js');minispade.require('views/SlideThumbnailView.js');
+minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('models/Slide.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlideView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailsView.js');minispade.require('views/SlideThumbnailView.js');
 
 App.Router.map(function() {
   this.resource("slides");
@@ -347,10 +347,10 @@ App.SlidesRoute = Ember.Route.extend({
       outlet: 'controls',
       controller: controller
     });
-    return this.render("sidebar", {
+    return this.render("rightbar", {
       into: 'application',
-      outlet: 'sidebar',
-      controller: controller
+      outlet: 'rightbar',
+      controller: "slides"
     });
   }
 });
@@ -367,10 +367,15 @@ App.SlideRoute = Ember.Route.extend({
       outlet: 'slides',
       controller: controller
     });
-    return this.render("thumbnailheader", {
+    this.render("thumbnailheader", {
       into: 'application',
       outlet: 'sidebar',
       controller: 'slides'
+    });
+    return this.render("rightbar", {
+      into: 'application',
+      outlet: 'rightbar',
+      controller: "slides"
     });
   }
 });
@@ -380,6 +385,12 @@ minispade.register('store/Store.js', function() {
 App.Store = DS.Store.extend({
   revision: 11,
   adapter: DS.RESTAdapter
+});
+});
+
+minispade.register('views/ApplicationView.js', function() {
+App.ApplicationView = Em.View.extend({
+  classNames: ['appview']
 });
 });
 
@@ -414,7 +425,7 @@ App.SlideThumbnailsView = Em.CollectionView.extend({
 minispade.register('views/SlideView.js', function() {
 App.SlideView = Em.View.extend({
   layoutName: 'slideframe',
-  classNames: ['slide'],
+  classNames: ['slideList'],
   init: function() {
     var name;
 

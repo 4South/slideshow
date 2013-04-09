@@ -1,6 +1,6 @@
 App.SlideView = Em.View.extend({
   layoutName: 'slideframe',
-  classNames: ['slide'],
+  classNames: ['slideList'],
   init: function() {
     var name;
 
