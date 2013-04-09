@@ -263,7 +263,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', stack1, hashTypes;
-  data.buffer.push("\r\n  <div class = \"slide\">\r\n  ");
+  data.buffer.push("\r\n  <div class = \"slideSummary\">\r\n  ");
   hashTypes = {'contentBinding': "STRING"};
   stack1 = helpers.view.call(depth0, {hash:{
     'contentBinding': ("slide")
