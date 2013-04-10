@@ -12,8 +12,8 @@
   {{/if}}
 </div>
 
-{{#linkTo 'slide' view.content}}
-  <span class = "nameWrapper">
-    {{view.content.name}}
-  </span>
-{{/linkTo}}
+<span class = "nameWrapper">
+  <p {{action clickThumbnail view.content 
+        target="controllers.slides"}}>{{view.content.name}}
+  </p>
+</span>

@@ -41,7 +41,17 @@ App.SlidesController = Em.ArrayController.extend
     index = @get('activeSlideIndex')
     return if (index == 0) then true else false
   ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
+
+  #text used to notify user of unsaved changes
+  savedStatus: (->
+    if @get('content').someProperty('isDirty')
+      return "Unsaved Changes"
+    else return "All Changes Saved"
+  ).property('content.@each.isDirty').cacheable()
   
+
+
+
   #start the slideshow
   startShow: () ->
     if @get('activeSlide')?
@@ -50,27 +60,31 @@ App.SlidesController = Em.ArrayController.extend
   pauseShow: () ->
     @transitionToRoute('slides')
 
+
+
+
+  #SLIDE NAVIGATION UTILS
   forward: () ->
     if @get('atEnd') then return
     else
-      @incrementProperty('activeSlideIndex')
-      @transitionToRoute('slide', @get('activeSlide'))
+      curIndex = @get('activeSlide').get('position')
+      newSlide = @get('arrangedContent').objectAt(curIndex+1)
+      @send "updateActiveSlide", newSlide
 
   back: () ->
     if @get('atStart') then return
     else
-      @decrementProperty('activeSlideIndex')
-      @transitionToRoute('slide', @get('activeSlide'))
+      curIndex = @get('activeSlide').get('position')
+      newSlide = @get('arrangedContent').objectAt(curIndex-1)
+      @send "updateActiveSlide", newSlide
 
-  savedStatus: (->
-    cont = @get('content').toArray()
-    for slide in cont
-      if slide.get('isDirty')
-        return "Unsaved Changes"      
-    return "All Changes Saved"
-  ).property('content.@each.isDirty')
-  
-  #create CRUD operation
+  clickThumbnail: (targetSlide) ->
+    @send "updateActiveSlide", targetSlide
+
+
+
+
+  #CREATE CRUD
   create: () ->
     if @get('nameIsValid')
       App.Slide.createRecord

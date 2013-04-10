@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 * {
   box-sizing: border-box;
 }
@@ -74,9 +73,8 @@ div.slide {
   min-height: 200px;
   position: relative;
   border-radius: 10px;
-  color: #fff0f0;
-  text-align: left;
-  font-family: "Jacques Francois", serif;
+  margin-right: auto;
+  margin-left: auto;
 }
 div.slide h1 {
   font-weight: normal;
@@ -90,9 +88,13 @@ div.slide h2 {
   font-family: "Jacques Francois";
   font-size: 3em;
   color: #2e74ff;
+  padding: 0.4em 0.5em;
+}
+div.slide h3 {
   font-weight: normal;
-  font-family: "Jacques Francois", serif;
-  font-size: 3.5em;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
   padding: 0.4em 0.5em;
 }
 div.slide pre {
@@ -104,23 +106,54 @@ div.slide pre {
   background: none;
 }
 div.slide pre code {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
   font-size: 2.5em;
   color: white;
-  font-family: "Share Tech Mono", serif;
   line-height: 1em;
+}
+div.slide table {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1.5em;
+  color: white;
+}
+div.slide table td {
+  padding: 0.5em 0.5em;
 }
 div.slide ol {
   margin: none;
 }
+div.slide ul {
+  list-style-type: none;
+}
 div.slide li {
-  color: white;
+  font-weight: normal;
+  font-family: "Jacques Francois";
   font-size: 2.5em;
+  color: white;
   margin: 0.5em 0.5em;
   line-height: 1em;
 }
-div.slide img {
+div.slide p {
+  text-align: center;
+  line-height: 1.5em;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+}
+div.slide p img {
   border-radius: 10px;
-  border: 2px solid black;
+  border: none;
+  background: none;
+}
+div.slide p a {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
 }
 
 section.slides {
@@ -189,5 +222,3 @@ div.showcontrols {
 .ember-text-field {
   margin-top: 5px;
 }
-=======
->>>>>>> 897f031d112be816759108a0d541f3d12a492ba8

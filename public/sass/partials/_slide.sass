@@ -4,13 +4,13 @@ div.slide
   border-radius: 10px
   @include center
   h1
-    @include fontsettings (normal, 'Share Tech Mono', 5em, $lightblue)
+    @include fontsettings(normal, 'Share Tech Mono', 5em, $lightblue)
     padding: .5em
   h2
-    @include fontsettings (normal, 'Jacques Francois', 3em, $lightblue)
+    @include fontsettings(normal, 'Jacques Francois', 3em, $lightblue)
     padding: .4em .5em 
   h3
-    @include fontsettings (normal, 'Jacques Francois', 2.5em, white)
+    @include fontsettings(normal, 'Jacques Francois', 2.5em, white)
     padding: .4em .5em 
 
   pre
@@ -19,20 +19,26 @@ div.slide
     @include center
     @include bareBGandBorder
     code
-      @include fontsettings (normal, 'Share Tech Mono', 2.5em, white)
+      @include fontsettings(normal, 'Share Tech Mono', 2.5em, white)
       line-height: 1em
 
+  table
+    @include fontsettings(normal, 'Share Tech Mono', 1.5em, white)
+    td
+      padding: .5em .5em 
   ol
     margin: none
   ul
     list-style-type: none
   li
-    @include fontsettings (normal, 'Jacques Francois', 2.5em, white)
+    @include fontsettings(normal, 'Jacques Francois', 2.5em, white)
     margin: .5em .5em 
     line-height: 1em
 
   p
     text-align: center
+    line-height: 1.5em
+    @include fontsettings(normal, 'Share Tech Mono', 2em, white)
     img
       border-radius: 10px
       @include bareBGandBorder

@@ -28,6 +28,15 @@ App.Router.map(function() {
 App.ApplicationRoute = Ember.Route.extend({
   setupController: function() {
     return this.controllerFor('slides').set('content', App.Slide.find());
+  },
+  events: {
+    updateActiveSlide: function(newSlide) {
+      var slidesCon;
+
+      slidesCon = this.controllerFor('slides');
+      slidesCon.set('activeSlideIndex', newSlide.get('position'));
+      return this.transitionTo('slide', slidesCon.get('activeSlide'));
+    }
   }
 });
 

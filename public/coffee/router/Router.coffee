@@ -18,9 +18,15 @@ App.Router.map () ->
   @resource "slides"
   @resource "slide", {path: 'slides/:slide_id'}
 
-App.ApplicationRoute = Ember.Route.extend  
+App.ApplicationRoute = Ember.Route.extend
   setupController: () ->
     @controllerFor('slides').set('content', App.Slide.find())
+  
+  events:
+    updateActiveSlide: (newSlide) ->
+      slidesCon = @controllerFor('slides')
+      slidesCon.set('activeSlideIndex', newSlide.get('position'))
+      @transitionTo('slide', slidesCon.get('activeSlide'))
     
 
 
@@ -36,6 +42,7 @@ App.SlidesRoute = Ember.Route.extend
   events:
     transitionAfterDeletion: () ->
       return
+
   #set the content using our model's custom 
   #find method (not ember-data)
   setupController: (controller) ->
@@ -56,6 +63,9 @@ App.SlidesRoute = Ember.Route.extend
                 into: 'application'
                 outlet: 'controls'
                 controller: controller
+
+
+
 
 App.SlideRoute = Ember.Route.extend
   
