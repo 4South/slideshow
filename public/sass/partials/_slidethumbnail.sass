@@ -1,13 +1,25 @@
 li.slides-thumbnail
+  padding: 0px
   border-radius: 5px
   list-style: none
-  margin: auto
-  margin-top: 5px
+  margin: 5px 0px 5px 10px
   box-sizing: border-box
   height: 55px
   width: 180px
-  background: $lightblue
-  color: black
+  color: #ffffff
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)
+  background-color: #006dcc
+  *background-color: #0044cc
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc)
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc))
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc)
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc)
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc)
+  background-repeat: repeat-x
+  border-color: #0044cc #0044cc #002a80
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25)
+  
+    
   
   div#btnWrapper
     min-height: 30px
@@ -26,9 +38,8 @@ li.slides-thumbnail
     border-bottom-right-radius: 4px
     font-size: 18px
     overflow: none
-    color: black
     
 li.slides-thumbnail.highlighted
   list-style: none
-  background: white
+  background-image: linear-gradient(to bottom, #ffffff, #aaa)
   

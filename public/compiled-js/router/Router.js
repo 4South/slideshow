@@ -10,6 +10,8 @@ require('controllers/SlidethumbnailsController.js');
 
 require('models/Slide.js');
 
+require('views/SlideTextField.js');
+
 require('views/ApplicationView.js');
 
 require('views/SlidesView.js');

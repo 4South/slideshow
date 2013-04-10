@@ -2,9 +2,9 @@
   <fieldset>
     <legend class = "formlabel">Edit Slide </legend>
     <label> Slide Title </label>
-      {{view Em.TextField valueBinding = "controllers.slide.content.title"}}
+      {{view App.SlideTextField valueBinding = "controllers.slide.content.title"}}
     <label> Slide Content </label>
-      {{view Em.TextArea 
+      {{view App.SlideTextArea 
         valueBinding = "controllers.slide.content.content"}}
     <button class = "btn btn-success" {{action save target = "controllers.slide"}}> 
       Save 
