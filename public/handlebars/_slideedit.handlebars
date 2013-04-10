@@ -6,11 +6,12 @@
     <label> Slide Content </label>
       {{view App.SlideTextArea 
         valueBinding = "controllers.slide.content.content"}}
+    
+    <div id = "savedStatus"> {{controller.savedStatus}} </div>
+
     <button class = "btn btn-success" {{action save target = "controllers.slide"}}> 
       Save 
     </button>
-    
-    <div id = "savedStatus"> {{controller.savedStatus}} </div>
     
   </fieldset>
 </form>
