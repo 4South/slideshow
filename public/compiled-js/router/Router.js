@@ -18,6 +18,8 @@ require('views/SlidedetailView.js');
 
 require('views/SlideThumbnailView.js');
 
+require('views/SlidesthumbnailsView.js');
+
 App.Router.map(function() {
   this.resource("slides");
   return this.resource("slide", {
