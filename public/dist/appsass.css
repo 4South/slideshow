@@ -123,6 +123,15 @@ div.slide pre code {
   color: white;
   line-height: 1em;
 }
+div.slide table {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1.5em;
+  color: white;
+}
+div.slide table td {
+  padding: 0.5em 0.5em;
+}
 div.slide ol {
   margin: none;
 }
@@ -139,6 +148,14 @@ div.slide li {
 }
 div.slide p {
   text-align: center;
+<<<<<<< HEAD
+=======
+  line-height: 1.5em;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+>>>>>>> cab1d9fbd88ed301209bcd835f5d1060b8baf72a
 }
 div.slide p img {
   border-radius: 10px;
@@ -221,3 +238,10 @@ div.controls {
 div.showcontrols {
   margin-left: 2px;
 }
+<<<<<<< HEAD
+=======
+
+.ember-text-field {
+  margin-top: 5px;
+}
+>>>>>>> cab1d9fbd88ed301209bcd835f5d1060b8baf72a

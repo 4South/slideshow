@@ -48,6 +48,13 @@ App.SlidesController = Em.ArrayController.extend({
       return false;
     }
   }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
+  savedStatus: (function() {
+    if (this.get('content').someProperty('isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.@each.isDirty').cacheable(),
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));
@@ -57,33 +64,30 @@ App.SlidesController = Em.ArrayController.extend({
     return this.transitionToRoute('slides');
   },
   forward: function() {
+    var curIndex, newSlide;
+
     if (this.get('atEnd')) {
 
     } else {
-      this.incrementProperty('activeSlideIndex');
-      return this.transitionToRoute('slide', this.get('activeSlide'));
+      curIndex = this.get('activeSlide').get('position');
+      newSlide = this.get('arrangedContent').objectAt(curIndex + 1);
+      return this.send("updateActiveSlide", newSlide);
     }
   },
   back: function() {
+    var curIndex, newSlide;
+
     if (this.get('atStart')) {
 
     } else {
-      this.decrementProperty('activeSlideIndex');
-      return this.transitionToRoute('slide', this.get('activeSlide'));
+      curIndex = this.get('activeSlide').get('position');
+      newSlide = this.get('arrangedContent').objectAt(curIndex - 1);
+      return this.send("updateActiveSlide", newSlide);
     }
   },
-  savedStatus: (function() {
-    var cont, slide, _i, _len;
-
-    cont = this.get('content').toArray();
-    for (_i = 0, _len = cont.length; _i < _len; _i++) {
-      slide = cont[_i];
-      if (slide.get('isDirty')) {
-        return "Unsaved Changes";
-      }
-    }
-    return "All Changes Saved";
-  }).property('content.@each.isDirty'),
+  clickThumbnail: function(targetSlide) {
+    return this.send("updateActiveSlide", targetSlide);
+  },
   create: function() {
     if (this.get('nameIsValid')) {
       App.Slide.createRecord({
