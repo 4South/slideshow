@@ -20,7 +20,7 @@ aside.rightbar
   position: absolute
   padding-left: 10px
   padding-right: 4px
-  top: 40px
+  top: 0px
   right: 0
   width: 225px
   color: white
@@ -30,16 +30,16 @@ aside.rightbar
     font-size: 1.25em
   
   .formlabel
-    color: $lightblue
-    font-size: 1.75em
+    @include fontsettings(normal, 'Jacques Francois', 1.75em, $lightblue)
     
   #savedStatus
-    height: 22px
+    height: 20px
     width: 140px
-    margin-left: 5px
-    color: white
+    margin-bottom: 10px
     background-color: $lightblue
-    display: inline-block
-    font-size: 14px
+    @include fontsettings(normal, 'Share Tech Mono', .75em, white)
     border-radius: 5px
     text-align: center
+  
+  #subtitle
+    @include fontsettings(normal, 'Share Tech Mono', .75em, $lightbluewhite)

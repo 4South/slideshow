@@ -7,16 +7,22 @@
 body, html
   background: url('../assets/images/pcb.jpg')
   background-size: 100% auto 
-  height: 96%
+  height: 100%
+  width: 100%
+  overflow: hidden
   
 .appview
-  overflow: none
-  height: inherit
-    
+  height: 100%
+  position: relative
+  width: 100%
+  top: 40px
+  
 .navbar
   background-color: rgba(0, 0, 0, 0)
   height: 40px
   margin-bottom: 0px
+  position: fixed
+  width: 100%
   
 .navbar-inverse .navbar-inner
   margin-bottom: 0px
@@ -33,4 +39,10 @@ textarea
 ul, li
   padding: 0px
   margin: 0px
+
+#cheatCode
+  font-family: "Share Tech Mono", serif
+  color: #2e74ff
+  vertical-align: middle
+  display: inline-block
   
