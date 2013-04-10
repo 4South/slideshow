@@ -1,4 +1,6 @@
 div.slide
+  margin: 2em 0px
+  padding: 1em 1em 
   min-height: 200px
   position: relative
   background-color: rgba(0, 0, 0, 0.8)
@@ -7,6 +9,7 @@ div.slide
   h1
     @include fontsettings(normal, 'Share Tech Mono', 5em, $lightblue)
     padding: .5em
+    line-height: 1em
   h2
     @include fontsettings(normal, 'Jacques Francois', 3em, $lightblue)
     padding: .4em .5em 
@@ -20,7 +23,7 @@ div.slide
     @include center
     @include bareBGandBorder
     code
-      @include fontsettings(normal, 'Share Tech Mono', 2.5em, white)
+      @include fontsettings(normal, 'Share Tech Mono', 2em, white)
       line-height: 1em
 
   table
