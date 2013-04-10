@@ -93,12 +93,12 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   data.buffer.push("      \r\n  </fieldset>\r\n  \r\n  <button class=\"btn btn-primary\"");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "create", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\r\n    <b>create</b>\r\n  </button>\r\n  \r\n  <button class=\"btn btn-warning\"");
+  data.buffer.push("> create\r\n  </button>\r\n  \r\n  <button class=\"btn btn-warning\"");
   hashTypes = {'target': "STRING"};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "abdicate", {hash:{
     'target': ("controllers.application")
   },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\r\n    <b>abdicate</b>\r\n  </button>\r\n\r\n  </form>\r\n");
+  data.buffer.push(">\r\n    abdicate\r\n  </button>\r\n\r\n  </form>\r\n");
   return buffer;
   
 });
@@ -286,7 +286,7 @@ function program2(depth0,data) {
   hashTypes = {};
   options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "presentationslide", options) : helperMissing.call(depth0, "partial", "presentationslide", options))));
-  data.buffer.push("\r\n      <hr>\r\n    ");
+  data.buffer.push("\r\n    ");
   return buffer;
   }
 
@@ -328,10 +328,10 @@ function program1(depth0,data) {
 function program3(depth0,data) {
   
   var buffer = '', hashTypes;
-  data.buffer.push("\r\n\r\n  <span class = \"nameWrapper\">\r\n    ");
+  data.buffer.push("\r\n  <span class = \"nameWrapper\">\r\n    ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.content.name", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n  </span>\r\n\r\n");
+  data.buffer.push("\r\n  </span>\r\n");
   return buffer;
   }
 
@@ -344,7 +344,7 @@ function program3(depth0,data) {
   options = {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0,depth0],types:["STRING","ID"],hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers.linkTo),stack1 ? stack1.call(depth0, "slide", "view.content", options) : helperMissing.call(depth0, "linkTo", "slide", "view.content", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("\n");
+  data.buffer.push("\r\n");
   return buffer;
   
 });
@@ -366,7 +366,7 @@ function program1(depth0,data) {
   return buffer;
   }
 
-  data.buffer.push("<ul>\r\n");
+  data.buffer.push("<ul style = \"height:inherit;\">\r\n");
   hashTypes = {};
   stack1 = helpers.each.call(depth0, "slide", "in", "controller.arrangedContent", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }

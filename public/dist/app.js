@@ -386,7 +386,7 @@ App.Slide.reopenClass({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('models/Slide.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');
+minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('models/Slide.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');
 
 App.Router.map(function() {
   this.resource("slides");
@@ -505,4 +505,8 @@ App.SlidedetailView = Em.View.extend({
 
 minispade.register('views/SlidesView.js', function() {
 App.SlidesView = Em.View.extend();
+});
+
+minispade.register('views/SlidesthumbnailsView.js', function() {
+App.SlidethumbnailsView = Em.View.extend();
 });

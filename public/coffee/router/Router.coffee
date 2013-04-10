@@ -11,6 +11,7 @@ require('views/ApplicationView.js')
 require('views/SlidesView.js')
 require('views/SlidedetailView.js')
 require('views/SlideThumbnailView.js')
+require('views/SlidesthumbnailsView.js')
 
 #main router definition
 App.Router.map () ->

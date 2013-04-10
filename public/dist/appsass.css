@@ -1,23 +1,32 @@
-<<<<<<< HEAD
 * {
   box-sizing: border-box;
+  margin: none;
+  padding: none;
 }
 
 body, html {
-  background: url("../assets/images/sandbackground.jpg");
-  background-size: cover;
+  background: url("../assets/images/pcb.jpg");
+  background-size: 100% auto;
   background-color: #f0f0f0;
-  height: 100%;
+  height: 96%;
+  overflow: none;
+}
+
+.appview {
+  overflow: none;
+  height: inherit;
 }
 
 .navbar {
-  margin-bottom: 0px;
   background-color: rgba(0, 0, 0, 0);
   height: 40px;
+  margin-bottom: 0px;
 }
 
 .navbar-inverse .navbar-inner {
-  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 5px;
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
   background-image: none;
   border: none;
   height: 40px;
@@ -42,7 +51,7 @@ li.slides-thumbnail {
   box-sizing: border-box;
   height: 55px;
   width: 180px;
-  background: #f0f0f0;
+  background: #2e74ff;
   color: black;
 }
 li.slides-thumbnail div#btnWrapper {
@@ -67,16 +76,16 @@ li.slides-thumbnail span.nameWrapper {
 
 li.slides-thumbnail.highlighted {
   list-style: none;
-  background: #2e74ff;
+  background: white;
 }
 
 div.slide {
   min-height: 200px;
   position: relative;
+  background-color: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
-  color: #fff0f0;
-  text-align: left;
-  font-family: "Jacques Francois", serif;
+  margin-right: auto;
+  margin-left: auto;
 }
 div.slide h1 {
   font-weight: normal;
@@ -90,9 +99,13 @@ div.slide h2 {
   font-family: "Jacques Francois";
   font-size: 3em;
   color: #2e74ff;
+  padding: 0.4em 0.5em;
+}
+div.slide h3 {
   font-weight: normal;
-  font-family: "Jacques Francois", serif;
-  font-size: 3.5em;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
   padding: 0.4em 0.5em;
 }
 div.slide pre {
@@ -104,48 +117,72 @@ div.slide pre {
   background: none;
 }
 div.slide pre code {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
   font-size: 2.5em;
   color: white;
-  font-family: "Share Tech Mono", serif;
   line-height: 1em;
 }
 div.slide ol {
   margin: none;
 }
+div.slide ul {
+  list-style-type: none;
+}
 div.slide li {
-  color: white;
+  font-weight: normal;
+  font-family: "Jacques Francois";
   font-size: 2.5em;
+  color: white;
   margin: 0.5em 0.5em;
   line-height: 1em;
 }
-div.slide img {
+div.slide p {
+  text-align: center;
+}
+div.slide p img {
   border-radius: 10px;
-  border: 2px solid black;
+  border: none;
+  background: none;
+}
+div.slide p a {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
 }
 
 section.slides {
   position: relative;
-  height: 100%;
+  height: inherit;
   min-height: 100%;
   margin-left: auto;
   margin-right: auto;
   width: 800px;
+  overflow-y: scroll;
 }
 section.slides ul {
   list-style-type: none;
 }
 
 aside {
-  margin-top: 0px;
-  background-color: rgba(0, 0, 0, 0.4);
-  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  display: block;
+  background-color: rgba(0, 0, 0, 0.8);
+  height: inherit;
 }
 
 aside.leftbar {
   position: absolute;
   left: 0;
   width: 225px;
-  padding-top: 10px;
+  overflow-y: scroll;
 }
 
 aside.rightbar {
@@ -182,12 +219,5 @@ div.controls {
 }
 
 div.showcontrols {
-  margin-top: 5px;
   margin-left: 2px;
 }
-
-.ember-text-field {
-  margin-top: 5px;
-}
-=======
->>>>>>> 897f031d112be816759108a0d541f3d12a492ba8
