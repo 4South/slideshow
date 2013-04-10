@@ -3,16 +3,16 @@
     <legend class = "formlabel">Create New</legend>
     <label>New Slide Title</label>
     
-    {{view Ember.TextField 
+    {{view App.SlideTextField
         valueBinding="newSlideName"}}      
   </fieldset>
   
-  <button class="btn btn-primary"{{action 'create'}}> create
+  <button class="btn btn-primary"{{action 'create'}}> Create
   </button>
   
   <button class="btn btn-warning"{{action 'abdicate' 
                         target="controllers.application"}}>
-    abdicate
+    Abdicate
   </button>
 
   </form>
