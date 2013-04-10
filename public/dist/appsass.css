@@ -148,14 +148,11 @@ div.slide li {
 }
 div.slide p {
   text-align: center;
-<<<<<<< HEAD
-=======
   line-height: 1.5em;
   font-weight: normal;
   font-family: "Share Tech Mono";
   font-size: 2em;
   color: white;
->>>>>>> cab1d9fbd88ed301209bcd835f5d1060b8baf72a
 }
 div.slide p img {
   border-radius: 10px;
@@ -177,7 +174,7 @@ section.slides {
   margin-left: auto;
   margin-right: auto;
   width: 800px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 section.slides ul {
   list-style-type: none;
@@ -238,10 +235,3 @@ div.controls {
 div.showcontrols {
   margin-left: 2px;
 }
-<<<<<<< HEAD
-=======
-
-.ember-text-field {
-  margin-top: 5px;
-}
->>>>>>> cab1d9fbd88ed301209bcd835f5d1060b8baf72a
