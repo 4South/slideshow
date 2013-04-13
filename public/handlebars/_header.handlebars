@@ -5,9 +5,17 @@
       <li>{{outlet controls}}</li>
     </ul>
     
-    <ul class = "nav pull-right">
-      <li>{{partial secretcode}}</li>
-    </ul>
+    {{#unless App.loggedIn}}
+      <ul class = "nav pull-right">
+        <li>{{partial login}}</li>
+      </ul>
+    {{else}}
+      <ul class = "nav pull-right" style = "height:100%">
+        <li>
+          {{partial loggedin}}
+        </li>
+      </ul>
+    {{/unless}}
     
   </div>
 </div>

@@ -1,0 +1,24 @@
+<span><div id = "login">Username: </div>
+
+</span>
+
+  {{view Em.TextField
+      valueBinding="controller.userName"
+      maxlength = "10"
+      placeholder = "User"
+      classNames = "loginfield"}}
+
+<span><div id = "login">Password: </div>
+
+  {{view Em.TextField
+      valueBinding="controller.userPassword"
+      maxlength = "10"
+      placeholder = "Password"
+      classNames = "loginfield"}}    
+
+<button class="btn-mini btn-warning"{{action 'login' 
+                            target="controller"}}>
+
+Login 
+</button>
+

@@ -1,13 +1,25 @@
 App.ApplicationController = Ember.Controller.extend({
   needs: ['slides', 'slide'],
-  cheatcode: '',
-  enterCheat: function() {
-    if (this.get('cheatcode') === 'iddqd') {
-      Ember.set('App.godMode', true);
+  userName: '',
+  userPassword: '',
+  loggedInUser: '',
+  login: function() {
+    if (this.get('userName') === 'pete' && this.get('userPassword') === 'iddqd') {
+      Ember.set('App.loggedIn', true);
+      this.set('loggedInUser', this.get('userName'));
     }
-    return this.set('cheatcode', '');
+    this.set('userName', '');
+    return this.set('userPassword', '');
   },
-  abdicate: function() {
-    return Ember.set('App.godMode', false);
+  logout: function() {
+    Ember.set('App.editingMode', false);
+    Ember.set('App.loggedIn', false);
+    return this.set('loggedInUser', '');
+  },
+  goToEditing: function() {
+    return Ember.set('App.editingMode', true);
+  },
+  exitEditing: function() {
+    return Ember.set('App.editingMode', false);
   }
 });

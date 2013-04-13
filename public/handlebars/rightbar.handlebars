@@ -1,4 +1,12 @@
-{{#if App.godMode}}
-  {{partial slidecreate}}  
-  {{partial slideedit}}
+{{#if App.loggedIn}}
+  {{#unless App.editingMode}}
+    <button {{action "goToEditing" 
+              target="controllers.application"}}
+              class = "btn-small btn-warning">
+    Edit Slides </button>
+  {{/unless}}
+  {{#if App.editingMode}}
+    {{partial slidecreate}}  
+    {{partial slideedit}}
+  {{/if}}
 {{/if}}

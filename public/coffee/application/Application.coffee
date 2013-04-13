@@ -1,5 +1,6 @@
 window.App = Ember.Application.create
-  godMode: false
+  loggedIn: false
+  editingMode: false
   LOG_TRANSITIONS: true
 
 #require ember data store
@@ -14,6 +15,7 @@ Ember.Handlebars.registerBoundHelper('markdown', (value) ->
 )
 
 Em.TextField.reopen
+  classNames: ['textfield']
   keyUp: (event)->
     if event.keyCode is 13
-      @get('controller').enterCheat()
+      @get('controller').login()

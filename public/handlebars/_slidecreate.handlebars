@@ -1,3 +1,10 @@
+<button class="btn btn-warning"{{action 'exitEditing' 
+                      target="controllers.application"}}>
+  Exit Editing Mode
+</button>
+
+<hr>
+
 <form id = "slidecreate">
   <fieldset>
     <legend class = "formlabel">Create New</legend>
@@ -8,11 +15,6 @@
   </fieldset>
   
   <button class="btn btn-primary"{{action 'create'}}> Create
-  </button>
-  
-  <button class="btn btn-warning"{{action 'abdicate' 
-                        target="controllers.application"}}>
-    Abdicate
   </button>
 
   </form>

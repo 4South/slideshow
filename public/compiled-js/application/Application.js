@@ -1,7 +1,8 @@
 var showdown;
 
 window.App = Ember.Application.create({
-  godMode: false,
+  loggedIn: false,
+  editingMode: false,
   LOG_TRANSITIONS: true
 });
 
@@ -18,9 +19,10 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
 });
 
 Em.TextField.reopen({
+  classNames: ['textfield'],
   keyUp: function(event) {
     if (event.keyCode === 13) {
-      return this.get('controller').enterCheat();
+      return this.get('controller').login();
     }
   }
 });
