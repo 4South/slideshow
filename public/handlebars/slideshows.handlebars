@@ -13,5 +13,8 @@
   {{else}}
     <h3> Welcome {{controllers.user.content.name}} </h3>
     <h1> {{controllers.user.content.name}}'s Slideshows go here</h1>
+    {{#each controller.slideShows}}
+      {{name}}
+    {{/each}}
   {{/unless}}
 </section>

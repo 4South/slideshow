@@ -10,10 +10,10 @@ App.UserController = Ember.ObjectController.extend({
     password: ''
   }),
   createUser: function() {
-    var newRecord, newuser;
+    var newuser;
 
     newuser = this.get('newUser');
-    newRecord = App.User.createRecord(newuser);
+    window.newRecord = App.User.createRecord(newuser);
     this.get('store').commit();
     this.set('newUser', Em.Object.create({
       name: '',
@@ -21,7 +21,8 @@ App.UserController = Ember.ObjectController.extend({
       password: ''
     }));
     this.set('content', newRecord);
-    return Ember.set('App.loggedIn', true);
+    Ember.set('App.loggedIn', true);
+    return Ember.run.later(this, this.loadSlideShows, 100);
   },
   userLogin: function() {
     var loginName, loginPw;
@@ -29,6 +30,16 @@ App.UserController = Ember.ObjectController.extend({
     loginName = this.get('loginUser.name');
     loginPw = this.get('loginUser.password');
     Ember.set('App.loggedIn', true);
-    return this.set('content', this.get('loginUser'));
+    this.set('content', this.get('loginUser'));
+    return Ember.run.later(this, this.loadSlideShows, 100);
+  },
+  loadSlideShows: function() {
+    var slideshows, userID;
+
+    userID = this.get('content.id');
+    slideshows = App.Slideshow.find({
+      user: userID
+    });
+    return console.log(slideshows);
   }
 });

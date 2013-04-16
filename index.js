@@ -4,6 +4,7 @@ var fs = require('fs');
 var mongoose = require('mongoose');
 var slide = require('./slidemodel');
 
+
 //APP SETUP
 var app = express();
 mongoose.connect('mongodb://localhost:27017');
@@ -24,7 +25,7 @@ app.get('/', function(req, res) {
 //API Endpoints
 //all slides
 app.get('/slides', function(req, res) {
-  slide['Slideshow'].find({}, function(err, results) {
+  slide['Slide'].find({}, function(err, results) {
     var response = {};
     if (err) {
       res.send(err);
@@ -36,24 +37,36 @@ app.get('/slides', function(req, res) {
 });
 
 app.get('/slideshows', function(req, res) {
-  slide['Slideshow'].find({}, function(err, results) {
+  console.log("QUERY", req.query);
+  if(req.query !== {})
+    req.query._user = req.query.user
+    delete req.query.user
+  
+  
+  slide['Slideshow'].find(req.query, function(err, results) {
     var response = {};
     if (err) {
       res.send(err);
     } else {
-      response['slideshows'] = results.map(formatDbResponse)
+      response['slideshows'] = results.map(formatDbResponse);
+      console.log(response);
       res.send(response);
     } 
   });
+
 });
 
 app.get('/users', function(req, res) {
+  console.log("finding users");
   slide['User'].find({}, function(err, results) {
     var response = {};
     if (err) {
+      console.log("ERROR");
       res.send(err);
     } else {
-      response['slideshows'] = results.map(formatDbResponse)
+      console.log("RESULTS:::", results);
+      response['users'] = results.map(formatDbResponse);
+      console.log("RES:::", response);
       res.send(response);
     } 
   });
@@ -75,6 +88,7 @@ app.get('/slides/:id', function(req, res) {
 app.get('/slideshows/:id', function(req, res) {
   slide['Slideshow'].findById(req.params.id, function(err, result) {
     var response = {};
+    console.log("finding slideshow");
     if (err) {
       console.log(err);
     } else {
@@ -147,8 +161,12 @@ app.post('/slides', function(req, res) {
 
 app.post('/slideshows', function(req, res) {
   //create new slide in db
-  console.log(req.body['slideshow']);
-  slide['Slideshow'].create(req.body.slideshow, function (err, result) {
+  console.log("REQ", req.body.slideshow);
+  var creationHash = req.body.slideshow;
+  creationHash._user = creationHash.user_id;
+  delete creationHash.user_id;
+  
+  slide['Slideshow'].create(creationHash, function (err, result) {
     var response = {};
     if (err) {
       console.log(err);
@@ -195,4 +213,7 @@ var formatDbResponse = function(result) {
   return cleaned;
 };
 
-app.listen(1234, function(){ console.log("Connected on 1234");});
+app.listen(1234, function(){
+    var msg = "connected on port 1234";
+    console.log(msg);
+});

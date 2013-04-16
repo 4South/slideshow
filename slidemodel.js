@@ -6,13 +6,13 @@ var Slides = new mongoose.Schema({
   position: Number,
   title: String,
   content: String,
-  _slideshow: [{type: Number, ref: 'Slideshow'}]
+  _slideshow: [{type: Schema.Types.ObjectId, ref: 'Slideshow'}]
   
 });
 
 var Slideshows = new mongoose.Schema({
   title: String,
-  _user: [{type: Number, ref: 'User'}],
+  _user: [{type: Schema.Types.ObjectId, ref: 'User'}],
   slides: [{type: Schema.Types.ObjectId, ref: 'Slide'}]
 });
 
