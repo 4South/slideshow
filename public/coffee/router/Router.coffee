@@ -1,11 +1,18 @@
 #explicitly require our needed modules
+
+require('models/User.js')
+require('models/Slideshow.js')
+require('models/Slide.js')
+
 require('controllers/HeaderController.js')
 require('controllers/ApplicationController.js')
 require('controllers/SlidesController.js')
 require('controllers/SlideController.js')
 require('controllers/SlidethumbnailsController.js')
+require('controllers/SlideshowsController.js')
+require('controllers/UserController.js')
 
-require('models/Slide.js')
+
 
 require('views/SlideTextField.js')
 require('views/ApplicationView.js')
@@ -16,7 +23,7 @@ require('views/SlidesthumbnailsView.js')
 
 #main router definition
 App.Router.map () ->
-
+  @resource "slideshows"
   @resource "slides"
   @resource "slide", {path: 'slides/:slide_id'}
 
@@ -34,10 +41,17 @@ App.ApplicationRoute = Ember.Route.extend
 
 App.IndexRoute = Ember.Route.extend
   redirect: ->
-    @replaceWith('slides')
+    @replaceWith('slideshows')
 
 
-
+App.SlideshowsRoute = Em.Route.extend
+  setupController: (controller)->
+    controller.set('content', App.Slideshow.find())
+  renderTemplate: (controller, model) ->
+    @render "slideshows",
+                    into: 'application'
+                    outlet: 'slides'
+  
 #route for this viewing slides as thumbnails
 App.SlidesRoute = Ember.Route.extend
 

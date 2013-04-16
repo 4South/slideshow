@@ -1,5 +1,6 @@
-App.SlideShow = DS.Model.extend
+App.Slideshow = DS.Model.extend
   title: DS.attr('string')
-  username: DS.belongsTo('App.User')
+  user: DS.belongsTo('App.User')
+  slides: DS.hasMany('App.Slide')
   
   

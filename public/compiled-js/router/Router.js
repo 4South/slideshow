@@ -1,3 +1,9 @@
+require('models/User.js');
+
+require('models/Slideshow.js');
+
+require('models/Slide.js');
+
 require('controllers/HeaderController.js');
 
 require('controllers/ApplicationController.js');
@@ -8,7 +14,9 @@ require('controllers/SlideController.js');
 
 require('controllers/SlidethumbnailsController.js');
 
-require('models/Slide.js');
+require('controllers/SlideshowsController.js');
+
+require('controllers/UserController.js');
 
 require('views/SlideTextField.js');
 
@@ -23,6 +31,7 @@ require('views/SlideThumbnailView.js');
 require('views/SlidesthumbnailsView.js');
 
 App.Router.map(function() {
+  this.resource("slideshows");
   this.resource("slides");
   return this.resource("slide", {
     path: 'slides/:slide_id'
@@ -46,7 +55,19 @@ App.ApplicationRoute = Ember.Route.extend({
 
 App.IndexRoute = Ember.Route.extend({
   redirect: function() {
-    return this.replaceWith('slides');
+    return this.replaceWith('slideshows');
+  }
+});
+
+App.SlideshowsRoute = Em.Route.extend({
+  setupController: function(controller) {
+    return controller.set('content', App.Slideshow.find());
+  },
+  renderTemplate: function(controller, model) {
+    return this.render("slideshows", {
+      into: 'application',
+      outlet: 'slides'
+    });
   }
 });
 

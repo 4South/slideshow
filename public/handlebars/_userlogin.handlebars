@@ -1,0 +1,20 @@
+<section id = "userlogin">
+  <form id = "userlogin">
+    <fieldset>
+      <legend class = "formlabel"> Login </legend>
+      <label id = "subtitle"> User Name: </label>
+      {{view App.SlideTextField
+              valueBinding = "controllers.user.loginUser.name"}}
+      
+      <label id = "subtitle"> Password: </label>
+      {{view App.SlideTextField 
+              valueBinding = "controllers.user.loginUser.password"}}
+    <br>
+    <button class = "btn-small btn-warning"
+                  {{action userLogin 
+                    target = "controllers.user"}}
+    >Login</button>
+    
+    </fieldset>
+  </form>
+</section> 

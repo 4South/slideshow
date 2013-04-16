@@ -1,11 +1,13 @@
 {{#if App.loggedIn}}
   {{#unless App.editingMode}}
+    <br>
     <button {{action "goToEditing" 
               target="controllers.application"}}
               class = "btn-small btn-warning">
     Edit Slides </button>
   {{/unless}}
   {{#if App.editingMode}}
+    <br>
     {{partial slidecreate}}  
     {{partial slideedit}}
   {{/if}}

@@ -17,18 +17,43 @@ app.configure(function() {
 
 //main page load
 app.get('/', function(req, res) {
+  console.log(__dirname);
   return res.sendfile(__dirname + "/index.html");
 });
 
 //API Endpoints
 //all slides
 app.get('/slides', function(req, res) {
-  slide['Slide'].find({}, function(err, results) {
+  slide['Slideshow'].find({}, function(err, results) {
     var response = {};
     if (err) {
       res.send(err);
     } else {
       response['slides'] = results.map(formatDbResponse)
+      res.send(response);
+    } 
+  });
+});
+
+app.get('/slideshows', function(req, res) {
+  slide['Slideshow'].find({}, function(err, results) {
+    var response = {};
+    if (err) {
+      res.send(err);
+    } else {
+      response['slideshows'] = results.map(formatDbResponse)
+      res.send(response);
+    } 
+  });
+});
+
+app.get('/users', function(req, res) {
+  slide['User'].find({}, function(err, results) {
+    var response = {};
+    if (err) {
+      res.send(err);
+    } else {
+      response['slideshows'] = results.map(formatDbResponse)
       res.send(response);
     } 
   });
@@ -47,6 +72,28 @@ app.get('/slides/:id', function(req, res) {
   });
 });
 
+app.get('/slideshows/:id', function(req, res) {
+  slide['Slideshow'].findById(req.params.id, function(err, result) {
+    var response = {};
+    if (err) {
+      console.log(err);
+    } else {
+      response['slideshows'] = formatDbResponse(result); 
+      res.send(response);
+    } 
+  });
+});app.get('/users/:id', function(req, res) {
+  slide['User'].findById(req.params.id, function(err, result) {
+    var response = {};
+    if (err) {
+      console.log(err);
+    } else {
+      response['users'] = formatDbResponse(result); 
+      res.send(response);
+    } 
+  });
+});
+
 
 //CRUD 
 //delete slide in db and delete handlebars template
@@ -60,6 +107,29 @@ app.delete('/slides/:id', function(req, res) {
   });
 });
 
+app.delete('/slideshows/:id', function(req, res) {
+  slide['Slideshow'].findOneAndRemove({_id: req.params.id}, function (err, result) {
+    if (err) { 
+      console.log(err);
+    } else {
+      res.send(req.body);
+    }
+  });
+});
+
+app.delete('/users/:id', function(req, res) {
+  slide['User'].findOneAndRemove({_id: req.params.id}, function (err, result) {
+    if (err) { 
+      console.log(err);
+    } else {
+      res.send(req.body);
+    }
+  });
+});
+
+
+
+
 //create slide in db and create handlebars template 
 app.post('/slides', function(req, res) {
   //create new slide in db
@@ -72,6 +142,34 @@ app.post('/slides', function(req, res) {
       response['slide'] = formatDbResponse(result);
       res.send(response);
     } 
+  });
+});
+
+app.post('/slideshows', function(req, res) {
+  //create new slide in db
+  console.log(req.body['slideshow']);
+  slide['Slideshow'].create(req.body.slideshow, function (err, result) {
+    var response = {};
+    if (err) {
+      console.log(err);
+    } else {
+      response['slideshow'] = formatDbResponse(result);
+      res.send(response);
+    } 
+  });
+});
+
+app.post('/users', function(req, res) {
+  //create new slide in db
+  console.log ('user:::', req.body.user);
+  slide['User'].create(req.body.user, function (err, result) {
+  var response = {};
+  if (err) {
+    console.log(err);
+  } else {
+    response['user'] = formatDbResponse(result);
+    res.send(response);
+  } 
   });
 });
 
@@ -97,4 +195,4 @@ var formatDbResponse = function(result) {
   return cleaned;
 };
 
-app.listen(1234);
+app.listen(1234, function(){ console.log("Connected on 1234");});
