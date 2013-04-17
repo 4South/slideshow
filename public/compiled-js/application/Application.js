@@ -1,9 +1,7 @@
 var showdown;
 
 window.App = Ember.Application.create({
-  loggedIn: false,
-  editingMode: false,
-  LOG_TRANSITIONS: true
+  editingMode: false
 });
 
 require('store/Store.js');
@@ -24,5 +22,16 @@ Em.TextField.reopen({
     if (event.keyCode === 13) {
       return this.get('controller').login();
     }
+  }
+});
+
+Ember.Application.initializer({
+  name: "user",
+  initialize: function(container, application) {
+    container.optionsForType('user', {
+      singleton: true
+    });
+    container.register('user:main', App.UserController);
+    return container.typeInjection('controller', 'userCon', 'user:main');
   }
 });

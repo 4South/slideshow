@@ -4,7 +4,11 @@
   "description": "Basic Application Layout for manageable ember applications using node.js build tools",
   "main": "index.js",
   "dependencies": {
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "passport": "~0.1.16",
+    "node-gyp": "~0.9.5",
+    "bcrypt": "~0.7.5",
+    "passport-local": "~0.1.6"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

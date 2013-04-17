@@ -4,12 +4,14 @@ require('models/User.js')
 require('models/Slideshow.js')
 require('models/Slide.js')
 
+require('controllers/IndexController.js')
 require('controllers/HeaderController.js')
 require('controllers/ApplicationController.js')
 require('controllers/SlidesController.js')
 require('controllers/SlideController.js')
 require('controllers/SlidethumbnailsController.js')
 require('controllers/SlideshowsController.js')
+require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
 
 
@@ -20,10 +22,12 @@ require('views/SlidesView.js')
 require('views/SlidedetailView.js')
 require('views/SlideThumbnailView.js')
 require('views/SlidesthumbnailsView.js')
+require('views/UserView.js')
 
 #main router definition
 App.Router.map () ->
   @resource "slideshows"
+  @resource "slideshow", {path: 'slideshow/:slideshow_id'}
   @resource "slides"
   @resource "slide", {path: 'slides/:slide_id'}
 
@@ -40,18 +44,31 @@ App.ApplicationRoute = Ember.Route.extend
 
 
 App.IndexRoute = Ember.Route.extend
-  redirect: ->
-    @replaceWith('slideshows')
+  renderTemplate: (controller, model) ->
+    @render 'index',
+              into: 'application'
+              outlet: 'slides'
+              
 
 
 App.SlideshowsRoute = Em.Route.extend
-  setupController: (controller)->
+  setupController: (controller, model)->
+    window.usercon = controller.get('userCon')    
     controller.set('content', App.Slideshow.find())
   renderTemplate: (controller, model) ->
     @render "slideshows",
                     into: 'application'
                     outlet: 'slides'
-  
+
+App.SlideshowRoute = Em.Route.extend
+  enter: ->
+    console.log 'showroute'
+  renderTemplate: (controller, model)->
+    @render 'slideshow',
+                into: 'application'
+                outlet: 'slides'
+                    
+                    
 #route for this viewing slides as thumbnails
 App.SlidesRoute = Ember.Route.extend
 

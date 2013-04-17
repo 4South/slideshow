@@ -1,7 +1,5 @@
 window.App = Ember.Application.create
-  loggedIn: false
   editingMode: false
-  LOG_TRANSITIONS: true
 
 #require ember data store
 require('store/Store.js')
@@ -19,3 +17,10 @@ Em.TextField.reopen
   keyUp: (event)->
     if event.keyCode is 13
       @get('controller').login()
+         
+Ember.Application.initializer
+  name: "user",
+  initialize: (container, application) ->
+    container.optionsForType('user', { singleton: true })
+    container.register('user:main', App.UserController)
+    container.typeInjection('controller', 'userCon', 'user:main');

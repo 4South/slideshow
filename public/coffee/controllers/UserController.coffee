@@ -1,33 +1,99 @@
 App.UserController = Ember.ObjectController.extend
   content: ''
-  newUser: Em.Object.create({name: '', email: '', password: ''})
-  loginUser: Em.Object.create({name: '', password: ''})
-  createUser: ->
-    newuser = @get('newUser')
-    window.newRecord = App.User.createRecord(newuser)
-    @get('store').commit()
-    @set('newUser', Em.Object.create({name: '', email: '', password: ''}))
-    ##If successful
-    @set('content', newRecord)
-    Ember.set('App.loggedIn', true)
+  formUsername: ''
+  formPassword: ''
+  formEmail: ''
+  errorMessage: ''
+
+  createData: (->
+    username: @get('formUsername')
+    password: @get('formPassword')
+    email: @get('formEmail')
+  ).property('formUsername', 'formPassword', 'formEmail')
+
+  loginData: (->
+    username: @get('formUsername')
+    password: @get('formPassword')
+  ).property('formUsername', 'formPassword')
+  
+
+  loggedIn: (->
+    if @get('content') then true else false
+  ).property('content')
+
+  resetForm: () ->
+    @set('formUsername', '')
+    @set('formPassword', '')
+    @set('formEmail', '')
+  
+
+  userAjax: (url, type, hash) ->
+    #reset user errorMessage
+    @set('errorMessage', '')
+
+    hash.url = url
+    hash.type = type
+    hash.dataType = 'json'
+    hash.contentType = 'application/json; charset=utf-8'
+    hash.context = @
     
-    #fix this hack
-    Ember.run.later(@, @loadSlideShows, 100)
+    if (hash.data and type isnt "GET")
+      hash.data = JSON.stringify(hash.data)
     
-  userLogin: ->
-    loginName = @get('loginUser.name')
-    loginPw = @get('loginUser.password')
-    
-    #find record in DB with user / pw, if successful:
-    Ember.set('App.loggedIn', true)
-    
-    @set('content', @get('loginUser'))
-    Ember.run.later(@, @loadSlideShows, 100)
-    
-  loadSlideShows: ()->
-    userID = @get('content.id')
-    slideshows = App.Slideshow.find({user:userID})
-    console.log slideshows
+    Ember.$.ajax(hash)
+
+  tester: () ->
+    @userAjax('/user/sample', 'GET',
+      success: (data) ->
+        console.log(data.message)
+      error: (xhr) ->
+        console.log('sample failed')
+      complete: () ->
+        console.log('fired the always')
+    )
+
+  create: () ->
+    @userAjax('/user/create', 'POST',
+      data: @get('createData')
+      success: (data) ->
+        Ember.run(@, () ->
+          @set('content', Ember.Object.create(data))
+        )
+      error: (xhr) ->
+        Ember.run(@, () ->
+          @set('errorMessage', 'account creation failed, try again')
+        )
+      complete: () ->
+        Ember.run(@, () ->
+          @resetForm()
+        )
+    )
  
-    
-    #slideshows = App.Slideshow.find({user: user.get('id')})
+  login: () ->
+    @userAjax('/user/login', 'POST',
+      data: @get('loginData')
+      success: (data) ->
+        Ember.run(@, () ->
+          @set('content', Ember.Object.create(data))
+        )
+      error: (xhr) ->
+        Ember.run(@, () ->
+          @set('errorMessage', 'login failed please try again')
+        )
+      complete: () ->
+        Ember.run(@, () ->
+          @resetForm()
+        )
+     )
+
+  logout: () ->
+    @userAjax('/user/logout', 'GET',
+      success: (data) ->
+        Ember.run(@, ()->
+          @set('content', null)
+        )
+      error: (xhr) ->
+        Ember.run(@, ()->
+          @set('errorMessage', 'logout failed')
+        )
+     )

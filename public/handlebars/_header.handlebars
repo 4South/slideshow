@@ -2,20 +2,9 @@
   <div class="navbar-inner">
     
     <ul class="nav">  
-      <li>{{outlet controls}}</li>
+      <li>{{render user}}</li>
     </ul>
-    
-    {{#unless App.loggedIn}}
-      <ul class = "nav pull-right">
-        <li>{{partial login}}</li>
-      </ul>
-    {{else}}
-      <ul class = "nav pull-right" style = "height:100%">
-        <li>
-          {{partial loggedin}}
-        </li>
-      </ul>
-    {{/unless}}
-    
+
+      
   </div>
 </div>

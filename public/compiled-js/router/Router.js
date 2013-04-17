@@ -4,6 +4,8 @@ require('models/Slideshow.js');
 
 require('models/Slide.js');
 
+require('controllers/IndexController.js');
+
 require('controllers/HeaderController.js');
 
 require('controllers/ApplicationController.js');
@@ -15,6 +17,8 @@ require('controllers/SlideController.js');
 require('controllers/SlidethumbnailsController.js');
 
 require('controllers/SlideshowsController.js');
+
+require('controllers/SlideshowController.js');
 
 require('controllers/UserController.js');
 
@@ -30,8 +34,13 @@ require('views/SlideThumbnailView.js');
 
 require('views/SlidesthumbnailsView.js');
 
+require('views/UserView.js');
+
 App.Router.map(function() {
   this.resource("slideshows");
+  this.resource("slideshow", {
+    path: 'slideshow/:slideshow_id'
+  });
   this.resource("slides");
   return this.resource("slide", {
     path: 'slides/:slide_id'
@@ -54,17 +63,33 @@ App.ApplicationRoute = Ember.Route.extend({
 });
 
 App.IndexRoute = Ember.Route.extend({
-  redirect: function() {
-    return this.replaceWith('slideshows');
+  renderTemplate: function(controller, model) {
+    return this.render('index', {
+      into: 'application',
+      outlet: 'slides'
+    });
   }
 });
 
 App.SlideshowsRoute = Em.Route.extend({
-  setupController: function(controller) {
+  setupController: function(controller, model) {
+    window.usercon = controller.get('userCon');
     return controller.set('content', App.Slideshow.find());
   },
   renderTemplate: function(controller, model) {
     return this.render("slideshows", {
+      into: 'application',
+      outlet: 'slides'
+    });
+  }
+});
+
+App.SlideshowRoute = Em.Route.extend({
+  enter: function() {
+    return console.log('showroute');
+  },
+  renderTemplate: function(controller, model) {
+    return this.render('slideshow', {
       into: 'application',
       outlet: 'slides'
     });

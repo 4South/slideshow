@@ -1,20 +1,19 @@
-<section id = "splashpage">
-  {{#unless App.loggedIn}}
-    <h1 style = "text-align:center;">4-South Ember Slideshows</h1>
-    <h4 style = "text-align: center;"> Please login or create a user account </h4>
-    <div class = "row-fluid" id = "loginOptions">
-      <div class = "span6 offset1">
-        {{partial usercreate}}
-      </div>
-      <div class = "span5">
-        {{partial userlogin}}
-      </div>
-    </div>
-  {{else}}
-    <h3> Welcome {{controllers.user.content.name}} </h3>
-    <h1> {{controllers.user.content.name}}'s Slideshows go here</h1>
-    {{#each controller.slideShows}}
-      {{name}}
-    {{/each}}
-  {{/unless}}
+<section id = 'splashpage'>
+  {{#if App.loggedIn }}
+      <h3> Welcome {{controller.userCon.content.name}} </h3>
+      <h1> {{controller.userCon.content.name}}'s Slideshows go here</h1>
+        {{#each show in controller.slideShows}}
+          {{#linkTo slideshow show}}
+            <section style = "height:50px;width:100px;background-color:white;">
+              {{show.title}}
+            </section>  
+          {{/linkTo}}
+        {{/each}}
+      
+      <hr>
+           {{partial slideshowcreate}}
+  {{else}}    
+      <h1> Please login or create a user</h1>
+      {{#linkTo index }} <button class = "btn-warning btn-small" > Login </button> {{/linkTo}}
+  {{/if}}  
 </section>

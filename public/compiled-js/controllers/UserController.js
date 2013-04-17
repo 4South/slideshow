@@ -1,45 +1,111 @@
 App.UserController = Ember.ObjectController.extend({
   content: '',
-  newUser: Em.Object.create({
-    name: '',
-    email: '',
-    password: ''
-  }),
-  loginUser: Em.Object.create({
-    name: '',
-    password: ''
-  }),
-  createUser: function() {
-    var newuser;
-
-    newuser = this.get('newUser');
-    window.newRecord = App.User.createRecord(newuser);
-    this.get('store').commit();
-    this.set('newUser', Em.Object.create({
-      name: '',
-      email: '',
-      password: ''
-    }));
-    this.set('content', newRecord);
-    Ember.set('App.loggedIn', true);
-    return Ember.run.later(this, this.loadSlideShows, 100);
+  formUsername: '',
+  formPassword: '',
+  formEmail: '',
+  errorMessage: '',
+  createData: (function() {
+    return {
+      username: this.get('formUsername'),
+      password: this.get('formPassword'),
+      email: this.get('formEmail')
+    };
+  }).property('formUsername', 'formPassword', 'formEmail'),
+  loginData: (function() {
+    return {
+      username: this.get('formUsername'),
+      password: this.get('formPassword')
+    };
+  }).property('formUsername', 'formPassword'),
+  loggedIn: (function() {
+    if (this.get('content')) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('content'),
+  resetForm: function() {
+    this.set('formUsername', '');
+    this.set('formPassword', '');
+    return this.set('formEmail', '');
   },
-  userLogin: function() {
-    var loginName, loginPw;
-
-    loginName = this.get('loginUser.name');
-    loginPw = this.get('loginUser.password');
-    Ember.set('App.loggedIn', true);
-    this.set('content', this.get('loginUser'));
-    return Ember.run.later(this, this.loadSlideShows, 100);
+  userAjax: function(url, type, hash) {
+    this.set('errorMessage', '');
+    hash.url = url;
+    hash.type = type;
+    hash.dataType = 'json';
+    hash.contentType = 'application/json; charset=utf-8';
+    hash.context = this;
+    if (hash.data && type !== "GET") {
+      hash.data = JSON.stringify(hash.data);
+    }
+    return Ember.$.ajax(hash);
   },
-  loadSlideShows: function() {
-    var slideshows, userID;
-
-    userID = this.get('content.id');
-    slideshows = App.Slideshow.find({
-      user: userID
+  tester: function() {
+    return this.userAjax('/user/sample', 'GET', {
+      success: function(data) {
+        return console.log(data.message);
+      },
+      error: function(xhr) {
+        return console.log('sample failed');
+      },
+      complete: function() {
+        return console.log('fired the always');
+      }
     });
-    return console.log(slideshows);
+  },
+  create: function() {
+    return this.userAjax('/user/create', 'POST', {
+      data: this.get('createData'),
+      success: function(data) {
+        return Ember.run(this, function() {
+          return this.set('content', Ember.Object.create(data));
+        });
+      },
+      error: function(xhr) {
+        return Ember.run(this, function() {
+          return this.set('errorMessage', 'account creation failed, try again');
+        });
+      },
+      complete: function() {
+        return Ember.run(this, function() {
+          return this.resetForm();
+        });
+      }
+    });
+  },
+  login: function() {
+    return this.userAjax('/user/login', 'POST', {
+      data: this.get('loginData'),
+      success: function(data) {
+        return Ember.run(this, function() {
+          return this.set('content', Ember.Object.create(data));
+        });
+      },
+      error: function(xhr) {
+        return Ember.run(this, function() {
+          return this.set('errorMessage', 'login failed please try again');
+        });
+      },
+      complete: function() {
+        return Ember.run(this, function() {
+          return this.resetForm();
+        });
+      }
+    });
+  },
+  logout: function() {
+    return this.userAjax('/user/logout', 'GET', {
+      success: function(data) {
+        return Ember.run(this, function() {
+          return this.set('content', null);
+        });
+      },
+      error: function(xhr) {
+        return Ember.run(this, function() {
+          return this.set('errorMessage', 'logout failed');
+        });
+      }
+    });
   }
 });

@@ -1,10 +1,12 @@
-var express = require('express');
-var path = require('path');
-var fs = require('fs');
-var mongoose = require('mongoose');
-var slide = require('./slidemodel');
-
-
+var express = require('express')
+  , path = require('path')
+  , fs = require('fs')
+  , mongoose = require('mongoose')
+  , slide = require('./slidemodel')
+  , passport = require('passport')
+  , pass = require('./app/config/PassPort.js')
+  , userRoutes = require('./app/routes/UserRoutes.js')
+  , db = require('./app/DB/DB.js');
 //APP SETUP
 var app = express();
 mongoose.connect('mongodb://localhost:27017');
@@ -12,7 +14,16 @@ mongoose.connect('mongodb://localhost:27017');
 app.configure(function() {
   app.use(express["static"](__dirname + "/public"));
   app.use(express["static"](__dirname));
+  app.use(express.logger());
+  app.use(express.cookieParser());
   app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.session({
+    secret: '42',
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(app.router);
 });
 
 
@@ -49,7 +60,6 @@ app.get('/slideshows', function(req, res) {
       res.send(err);
     } else {
       response['slideshows'] = results.map(formatDbResponse);
-      console.log(response);
       res.send(response);
     } 
   });
@@ -58,15 +68,13 @@ app.get('/slideshows', function(req, res) {
 
 app.get('/users', function(req, res) {
   console.log("finding users");
-  slide['User'].find({}, function(err, results) {
+  db['User'].find({}, function(err, results) {
     var response = {};
     if (err) {
       console.log("ERROR");
       res.send(err);
     } else {
-      console.log("RESULTS:::", results);
       response['users'] = results.map(formatDbResponse);
-      console.log("RES:::", response);
       res.send(response);
     } 
   });
@@ -97,7 +105,7 @@ app.get('/slideshows/:id', function(req, res) {
     } 
   });
 });app.get('/users/:id', function(req, res) {
-  slide['User'].findById(req.params.id, function(err, result) {
+  db['User'].findById(req.params.id, function(err, result) {
     var response = {};
     if (err) {
       console.log(err);
@@ -132,7 +140,7 @@ app.delete('/slideshows/:id', function(req, res) {
 });
 
 app.delete('/users/:id', function(req, res) {
-  slide['User'].findOneAndRemove({_id: req.params.id}, function (err, result) {
+  db['User'].findOneAndRemove({_id: req.params.id}, function (err, result) {
     if (err) { 
       console.log(err);
     } else {
@@ -177,19 +185,6 @@ app.post('/slideshows', function(req, res) {
   });
 });
 
-app.post('/users', function(req, res) {
-  //create new slide in db
-  console.log ('user:::', req.body.user);
-  slide['User'].create(req.body.user, function (err, result) {
-  var response = {};
-  if (err) {
-    console.log(err);
-  } else {
-    response['user'] = formatDbResponse(result);
-    res.send(response);
-  } 
-  });
-});
 
 app.put('/slides/:id', function(req, res) {
   slide['Slide'].findOneAndUpdate({_id: req.params.id},
@@ -205,6 +200,21 @@ app.put('/slides/:id', function(req, res) {
   });
 });
 
+app.put('/users/:id', function(req, res) {
+  console.log("REQ.BODY.USER::::", req.body.user);
+  db['User'].findOneAndUpdate({_id: req.params.id},
+    {$set: req.body.user},
+    function (err, result) {
+      var response = {};
+      if (err) {
+        console.log('error', err);
+      } else {
+        response['user'] = formatDbResponse(result);
+        res.send(response);
+      }
+  });
+});
+
 var formatDbResponse = function(result) {
   var cleaned = result.toObject();
   cleaned.id = result._id;
@@ -212,6 +222,16 @@ var formatDbResponse = function(result) {
   delete cleaned.__v;
   return cleaned;
 };
+
+//Routes
+
+app.post('/user/login', passport.authenticate('local'), userRoutes.postlogin);
+app.post('/user/create', userRoutes.postcreate);
+app.get('/user/logout', userRoutes.getlogout);
+app.get('/user/sample', pass.verifyAuth, userRoutes.getsample);
+
+
+
 
 app.listen(1234, function(){
     var msg = "connected on port 1234";
