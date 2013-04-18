@@ -1,9 +1,8 @@
 App.SlidesController = Em.ArrayController.extend
 
-  needs: ['application', 'slide']
-
+  needs: ['application', 'slide', 'slideshow', 'user', 'slidethumbnails']
+    
   newSlideName: ""
-
   sortProperties: ['position']
   sortAscending: true
 
@@ -19,6 +18,7 @@ App.SlidesController = Em.ArrayController.extend
   activeSlideIndex: 0
   
   activeSlide: (->
+    console.log 'atleastoneslide', @get 'atleastOneSlide'
     if @get('atleastOneSlide')
       return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
     else
@@ -69,6 +69,7 @@ App.SlidesController = Em.ArrayController.extend
     else
       curIndex = @get('activeSlide').get('position')
       newSlide = @get('arrangedContent').objectAt(curIndex+1)
+      console.log 'newSlide', newSlide
       @send "updateActiveSlide", newSlide
 
   back: () ->
@@ -79,6 +80,7 @@ App.SlidesController = Em.ArrayController.extend
       @send "updateActiveSlide", newSlide
 
   clickThumbnail: (targetSlide) ->
+    console.log 'clicked', targetSlide, @get('activeSlide')
     @send "updateActiveSlide", targetSlide
 
 
@@ -86,11 +88,16 @@ App.SlidesController = Em.ArrayController.extend
 
   #CREATE CRUD
   create: () ->
+    activeShow = @get('controllers.slideshow.content')
     if @get('nameIsValid')
       App.Slide.createRecord
                 name: @get('newSlideName')
                 position: @get('content').toArray().length
+                slideshow: activeShow
+                
       @get('store').commit()
       @set('newSlideName', '')
+      slides = App.Slide.find(slideshow: activeShow.get('id'))
+      @set('content', slides)
     else
       alert ('name must contain at least one character and no spaces')

@@ -1,19 +1,25 @@
 <div id = "btnWrapper">
-  {{#if App.godMode}}
-    <button class="btn-mini btn-danger"{{action 'delete' view.content}}>
+  {{controller}}
+  {{#if App.editingMode}}
+    <button class="btn-mini btn-danger"
+              {{action 'delete' view.content
+                target = "controllers.slidethumbnails"}}>
       X
     </button>
-    <button class="btn-mini btn"{{action 'moveUp' view.content}}>
+    <button class="btn-mini btn"
+         {{action 'moveUp' view.content
+          target = "controllers.slidethumbnails"}}>   
       UP 
     </button>
-    <button class="btn-mini btn"{{action 'moveDown' view.content}}>
+    <button class="btn-mini btn"
+        {{action 'moveDown' view.content
+        target = "controllers.slidethumbnails"}}>
       DN 
     </button>
   {{/if}}
 </div>
 
 <span class = "nameWrapper">
-  <p {{action clickThumbnail view.content 
-        target="controllers.slides"}}>{{view.content.name}}
+  <p {{action clickThumbnail view.content }}>{{view.content.name}}
   </p>
 </span>

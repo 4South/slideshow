@@ -1,8 +1,8 @@
 App.SlidethumbnailsController = Em.ArrayController.extend
 
-  needs: ['slides', 'slide']
+  needs: ['slideshow', 'slide', 'user', 'slides']
   contentBinding: "controllers.slides.content"
-  activeSlideBinding: "controllers.slide.content"
+  activeSlideBinding: "controllers.slides.activeSlide"
   sortProperties: ['position']
   sortAscending: true
 
@@ -16,7 +16,8 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     slide.deleteRecord()
     @get('arrangedContent').forEach(@resort, @get('arrangedContent'))
     @get('store').commit()
-
+    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))
+    
   moveDown: (slide) ->
     target = @findTarget(slide, @get('arrangedContent'),
                         +1, 'position')

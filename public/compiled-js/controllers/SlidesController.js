@@ -1,5 +1,5 @@
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['application', 'slide'],
+  needs: ['application', 'slide', 'slideshow', 'user', 'slidethumbnails'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
@@ -15,6 +15,7 @@ App.SlidesController = Em.ArrayController.extend({
   }).property('newSlideName').cacheable(),
   activeSlideIndex: 0,
   activeSlide: (function() {
+    console.log('atleastoneslide', this.get('atleastOneSlide'));
     if (this.get('atleastOneSlide')) {
       return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
     } else {
@@ -71,6 +72,7 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       curIndex = this.get('activeSlide').get('position');
       newSlide = this.get('arrangedContent').objectAt(curIndex + 1);
+      console.log('newSlide', newSlide);
       return this.send("updateActiveSlide", newSlide);
     }
   },
@@ -86,16 +88,25 @@ App.SlidesController = Em.ArrayController.extend({
     }
   },
   clickThumbnail: function(targetSlide) {
+    console.log('clicked', targetSlide, this.get('activeSlide'));
     return this.send("updateActiveSlide", targetSlide);
   },
   create: function() {
+    var activeShow, slides;
+
+    activeShow = this.get('controllers.slideshow.content');
     if (this.get('nameIsValid')) {
       App.Slide.createRecord({
         name: this.get('newSlideName'),
-        position: this.get('content').toArray().length
+        position: this.get('content').toArray().length,
+        slideshow: activeShow
       });
       this.get('store').commit();
-      return this.set('newSlideName', '');
+      this.set('newSlideName', '');
+      slides = App.Slide.find({
+        slideshow: activeShow.get('id')
+      });
+      return this.set('content', slides);
     } else {
       return alert('name must contain at least one character and no spaces');
     }

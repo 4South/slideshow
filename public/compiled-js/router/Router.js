@@ -10,9 +10,9 @@ require('controllers/HeaderController.js');
 
 require('controllers/ApplicationController.js');
 
-require('controllers/SlidesController.js');
-
 require('controllers/SlideController.js');
+
+require('controllers/SlidesController.js');
 
 require('controllers/SlidethumbnailsController.js');
 
@@ -38,19 +38,16 @@ require('views/UserView.js');
 
 App.Router.map(function() {
   this.resource("slideshows");
-  this.resource("slideshow", {
+  return this.resource("slideshow", {
     path: 'slideshow/:slideshow_id'
-  });
-  this.resource("slides");
-  return this.resource("slide", {
-    path: 'slides/:slide_id'
+  }, function() {
+    return this.resource("slide", {
+      path: 'slides/:slide_id'
+    });
   });
 });
 
 App.ApplicationRoute = Ember.Route.extend({
-  setupController: function() {
-    return this.controllerFor('slides').set('content', App.Slide.find());
-  },
   events: {
     updateActiveSlide: function(newSlide) {
       var slidesCon;
@@ -63,45 +60,42 @@ App.ApplicationRoute = Ember.Route.extend({
 });
 
 App.IndexRoute = Ember.Route.extend({
-  renderTemplate: function(controller, model) {
-    return this.render('index', {
-      into: 'application',
-      outlet: 'slides'
-    });
+  redirect: function() {
+    return this.replaceWith('slideshows');
   }
 });
 
 App.SlideshowsRoute = Em.Route.extend({
   setupController: function(controller, model) {
     window.usercon = controller.get('userCon');
+    window.cont = controller;
     return controller.set('content', App.Slideshow.find());
   },
   renderTemplate: function(controller, model) {
-    return this.render("slideshows", {
+    this.render("slideshows", {
       into: 'application',
       outlet: 'slides'
+    });
+    return this.render("blank", {
+      into: 'application',
+      outlet: 'slidethumbnails'
     });
   }
 });
 
 App.SlideshowRoute = Em.Route.extend({
-  enter: function() {
-    return console.log('showroute');
-  },
-  renderTemplate: function(controller, model) {
-    return this.render('slideshow', {
-      into: 'application',
-      outlet: 'slides'
-    });
-  }
-});
-
-App.SlidesRoute = Ember.Route.extend({
   events: {
     transitionAfterDeletion: function() {}
   },
-  setupController: function(controller) {
-    return controller.set('content', App.Slide.find());
+  setupController: function(controller, model) {
+    var slidesCon;
+
+    controller.set('content', model);
+    slidesCon = this.controllerFor('slides');
+    window.slides = App.Slide.find({
+      slideshow: model.get('id')
+    });
+    return slidesCon.set('content', slides);
   },
   renderTemplate: function(controller) {
     this.render("slides", {
@@ -109,15 +103,15 @@ App.SlidesRoute = Ember.Route.extend({
       outlet: 'slides',
       controller: controller
     });
-    this.render("rightbar", {
+    this.render("slidethumbnails", {
+      into: 'application',
+      outlet: 'slidethumbnails',
+      controller: 'slides'
+    });
+    return this.render("rightbar", {
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
-    });
-    return this.render("maincontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: controller
     });
   }
 });

@@ -1,5 +1,5 @@
 App.ApplicationController = Ember.Controller.extend({
-  needs: ['slides', 'slide', 'user'],
+  needs: ['slide', 'user', 'slides'],
   userName: '',
   userPassword: '',
   loggedInUser: '',

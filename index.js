@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost:27017');
 app.configure(function() {
   app.use(express["static"](__dirname + "/public"));
   app.use(express["static"](__dirname));
-  app.use(express.logger());
+  //app.use(express.logger());
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -36,24 +36,25 @@ app.get('/', function(req, res) {
 //API Endpoints
 //all slides
 app.get('/slides', function(req, res) {
-  slide['Slide'].find({}, function(err, results) {
-    var response = {};
-    if (err) {
-      res.send(err);
-    } else {
-      response['slides'] = results.map(formatDbResponse)
-      res.send(response);
-    } 
-  });
+  console.log("slideQuery:", req.query)
+  var query = req.query;
+  if( query !== {}){
+    query._slideshow = query.slideshow;
+    delete query.slideshow;
+  };
+  
+    slide['Slide'].find(query, function(err, results) {
+      var response = {};
+      if (err) {
+        res.send(err);
+      } else {
+        response['slides'] = results.map(formatDbResponse)
+        res.send(response);
+      } 
+    });
 });
 
 app.get('/slideshows', function(req, res) {
-  console.log("QUERY", req.query);
-  if(req.query !== {})
-    req.query._user = req.query.user
-    delete req.query.user
-  
-  
   slide['Slideshow'].find(req.query, function(err, results) {
     var response = {};
     if (err) {
@@ -96,7 +97,6 @@ app.get('/slides/:id', function(req, res) {
 app.get('/slideshows/:id', function(req, res) {
   slide['Slideshow'].findById(req.params.id, function(err, result) {
     var response = {};
-    console.log("finding slideshow");
     if (err) {
       console.log(err);
     } else {
@@ -104,7 +104,9 @@ app.get('/slideshows/:id', function(req, res) {
       res.send(response);
     } 
   });
-});app.get('/users/:id', function(req, res) {
+});
+
+app.get('/users/:id', function(req, res) {
   db['User'].findById(req.params.id, function(err, result) {
     var response = {};
     if (err) {
@@ -154,9 +156,11 @@ app.delete('/users/:id', function(req, res) {
 
 //create slide in db and create handlebars template 
 app.post('/slides', function(req, res) {
-  //create new slide in db
-  console.log(req.body['slide']);
-  slide['Slide'].create(req.body.slide, function (err, result) {
+  
+  var creationHash = req.body.slide;
+  creationHash._slideshow = creationHash.slideshow_id;
+
+  slide['Slide'].create(creationHash, function (err, result) {
     var response = {};
     if (err) {
       console.log(err);
@@ -216,11 +220,16 @@ app.put('/users/:id', function(req, res) {
 });
 
 var formatDbResponse = function(result) {
-  var cleaned = result.toObject();
-  cleaned.id = result._id;
-  delete cleaned._id;
-  delete cleaned.__v;
-  return cleaned;
+  if(result){
+    var cleaned = result.toObject();
+    cleaned.id = result._id;
+    delete cleaned._id;
+    delete cleaned.__v;
+    return cleaned;
+  }else {
+    console.log("nothing found");
+    return false;
+  }
 };
 
 //Routes

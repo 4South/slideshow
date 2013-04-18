@@ -1,7 +1,7 @@
 App.SlidethumbnailsController = Em.ArrayController.extend({
-  needs: ['slides', 'slide'],
+  needs: ['slideshow', 'slide', 'user', 'slides'],
   contentBinding: "controllers.slides.content",
-  activeSlideBinding: "controllers.slide.content",
+  activeSlideBinding: "controllers.slides.activeSlide",
   sortProperties: ['position'],
   sortAscending: true,
   resort: function(slide, index, enumerable) {
@@ -14,7 +14,10 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     this.send('transitionAfterDeletion', pos);
     slide.deleteRecord();
     this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
-    return this.get('store').commit();
+    this.get('store').commit();
+    return this.set('content', App.Slide.find({
+      slideshow: this.get('controllers.slideshow.content.id')
+    }));
   },
   moveDown: function(slide) {
     var target;

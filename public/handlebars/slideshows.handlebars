@@ -1,8 +1,8 @@
 <section id = 'splashpage'>
-  {{#if App.loggedIn }}
-      <h3> Welcome {{controller.userCon.content.name}} </h3>
-      <h1> {{controller.userCon.content.name}}'s Slideshows go here</h1>
-        {{#each show in controller.slideShows}}
+
+  {{#if controller.controllers.user.loggedIn}}
+      <h3> Welcome {{controller.controllers.user.content.username}} </h3>
+        {{#each show in controller.content}}
           {{#linkTo slideshow show}}
             <section style = "height:50px;width:100px;background-color:white;">
               {{show.title}}
@@ -14,6 +14,6 @@
            {{partial slideshowcreate}}
   {{else}}    
       <h1> Please login or create a user</h1>
-      {{#linkTo index }} <button class = "btn-warning btn-small" > Login </button> {{/linkTo}}
+     
   {{/if}}  
 </section>

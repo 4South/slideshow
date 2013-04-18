@@ -18,7 +18,7 @@ App.UserController = Ember.ObjectController.extend
   
 
   loggedIn: (->
-    if @get('content') then true else false
+    if @get('content') then return true else return false
   ).property('content')
 
   resetForm: () ->
