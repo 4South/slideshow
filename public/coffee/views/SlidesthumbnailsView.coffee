@@ -4,6 +4,4 @@ App.SlidethumbnailsView = Em.View.extend
       ()->
         $('.leftbar').jScrollPane
                     autoReinitialise: true
-        $('.slides').jScrollPane
-                    autoReinitialise: true
        ), 200)

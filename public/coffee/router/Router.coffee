@@ -28,6 +28,7 @@ require('views/UserView.js')
 App.Router.map () ->
   @resource "slideshows"
   @resource "slideshow", {path: 'slideshow/:slideshow_id'}, ->
+    @resource "slides", {path: '/slides'}
     @resource "slide", {path: 'slides/:slide_id'}
 
 App.ApplicationRoute = Ember.Route.extend
@@ -49,8 +50,6 @@ App.IndexRoute = Ember.Route.extend
 
 App.SlideshowsRoute = Em.Route.extend
   setupController: (controller, model)->
-    window.usercon = controller.get('userCon')
-    window.cont = controller
     controller.set('content', App.Slideshow.find())
   renderTemplate: (controller, model) ->
     @render "slideshows",
@@ -62,8 +61,14 @@ App.SlideshowsRoute = Em.Route.extend
                   into: 'application'
                   outlet: 'slidethumbnails'
     
-    
+
 App.SlideshowRoute = Em.Route.extend
+  renderTemplate: ->
+    @render "slideshow",
+      into: 'application'
+      outlet: 'slides'
+    
+App.SlidesRoute = Em.Route.extend
   events:
     transitionAfterDeletion: () ->
       return
@@ -71,12 +76,12 @@ App.SlideshowRoute = Em.Route.extend
   #set the content using our model's custom 
   #find method (not ember-data)
   setupController: (controller, model) ->
-    controller.set 'content', model
-    slidesCon = @controllerFor('slides')
-    window.slides = App.Slide.find({slideshow: model.get('id')})
-    slidesCon.set('content', slides)
+    slideshow = @controllerFor('slideshow').get('content') 
+    slides = App.Slide.find({slideshow: slideshow.get('id')})
+    controller.set('content', slides)
     
   renderTemplate: (controller) ->
+    
     @render "slides",
                     into: 'application'
                     outlet: 'slides'
@@ -90,10 +95,13 @@ App.SlideshowRoute = Em.Route.extend
                     into: 'application'
                     outlet: 'rightbar'
                     controller: "slides"
+    @render "maincontrols",
+                    into: 'user'
+                    outlet: 'controls'
+                    controller: "slides"
                  
 
 App.SlideRoute = Ember.Route.extend
-  
   events:
     transitionAfterDeletion: (pos) ->
       slideAtPos = @controllerFor('slides').get('arrangedContent').objectAt(pos)
@@ -104,7 +112,7 @@ App.SlideRoute = Ember.Route.extend
 
   renderTemplate: (controller) ->
     @render "showcontrols",
-                    into: 'application'
+                    into: 'user'
                     outlet: 'controls'
                     controller: 'slides'
 
