@@ -1,0 +1,14 @@
+<form id = "slidecreate">
+  <fieldset>
+    <legend class = "formlabel">Create New Slideshow</legend>
+    <label id = "subtitle">New Slideshow Title</label>
+    
+    {{view App.SlideTextField
+        valueBinding="controller.newName"}}
+
+    <br>
+   <button class = "btn-warning btn-mini"
+           {{action createSlideshow }}>
+           Create
+           </button>  </fieldset>
+  </form>

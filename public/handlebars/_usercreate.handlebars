@@ -4,20 +4,20 @@
       <legend class = "formlabel">Create User </legend>
       <label id = "subtitle"> User Name: </label>
       {{view App.SlideTextField
-              valueBinding = "controller.userCon.newUser.name"}}
+              valueBinding = "controllers.user.formUsername"}}
       
       <label id = "subtitle"> Password: </label><br>
       {{view App.SlideTextField 
-              valueBinding = "controller.userCon.newUser.password"}}
+              valueBinding = "controllers.user.formPassword"}}
     
       <label id = "subtitle"> Email Address </label>
       {{view App.SlideTextField 
-              valueBinding = "controller.userCon.newUser.email"}}
+              valueBinding = "controllers.user.formEmail"}}
      
     <br>
     <button class = "btn-small btn-warning"
-                  {{action createUser 
-                    target = "controller.userCon"}}
+                  {{action create 
+                    target = "controllers.user"}}
     >Create</button>
     
     </fieldset>

@@ -1,19 +1,17 @@
 <section id = 'splashpage'>
 
-  {{#if controller.controllers.user.loggedIn}}
       <h3> Welcome {{controller.controllers.user.content.username}} </h3>
+      <h5> Choose a Slideshow </h5>
         {{#each show in controller.content}}
           {{#linkTo slideshow show}}
-            <section style = "height:50px;width:100px;background-color:white;">
-              {{show.title}}
+            <section id = "showthumbnails">
+              Title: {{show.title}}
+              Author: {{show.username}}
             </section>  
           {{/linkTo}}
         {{/each}}
-      
+ 
       <hr>
            {{partial slideshowcreate}}
-  {{else}}    
-      <h1> Please login or create a user</h1>
-     
-  {{/if}}  
+ 
 </section>

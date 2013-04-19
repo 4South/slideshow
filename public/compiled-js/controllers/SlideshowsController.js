@@ -3,7 +3,7 @@ App.SlideshowsController = Em.ArrayController.extend({
   needs: ['user'],
   slideShows: (function() {
     return App.Slideshow.find();
-  }).property('controllers.user.content.@each').cacheable(),
+  }).property('content.@each').cacheable(),
   createSlideshow: function() {
     var newshow;
 

@@ -60,8 +60,11 @@ App.ApplicationRoute = Ember.Route.extend({
 });
 
 App.IndexRoute = Ember.Route.extend({
-  redirect: function() {
-    return this.replaceWith('slideshows');
+  renderTemplate: function(controller, model) {
+    return this.render('index', {
+      into: 'application',
+      outlet: 'slides'
+    });
   }
 });
 

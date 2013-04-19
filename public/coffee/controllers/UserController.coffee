@@ -4,7 +4,10 @@ App.UserController = Ember.ObjectController.extend
   formPassword: ''
   formEmail: ''
   errorMessage: ''
-
+  loginUser: ''
+  loginPassword: ''
+  
+  
   createData: (->
     username: @get('formUsername')
     password: @get('formPassword')
@@ -12,9 +15,9 @@ App.UserController = Ember.ObjectController.extend
   ).property('formUsername', 'formPassword', 'formEmail')
 
   loginData: (->
-    username: @get('formUsername')
-    password: @get('formPassword')
-  ).property('formUsername', 'formPassword')
+    username: @get('loginUser')
+    password: @get('loginPassword')
+  ).property('loginUser', 'loginPassword')
   
 
   loggedIn: (->

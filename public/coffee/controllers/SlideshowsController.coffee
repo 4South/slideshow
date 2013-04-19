@@ -3,7 +3,7 @@ App.SlideshowsController = Em.ArrayController.extend
   needs: ['user']
   slideShows: (-> 
     return App.Slideshow.find()        
-    ).property('controllers.user.content.@each').cacheable()
+    ).property('content.@each').cacheable()
   createSlideshow: ->
     window.user = @get('controllers.user.content')
     newshow = App.Slideshow.createRecord

@@ -4,6 +4,8 @@ App.UserController = Ember.ObjectController.extend({
   formPassword: '',
   formEmail: '',
   errorMessage: '',
+  loginUser: '',
+  loginPassword: '',
   createData: (function() {
     return {
       username: this.get('formUsername'),
@@ -13,10 +15,10 @@ App.UserController = Ember.ObjectController.extend({
   }).property('formUsername', 'formPassword', 'formEmail'),
   loginData: (function() {
     return {
-      username: this.get('formUsername'),
-      password: this.get('formPassword')
+      username: this.get('loginUser'),
+      password: this.get('loginPassword')
     };
-  }).property('formUsername', 'formPassword'),
+  }).property('loginUser', 'loginPassword'),
   loggedIn: (function() {
     if (this.get('content')) {
       return true;

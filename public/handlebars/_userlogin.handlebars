@@ -4,14 +4,15 @@
       <legend class = "formlabel"> Login </legend>
       <label id = "subtitle"> User Name: </label>
       {{view App.SlideTextField
-              valueBinding = "controller.userCon.loginUser.name"}}
+              valueBinding = "controllers.user.loginUser"}}
       
       <label id = "subtitle"> Password: </label>
       {{view App.SlideTextField 
-              valueBinding = "controller.userCon.loginUser.password"}}
+              type = "password"
+              valueBinding = "controllers.user.loginPassword"}}
     <br>
     <button class = "btn-small btn-warning"
-                  {{action userLogin 
+                  {{action login 
                     target = "controllers.user"}}
     >Login</button>
     

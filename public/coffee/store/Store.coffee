@@ -10,12 +10,12 @@ App.Adapter = DS.RESTAdapter.extend
 
   # get(this, "serializer").extractMany loader, payload, type
   
-# App.Adapter.map('App.User', 
-  # slideshows: {embedded: 'always'}
-# )
+App.Adapter.map('App.User', 
+  slideshows: {embedded: 'always'}
+)
 
-# App.Adapter.map('App.Slideshow',
-  # slides: {embedded: 'always'})
+App.Adapter.map('App.Slideshow',
+  slides: {embedded: 'always'})
   
 
 App.Store = DS.Store.extend

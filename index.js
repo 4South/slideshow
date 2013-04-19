@@ -55,13 +55,25 @@ app.get('/slides', function(req, res) {
 });
 
 app.get('/slideshows', function(req, res) {
-  slide['Slideshow'].find(req.query, function(err, results) {
+  var query = req.query;
+  console.log(req.query);
+  
+  if(req.query.user){
+    query._user = query.user;
+    delete query.user;
+  }else{ query = {};}
+  
+  console.log("QUERY", query);
+  
+  slide['Slideshow'].find(query, function(err, results) {
     var response = {};
     if (err) {
       res.send(err);
     } else {
       response['slideshows'] = results.map(formatDbResponse);
+      console.log("RESPONSE", response);
       res.send(response);
+      
     } 
   });
 
@@ -69,13 +81,14 @@ app.get('/slideshows', function(req, res) {
 
 app.get('/users', function(req, res) {
   console.log("finding users");
-  db['User'].find({}, function(err, results) {
+  db.UserModel.find({}, function(err, results) {
     var response = {};
     if (err) {
       console.log("ERROR");
       res.send(err);
     } else {
       response['users'] = results.map(formatDbResponse);
+      console.log("RESPOSE: ", response);
       res.send(response);
     } 
   });

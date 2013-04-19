@@ -40,12 +40,10 @@ App.ApplicationRoute = Ember.Route.extend
 
 
 App.IndexRoute = Ember.Route.extend
-  redirect: ->
-    @replaceWith 'slideshows'
-  # renderTemplate: (controller, model) ->
-    # @render 'index',
-              # into: 'application'
-              # outlet: 'slides'
+  renderTemplate: (controller, model) ->
+    @render 'index',
+        into: 'application'
+        outlet: 'slides'
               
 
 
