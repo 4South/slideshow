@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt')
   , mongoose = require('mongoose')
   , SALT_WORK_FACTOR = 10;
 
-exports.mongoose = mongoose;
+var Schema = mongoose.Schema;
 
 //User model used by mongoose
 var UserSchema = new mongoose.Schema({
@@ -16,7 +16,6 @@ var UserSchema = new mongoose.Schema({
            require: true,
            unique: true }
 }); 
-
 
 UserSchema.pre('save', function(next) {
   var user = this;
@@ -39,6 +38,23 @@ UserSchema.pre('save', function(next) {
   });
 });
 
+var SlideshowSchema = new mongoose.Schema({
+  title: String,
+  _user: [{type: Schema.Types.ObjectId, ref: 'User'}],
+});
 
-var UserModel = mongoose.model('User', UserSchema);
-exports.UserModel = UserModel;
+var SlideSchema = new mongoose.Schema({
+  name: String,
+  position: Number,
+  title: String,
+  _slideshow: [{type: Schema.Types.ObjectId, ref: 'Slideshow'}],
+  content: String,  
+});
+
+var User = mongoose.model('User', UserSchema);
+var Slideshow = mongoose.model('Slideshow', SlideshowSchema);
+var Slide = mongoose.model('Slide', SlideSchema);
+
+module.exports = {'Slide':Slide,
+                  'Slideshow':Slideshow,
+                  'User': User};

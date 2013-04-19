@@ -1,6 +1,6 @@
 var passport = require('passport')
   , LocalStrat = require('passport-local').Strategy
-  , DB = require('../DB/DB.js')
+  , User = require('../models/models.js').User
   , bcrypt = require('bcrypt');
 
 passport.serializeUser(function(user, done) {
@@ -8,20 +8,19 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  DB.UserModel.findById(id, function(err, user) {
+  User.findById(id, function(err, user) {
     done(err, user); 
   });
 });
 
 var authStrat = new LocalStrat(
   function(username, password, done) {
-      
     /*
     check if the user is in the database
     here we are using the UserModel object and its findOne method
     that method is swappable if desired
     */
-    DB.UserModel.findOne({username: username}, 
+    User.findOne({username: username}, 
     function(err, user) {
       if (err) throw err;
 
@@ -49,7 +48,7 @@ var authStrat = new LocalStrat(
 
 passport.use(authStrat);
 
-exports.verifyAuth = function verifyAuth (req, res, next ){
+exports.verifyAuth = function verifyAuth (req, res, next ) {
   console.log("authenticated?", req.isAuthenticated());
   if (req.isAuthenticated()) { return next(); }  
   res.status(400).send({message: 'no user logged in'});
