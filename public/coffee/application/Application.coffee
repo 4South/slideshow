@@ -1,9 +1,12 @@
+#change App.editingMode to a route of slideview
+#move handlebars helpers to separate file
+#remove hasMany experiments from Store
+
+
 window.App = Ember.Application.create
   editingMode: false
 
-#require ember data store
 require('store/Store.js')
-#import the router module
 require('router/Router.js')
 
 showdown = new Showdown.converter()
@@ -12,15 +15,8 @@ Ember.Handlebars.registerBoundHelper('markdown', (value) ->
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
 )
 
-Em.TextField.reopen
+Em.TextField.reopenClass
   classNames: ['textfield']
   keyUp: (event)->
     if event.keyCode is 13
       @get('controller').login()
-         
-Ember.Application.initializer
-  name: "user",
-  initialize: (container, application) ->
-    container.optionsForType('user', { singleton: true })
-    container.register('user:main', App.UserController)
-    container.typeInjection('controller', 'userCon', 'user:main');

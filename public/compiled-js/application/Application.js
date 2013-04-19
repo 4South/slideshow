@@ -16,22 +16,11 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   }
 });
 
-Em.TextField.reopen({
+Em.TextField.reopenClass({
   classNames: ['textfield'],
   keyUp: function(event) {
     if (event.keyCode === 13) {
       return this.get('controller').login();
     }
-  }
-});
-
-Ember.Application.initializer({
-  name: "user",
-  initialize: function(container, application) {
-    container.optionsForType('user', {
-      singleton: true
-    });
-    container.register('user:main', App.UserController);
-    return container.typeInjection('controller', 'userCon', 'user:main');
   }
 });
