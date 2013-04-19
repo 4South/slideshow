@@ -1,9 +1,5 @@
-<section id = "splashpage">
-<span id = "subtitle"> Slideshow: {{controller.content.title}} 
-  Slides: {{controllers.slides.content.length}} {{controller}}    
 
-</span>
-{{#each slide in controllers.slides.arrangedContent}}
+{{#each slide in arrangedContent}}
   <div class = "slide">
     {{#view contentBinding = "slide"}}
       {{partial presentationslide}}
@@ -15,4 +11,3 @@
   <div class="lead">No Slides</div>
 
 {{/each}}
-</section>

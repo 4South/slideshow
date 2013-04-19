@@ -41,6 +41,9 @@ App.Router.map(function() {
   return this.resource("slideshow", {
     path: 'slideshow/:slideshow_id'
   }, function() {
+    this.resource("slides", {
+      path: '/slides'
+    });
     return this.resource("slide", {
       path: 'slides/:slide_id'
     });
@@ -70,8 +73,6 @@ App.IndexRoute = Ember.Route.extend({
 
 App.SlideshowsRoute = Em.Route.extend({
   setupController: function(controller, model) {
-    window.usercon = controller.get('userCon');
-    window.cont = controller;
     return controller.set('content', App.Slideshow.find());
   },
   renderTemplate: function(controller, model) {
@@ -87,18 +88,26 @@ App.SlideshowsRoute = Em.Route.extend({
 });
 
 App.SlideshowRoute = Em.Route.extend({
+  renderTemplate: function() {
+    return this.render("slideshow", {
+      into: 'application',
+      outlet: 'slides'
+    });
+  }
+});
+
+App.SlidesRoute = Em.Route.extend({
   events: {
     transitionAfterDeletion: function() {}
   },
   setupController: function(controller, model) {
-    var slidesCon;
+    var slides, slideshow;
 
-    controller.set('content', model);
-    slidesCon = this.controllerFor('slides');
-    window.slides = App.Slide.find({
-      slideshow: model.get('id')
+    slideshow = this.controllerFor('slideshow').get('content');
+    slides = App.Slide.find({
+      slideshow: slideshow.get('id')
     });
-    return slidesCon.set('content', slides);
+    return controller.set('content', slides);
   },
   renderTemplate: function(controller) {
     this.render("slides", {
@@ -111,9 +120,14 @@ App.SlideshowRoute = Em.Route.extend({
       outlet: 'slidethumbnails',
       controller: 'slides'
     });
-    return this.render("rightbar", {
+    this.render("rightbar", {
       into: 'application',
       outlet: 'rightbar',
+      controller: "slides"
+    });
+    return this.render("maincontrols", {
+      into: 'user',
+      outlet: 'controls',
       controller: "slides"
     });
   }
@@ -134,7 +148,7 @@ App.SlideRoute = Ember.Route.extend({
   },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
-      into: 'application',
+      into: 'user',
       outlet: 'controls',
       controller: 'slides'
     });
