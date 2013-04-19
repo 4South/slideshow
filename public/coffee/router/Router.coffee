@@ -81,6 +81,7 @@ App.SlidesRoute = Em.Route.extend
     controller.set('content', slides)
     
   renderTemplate: (controller) ->
+    
     @render "slides",
                     into: 'application'
                     outlet: 'slides'
