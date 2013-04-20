@@ -22,6 +22,7 @@ require('views/SlidesView.js')
 require('views/SlidedetailView.js')
 require('views/SlideThumbnailView.js')
 require('views/SlidesthumbnailsView.js')
+require('views/SlideshowsView.js')
 require('views/UserView.js')
 
 #main router definition
@@ -37,9 +38,8 @@ App.ApplicationRoute = Ember.Route.extend
       slidesCon = @controllerFor('slides')
       slidesCon.set('activeSlideIndex', newSlide.get('position'))
       @transitionTo('slide', slidesCon.get('activeSlide'))
+
     
-
-
 App.IndexRoute = Ember.Route.extend
   renderTemplate: (controller, model) ->
     @render 'index',
@@ -61,9 +61,9 @@ App.SlideshowsRoute = Em.Route.extend
                   into: 'application'
                   outlet: 'slidethumbnails'
     
-
+    
 App.SlideshowRoute = Em.Route.extend
-  renderTemplate: ->
+  renderTemplate: (controller, model) ->
     @render "slideshow",
       into: 'application'
       outlet: 'slides'

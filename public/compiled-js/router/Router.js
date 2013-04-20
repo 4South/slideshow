@@ -34,6 +34,8 @@ require('views/SlideThumbnailView.js');
 
 require('views/SlidesthumbnailsView.js');
 
+require('views/SlideshowsView.js');
+
 require('views/UserView.js');
 
 App.Router.map(function() {
@@ -88,7 +90,7 @@ App.SlideshowsRoute = Em.Route.extend({
 });
 
 App.SlideshowRoute = Em.Route.extend({
-  renderTemplate: function() {
+  renderTemplate: function(controller, model) {
     return this.render("slideshow", {
       into: 'application',
       outlet: 'slides'

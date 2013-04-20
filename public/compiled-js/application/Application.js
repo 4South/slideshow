@@ -26,12 +26,9 @@ Em.TextField.reopen({
 });
 
 Ember.Application.initializer({
-  name: "user",
+  name: "Load Data",
   initialize: function(container, application) {
-    container.optionsForType('user', {
-      singleton: true
-    });
-    container.register('user:main', App.UserController);
-    return container.typeInjection('controller', 'userCon', 'user:main');
+    App.Slideshow.find();
+    return App.Slide.find();
   }
 });
