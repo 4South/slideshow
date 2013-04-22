@@ -20,3 +20,9 @@ Em.TextField.reopenClass
   keyUp: (event)->
     if event.keyCode is 13
       @get('controller').login()
+
+Ember.Application.initializer
+  name: "Load Data",
+  initialize: (container, application) ->
+    App.Slideshow.find()
+    App.Slide.find()
