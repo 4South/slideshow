@@ -20,18 +20,12 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     }));
   },
   moveDown: function(slide) {
-    var target;
-
-    target = this.findTarget(slide, this.get('arrangedContent'), +1, 'position');
-    if (target != null) {
+    if (this.findTarget(slide, this.get('arrangedContent'), +1, 'position') != null) {
       return this.swap(target, slide, 'position');
     }
   },
   moveUp: function(slide) {
-    var target;
-
-    target = this.findTarget(slide, this.get('arrangedContent'), -1, 'position');
-    if (target != null) {
+    if (this.findTarget(slide, this.get('arrangedContent'), -1, 'position') != null) {
       return this.swap(slide, target, 'position');
     }
   },

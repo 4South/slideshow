@@ -1,5 +1,3 @@
-#explicitly require our needed modules
-
 require('models/User.js')
 require('models/Slideshow.js')
 require('models/Slide.js')
@@ -13,8 +11,6 @@ require('controllers/SlidethumbnailsController.js')
 require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
-
-
 
 require('views/SlideTextField.js')
 require('views/ApplicationView.js')

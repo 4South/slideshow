@@ -4,12 +4,12 @@ App.ApplicationView = Em.View.extend({
   tabindex: 1,
   keyUp: function(event) {
     switch (event.keyCode) {
-      case 40:
       case 32:
       case 39:
+      case 40:
         return this.get('controller.controllers.slides').forward();
-      case 38:
       case 37:
+      case 38:
         return this.get('controller.controllers.slides').back();
     }
   }

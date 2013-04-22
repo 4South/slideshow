@@ -18,7 +18,6 @@ App.SlidesController = Em.ArrayController.extend
   activeSlideIndex: 0
   
   activeSlide: (->
-    console.log 'atleastoneslide', @get 'atleastOneSlide'
     if @get('atleastOneSlide')
       return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
     else
@@ -31,16 +30,17 @@ App.SlidesController = Em.ArrayController.extend
   ).property('content.@each').cacheable()
 
   #boolean helpers
-  atEnd: (->
-    index = @get('activeSlideIndex')
-    contentLength = @get('arrangedContent').toArray().length
-    return if (index == contentLength-1) then true else false
-  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
-
   atStart: (->
     index = @get('activeSlideIndex')
     return if (index == 0) then true else false
   ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
+
+  atEnd: (->
+    index = @get('activeSlideIndex')
+    contentLength = @get('arrangedContent').toArray().length
+    return if (index is contentLength-1) then true else false
+  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
+
 
   #text used to notify user of unsaved changes
   savedStatus: (->
@@ -48,8 +48,6 @@ App.SlidesController = Em.ArrayController.extend
       return "Unsaved Changes"
     else return "All Changes Saved"
   ).property('content.@each.isDirty').cacheable()
-  
-
 
 
   #start the slideshow
@@ -61,15 +59,12 @@ App.SlidesController = Em.ArrayController.extend
     @transitionToRoute('slides')
 
 
-
-
   #SLIDE NAVIGATION UTILS
   forward: () ->
     if @get('atEnd') then return
     else
       curIndex = @get('activeSlide').get('position')
       newSlide = @get('arrangedContent').objectAt(curIndex+1)
-      console.log 'newSlide', newSlide
       @send "updateActiveSlide", newSlide
 
   back: () ->
@@ -80,10 +75,7 @@ App.SlidesController = Em.ArrayController.extend
       @send "updateActiveSlide", newSlide
 
   clickThumbnail: (targetSlide) ->
-    console.log 'clicked', targetSlide, @get('activeSlide')
     @send "updateActiveSlide", targetSlide
-
-
 
 
   #CREATE CRUD

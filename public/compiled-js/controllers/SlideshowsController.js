@@ -5,9 +5,9 @@ App.SlideshowsController = Em.ArrayController.extend({
     return App.Slideshow.find();
   }).property('content.@each').cacheable(),
   createSlideshow: function() {
-    var newshow;
+    var newshow, user;
 
-    window.user = this.get('controllers.user.content');
+    user = this.get('controllers.user.content');
     newshow = App.Slideshow.createRecord({
       title: this.get('newName'),
       user: user

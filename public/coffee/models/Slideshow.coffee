@@ -4,5 +4,5 @@ App.Slideshow = DS.Model.extend
   slides: DS.hasMany('App.Slide')
   
   username: (->
-      return @get('user.username')
-    ).property('user.username')
+    return @get('user.username')
+  ).property('user.username')

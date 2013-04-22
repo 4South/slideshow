@@ -19,15 +19,11 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))
     
   moveDown: (slide) ->
-    target = @findTarget(slide, @get('arrangedContent'),
-                        +1, 'position')
-    if target?
+    if @findTarget(slide, @get('arrangedContent'), +1, 'position')?
       @swap(target, slide, 'position')
 
   moveUp: (slide) ->
-    target = @findTarget(slide, @get('arrangedContent'),
-                        -1, 'position')
-    if target?
+    if @findTarget(slide, @get('arrangedContent'), -1, 'position')?
       @swap(slide, target, 'position')
 
   findTarget: (slide, array, relativeSearch, property) ->
