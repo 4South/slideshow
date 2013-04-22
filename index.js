@@ -48,6 +48,7 @@ app.get('/slides/:id', slideRoutes.getSlideById);
 app.post('/slides', pass.verifyAuth, slideRoutes.postSlide);
 app.delete('/slides/:id', pass.verifyAuth, slideRoutes.deleteSlideById); 
 app.put('/slides/:id', pass.verifyAuth, slideRoutes.putSlide);
+app.put('/slideshows/:id', pass.verifyAuth, slideshowRoutes.putSlideshow);
 
 app.get('/slideshows', slideshowRoutes.getSlideshows);
 app.get('/slideshows/:id', slideshowRoutes.getSlideshowById);

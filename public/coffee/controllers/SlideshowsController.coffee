@@ -4,8 +4,9 @@ App.SlideshowsController = Em.ArrayController.extend
   slideShows: (-> 
     return App.Slideshow.find()        
     ).property('content.@each').cacheable()
+  #create a new slideshow and commit it
   createSlideshow: ->
-    window.user = @get('controllers.user.content')
+    user = @get('controllers.user.content')
     newshow = App.Slideshow.createRecord
           title: @get('newName')
           user: user

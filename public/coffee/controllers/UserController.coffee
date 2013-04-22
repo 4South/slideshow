@@ -7,7 +7,6 @@ App.UserController = Ember.ObjectController.extend
   loginUser: ''
   loginPassword: ''
   
-  
   createData: (->
     username: @get('formUsername')
     password: @get('formPassword')
@@ -44,16 +43,6 @@ App.UserController = Ember.ObjectController.extend
       hash.data = JSON.stringify(hash.data)
     
     Ember.$.ajax(hash)
-
-  tester: () ->
-    @userAjax('/user/sample', 'GET',
-      success: (data) ->
-        console.log(data.message)
-      error: (xhr) ->
-        console.log('sample failed')
-      complete: () ->
-        console.log('fired the always')
-    )
 
   create: () ->
     @userAjax('/user/create', 'POST',

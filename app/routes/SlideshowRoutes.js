@@ -66,3 +66,17 @@ exports.postSlideshow = function(req, res) {
     } 
   });
 };
+
+
+exports.putSlideshow = function(req, res) {
+  Slideshow.findOneAndUpdate({_id: req.params.id}, {$set: req.body.slide},
+  function (err, result) {
+    var response = {};
+    if (err) {
+      res.json({message: err});
+    } else {
+      response['slideshow'] = formatDbResponse(result);
+      res.send(response);
+    }
+  });
+};

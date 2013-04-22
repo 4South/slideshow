@@ -6,6 +6,9 @@ App.SlidesController = Em.ArrayController.extend
   sortProperties: ['position']
   sortAscending: true
 
+  #index of currently active slide
+  activeSlideIndex: 0
+  
   #determines if current "new slide" name is valid for creation
   nameIsValid: (->
     name = @get('newSlideName')
@@ -14,9 +17,6 @@ App.SlidesController = Em.ArrayController.extend
     else return false
   ).property('newSlideName').cacheable()
 
-  #index of currently active slide
-  activeSlideIndex: 0
-  
   activeSlide: (->
     console.log 'atleastoneslide', @get 'atleastOneSlide'
     if @get('atleastOneSlide')
@@ -48,20 +48,15 @@ App.SlidesController = Em.ArrayController.extend
       return "Unsaved Changes"
     else return "All Changes Saved"
   ).property('content.@each.isDirty').cacheable()
-  
-
-
 
   #start the slideshow
   startShow: () ->
     if @get('activeSlide')?
       @transitionToRoute('slide', @get('activeSlide'))
-
+  
+  #pause show
   pauseShow: () ->
     @transitionToRoute('slides')
-
-
-
 
   #SLIDE NAVIGATION UTILS
   forward: () ->
@@ -82,9 +77,6 @@ App.SlidesController = Em.ArrayController.extend
   clickThumbnail: (targetSlide) ->
     console.log 'clicked', targetSlide, @get('activeSlide')
     @send "updateActiveSlide", targetSlide
-
-
-
 
   #CREATE CRUD
   create: () ->

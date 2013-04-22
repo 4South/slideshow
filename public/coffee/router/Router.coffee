@@ -14,8 +14,6 @@ require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
 
-
-
 require('views/SlideTextField.js')
 require('views/ApplicationView.js')
 require('views/SlidesView.js')
@@ -38,16 +36,13 @@ App.ApplicationRoute = Ember.Route.extend
       slidesCon = @controllerFor('slides')
       slidesCon.set('activeSlideIndex', newSlide.get('position'))
       @transitionTo('slide', slidesCon.get('activeSlide'))
-
     
 App.IndexRoute = Ember.Route.extend
   renderTemplate: (controller, model) ->
     @render 'index',
         into: 'application'
         outlet: 'slides'
-              
-
-
+ 
 App.SlideshowsRoute = Em.Route.extend
   setupController: (controller, model)->
     controller.set('content', App.Slideshow.find())
@@ -60,7 +55,7 @@ App.SlideshowsRoute = Em.Route.extend
     @render "blank",
                   into: 'application'
                   outlet: 'slidethumbnails'
-    
+
     
 App.SlideshowRoute = Em.Route.extend
   renderTemplate: (controller, model) ->
@@ -100,7 +95,6 @@ App.SlidesRoute = Em.Route.extend
                     outlet: 'controls'
                     controller: "slides"
                  
-
 App.SlideRoute = Ember.Route.extend
   events:
     transitionAfterDeletion: (pos) ->

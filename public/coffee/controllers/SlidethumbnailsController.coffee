@@ -15,9 +15,9 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     @send 'transitionAfterDeletion', pos
     slide.deleteRecord()
     @get('arrangedContent').forEach(@resort, @get('arrangedContent'))
-    @get('store').commit()
-    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))
-    
+    @get('store').commit()  
+    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))      
+      
   moveDown: (slide) ->
     target = @findTarget(slide, @get('arrangedContent'),
                         +1, 'position')

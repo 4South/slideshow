@@ -3,6 +3,7 @@ App.SlidesController = Em.ArrayController.extend({
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
+  activeSlideIndex: 0,
   nameIsValid: (function() {
     var name;
 
@@ -13,7 +14,6 @@ App.SlidesController = Em.ArrayController.extend({
       return false;
     }
   }).property('newSlideName').cacheable(),
-  activeSlideIndex: 0,
   activeSlide: (function() {
     console.log('atleastoneslide', this.get('atleastOneSlide'));
     if (this.get('atleastOneSlide')) {

@@ -43,19 +43,6 @@ App.UserController = Ember.ObjectController.extend({
     }
     return Ember.$.ajax(hash);
   },
-  tester: function() {
-    return this.userAjax('/user/sample', 'GET', {
-      success: function(data) {
-        return console.log(data.message);
-      },
-      error: function(xhr) {
-        return console.log('sample failed');
-      },
-      complete: function() {
-        return console.log('fired the always');
-      }
-    });
-  },
   create: function() {
     return this.userAjax('/user/create', 'POST', {
       data: this.get('createData'),
