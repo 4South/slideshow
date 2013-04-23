@@ -1,19 +1,23 @@
 <section id = 'splashpage'>
 
       <h3> Welcome {{controller.controllers.user.content.username}} </h3>
-      <h5> Choose a Slideshow </h5>
+      <h5> Choose a Slideshow to view</h5>
         <div class = "row-fluid" id = "slideshowlist">
           {{#each show in controller.content}}
             <div class = "span2">
             {{#linkTo slideshow show}}
               <section id = "showthumbnails">
-                Title: <br> {{show.title}} 
+               {{show.title}} <br><br>
+                Author: <br> {{show.author}}
               </section>  
             {{/linkTo}}
             </div>    
           {{/each}}
         </div>
       <hr>
-           {{partial slideshowcreate}}
- 
+      {{#if controllers.user.loggedIn}}
+        {{partial slideshowcreate}}
+      {{else}}  
+        <h3> Please login to create a slideshow </h3>
+      {{/if}}
 </section>

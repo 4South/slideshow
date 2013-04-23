@@ -13,7 +13,8 @@ var pass = require('./app/config/PassPort.js')
 var app = express();
 
 //DATABASE CONNECT
-var dbPath = 'mongodb://localhost:27017/slideshowapp';
+var dbPath =  process.env.MONGOLAB_URI || 
+  process.env.MONGOHQ_URL || 'mongodb://localhost:27017/slideshowapp';
 mongoose.connect(dbPath, 
 function() {
   console.log('mongo connected at', dbPath);
@@ -33,7 +34,7 @@ app.configure(function() {
   app.use(passport.initialize());
   app.use(passport.session());
 });
-
+//
 
 //main page load
 app.get('/', function(req, res) {
@@ -48,6 +49,7 @@ app.get('/slides/:id', slideRoutes.getSlideById);
 app.post('/slides', pass.verifyAuth, slideRoutes.postSlide);
 app.delete('/slides/:id', pass.verifyAuth, slideRoutes.deleteSlideById); 
 app.put('/slides/:id', pass.verifyAuth, slideRoutes.putSlide);
+app.put('/slideshows/:id', pass.verifyAuth, slideshowRoutes.putSlideshow);
 
 app.get('/slideshows', slideshowRoutes.getSlideshows);
 app.get('/slideshows/:id', slideshowRoutes.getSlideshowById);
@@ -61,7 +63,8 @@ app.post('/user/create',  userRoutes.postcreate,
                           userRoutes.postlogin);
 
 //CONNECT SERVER
-app.listen(1234, function(){
-    var msg = "connected on port 1234";
-    console.log(msg);
+var port = process.env.PORT || 1234;
+
+app.listen(port, function(){
+  console.log("connected on", port);
 });

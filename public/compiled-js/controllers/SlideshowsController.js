@@ -1,6 +1,6 @@
 App.SlideshowsController = Em.ArrayController.extend({
   newName: '',
-  needs: ['user'],
+  needs: ['user', 'slideshow'],
   slideShows: (function() {
     return App.Slideshow.find();
   }).property('content.@each').cacheable(),
@@ -10,7 +10,8 @@ App.SlideshowsController = Em.ArrayController.extend({
     user = this.get('controllers.user.content');
     newshow = App.Slideshow.createRecord({
       title: this.get('newName'),
-      user: user
+      user: user,
+      author: user.get('username')
     });
     this.get('store').commit();
     return this.set('newName', '');

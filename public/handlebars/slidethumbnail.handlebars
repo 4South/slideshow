@@ -1,5 +1,5 @@
 <div id = "btnWrapper">
-  {{#if App.editingMode}}
+  {{#if controller.controllers.slideshow.editingMode}}
     <button class="btn-mini btn-danger"
               {{action 'delete' view.content
                 target = "controllers.slidethumbnails"}}>

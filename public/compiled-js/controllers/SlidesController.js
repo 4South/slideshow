@@ -3,6 +3,7 @@ App.SlidesController = Em.ArrayController.extend({
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
+  activeSlideIndex: 0,
   nameIsValid: (function() {
     var name;
 
@@ -13,7 +14,6 @@ App.SlidesController = Em.ArrayController.extend({
       return false;
     }
   }).property('newSlideName').cacheable(),
-  activeSlideIndex: 0,
   activeSlide: (function() {
     if (this.get('atleastOneSlide')) {
       return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
@@ -22,10 +22,14 @@ App.SlidesController = Em.ArrayController.extend({
     }
   }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atleastOneSlide: (function() {
-    if (this.get('content').toArray().length === 0) {
+    if (this.get('content')) {
+      if (this.get('content').toArray().length === 0) {
+        return false;
+      }
+      return true;
+    } else {
       return false;
     }
-    return true;
   }).property('content.@each').cacheable(),
   atStart: (function() {
     var index;
@@ -96,7 +100,8 @@ App.SlidesController = Em.ArrayController.extend({
       App.Slide.createRecord({
         name: this.get('newSlideName'),
         position: this.get('content').toArray().length,
-        slideshow: activeShow
+        slideshow: activeShow,
+        title: this.get('newSlideName')
       });
       this.get('store').commit();
       this.set('newSlideName', '');
@@ -107,5 +112,9 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return alert('name must contain at least one character and no spaces');
     }
+  },
+  goToSlideShows: function() {
+    this.get('controllers.slideshow').exitEditing();
+    return this.replaceRoute('slideshows');
   }
 });

@@ -1,4 +1,5 @@
 App.UserController = Ember.ObjectController.extend
+  needs: ['slideshow']
   content: ''
   formUsername: ''
   formPassword: ''
@@ -7,6 +8,9 @@ App.UserController = Ember.ObjectController.extend
   loginUser: ''
   loginPassword: ''
   
+  loggedInUser:(->
+    return @get('content.username')
+  ).property('content.username').cacheable()
   
   createData: (->
     username: @get('formUsername')
@@ -45,39 +49,43 @@ App.UserController = Ember.ObjectController.extend
     
     Ember.$.ajax(hash)
 
-  tester: () ->
-    @userAjax('/user/sample', 'GET',
-      success: (data) ->
-        console.log(data.message)
-      error: (xhr) ->
-        console.log('sample failed')
-      complete: () ->
-        console.log('fired the always')
-    )
-
   create: () ->
-    @userAjax('/user/create', 'POST',
-      data: @get('createData')
-      success: (data) ->
-        Ember.run(@, () ->
-          @set('content', Ember.Object.create(data))
-        )
-      error: (xhr) ->
-        Ember.run(@, () ->
-          @set('errorMessage', 'account creation failed, try again')
-        )
-      complete: () ->
-        Ember.run(@, () ->
-          @resetForm()
-        )
-    )
- 
+    if @validNewUser() is true
+      @userAjax('/user/create', 'POST',
+        data: @get('createData')
+        success: (data) ->
+          Ember.run(@, () ->
+            @set('content', Ember.Object.create(data))
+            @transitionToRoute('slideshows')
+          )
+        error: (xhr) ->
+          Ember.run(@, () ->
+            @set('errorMessage', 'account creation failed, try again')
+          )
+        complete: () ->
+          Ember.run(@, () ->
+            @resetForm()
+
+          )
+      )
+    else
+      alert 'Please fill out each field for User Creation'
+      @resetForm()
+            
+  validNewUser: ->
+    if @get('formUsername') != '' and
+    @get('formPassword') != '' and
+    @get('formPassword') != ''
+      return true
+    else return false
+
   login: () ->
     @userAjax('/user/login', 'POST',
       data: @get('loginData')
       success: (data) ->
         Ember.run(@, () ->
           @set('content', Ember.Object.create(data))
+          @transitionToRoute 'slideshows'
         )
       error: (xhr) ->
         Ember.run(@, () ->
@@ -94,9 +102,14 @@ App.UserController = Ember.ObjectController.extend
       success: (data) ->
         Ember.run(@, ()->
           @set('content', null)
+          @get('controllers.slideshow').exitEditing()
+          @replaceRoute 'index'
         )
       error: (xhr) ->
         Ember.run(@, ()->
           @set('errorMessage', 'logout failed')
         )
      )
+     
+  home: ->
+    @replaceRoute 'index'

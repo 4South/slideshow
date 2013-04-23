@@ -34,16 +34,17 @@ App.ApplicationRoute = Ember.Route.extend
       slidesCon = @controllerFor('slides')
       slidesCon.set('activeSlideIndex', newSlide.get('position'))
       @transitionTo('slide', slidesCon.get('activeSlide'))
-
     
 App.IndexRoute = Ember.Route.extend
   renderTemplate: (controller, model) ->
     @render 'index',
         into: 'application'
         outlet: 'slides'
-              
-
-
+    #added this blank template to override thumbnails 
+    #when coming back to this route when logging out
+    @render "blank",
+                  into: 'application'
+                  outlet: 'slidethumbnails'
 App.SlideshowsRoute = Em.Route.extend
   setupController: (controller, model)->
     controller.set('content', App.Slideshow.find())
@@ -56,7 +57,7 @@ App.SlideshowsRoute = Em.Route.extend
     @render "blank",
                   into: 'application'
                   outlet: 'slidethumbnails'
-    
+
     
 App.SlideshowRoute = Em.Route.extend
   renderTemplate: (controller, model) ->
@@ -86,17 +87,16 @@ App.SlidesRoute = Em.Route.extend
               into: 'application'
               outlet: 'slidethumbnails'
               controller: 'slides'
-                    
-    @render "rightbar",
-                    into: 'application'
-                    outlet: 'rightbar'
-                    controller: "slides"
     @render "maincontrols",
                     into: 'user'
                     outlet: 'controls'
                     controller: "slides"
+                            
+    @render "rightbar",
+                    into: 'application'
+                    outlet: 'rightbar'
+                    controller: "slides"
                  
-
 App.SlideRoute = Ember.Route.extend
   events:
     transitionAfterDeletion: (pos) ->
@@ -106,7 +106,7 @@ App.SlideRoute = Ember.Route.extend
       else
         @replaceWith "slides"
 
-  renderTemplate: (controller) ->
+  renderTemplate: (controller) -> 
     @render "showcontrols",
                     into: 'user'
                     outlet: 'controls'

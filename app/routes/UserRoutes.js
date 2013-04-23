@@ -17,6 +17,7 @@ exports.postcreate = function(req, res, next) {
       console.log('User already exists!');
       res.status(400).send('User already exists');
     } else {
+    //TODO: check for valid user
       data.username = req.body.username;
       data.password = req.body.password;
       data.email = req.body.email;
@@ -25,7 +26,7 @@ exports.postcreate = function(req, res, next) {
         if (err) {
           res.json({message: err});
         }
-        console.log(user.username, 'created!');
+        console.log(user, 'created!');
         //Here we do not return the user right away because we first
         //pipe this into the auth system to return a valid ses-cookie 
         //res.json(formatDbResponse(user)); 

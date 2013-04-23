@@ -1,8 +1,6 @@
 var showdown;
 
-window.App = Ember.Application.create({
-  editingMode: false
-});
+window.App = Ember.Application.create();
 
 require('store/Store.js');
 
@@ -16,6 +14,7 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   }
 });
 
+<<<<<<< HEAD
 Em.TextField.reopenClass({
   classNames: ['textfield'],
   keyUp: function(event) {
@@ -25,6 +24,8 @@ Em.TextField.reopenClass({
   }
 });
 
+=======
+>>>>>>> 0b5a2033fe79679070be77f08e084e11f2bace9c
 Ember.Application.initializer({
   name: "Load Data",
   initialize: function(container, application) {

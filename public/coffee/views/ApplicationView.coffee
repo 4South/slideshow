@@ -10,4 +10,5 @@ App.ApplicationView = Em.View.extend
         @get('controller.controllers.slides').forward()
       when 37, 38
         @get('controller.controllers.slides').back()
-      
+      when 13
+        @get('controller.controllers.user').login()

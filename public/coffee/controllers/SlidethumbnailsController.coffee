@@ -14,10 +14,15 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     #optional transition if deleted slide is the current route's slide
     @send 'transitionAfterDeletion', pos
     slide.deleteRecord()
-    @get('arrangedContent').forEach(@resort, @get('arrangedContent'))
+    #todo fix timing hax with proper callback
     @get('store').commit()
-    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))
+    Ember.run.later(@, @updatePos, 250)
     
+  updatePos: ->
+    @get('arrangedContent').forEach(@resort, @get('arrangedContent')) 
+    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))      
+    
+      
   moveDown: (slide) ->
     if @findTarget(slide, @get('arrangedContent'), +1, 'position')?
       @swap(target, slide, 'position')

@@ -6,6 +6,9 @@ App.SlidesController = Em.ArrayController.extend
   sortProperties: ['position']
   sortAscending: true
 
+  #index of currently active slide
+  activeSlideIndex: 0
+  
   #determines if current "new slide" name is valid for creation
   nameIsValid: (->
     name = @get('newSlideName')
@@ -14,9 +17,6 @@ App.SlidesController = Em.ArrayController.extend
     else return false
   ).property('newSlideName').cacheable()
 
-  #index of currently active slide
-  activeSlideIndex: 0
-  
   activeSlide: (->
     if @get('atleastOneSlide')
       return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
@@ -25,8 +25,12 @@ App.SlidesController = Em.ArrayController.extend
   ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
  
   atleastOneSlide: (->
-    if @get('content').toArray().length is 0 then return false
-    return true
+    #check to see if content is null to prevent error
+    if @get('content')
+      if @get('content').toArray().length is 0 then return false
+      return true
+    else
+      return false
   ).property('content.@each').cacheable()
 
   #boolean helpers
@@ -49,15 +53,14 @@ App.SlidesController = Em.ArrayController.extend
     else return "All Changes Saved"
   ).property('content.@each.isDirty').cacheable()
 
-
   #start the slideshow
   startShow: () ->
     if @get('activeSlide')?
       @transitionToRoute('slide', @get('activeSlide'))
-
+  
+  #pause show
   pauseShow: () ->
     @transitionToRoute('slides')
-
 
   #SLIDE NAVIGATION UTILS
   forward: () ->
@@ -77,7 +80,6 @@ App.SlidesController = Em.ArrayController.extend
   clickThumbnail: (targetSlide) ->
     @send "updateActiveSlide", targetSlide
 
-
   #CREATE CRUD
   create: () ->
     activeShow = @get('controllers.slideshow.content')
@@ -86,10 +88,14 @@ App.SlidesController = Em.ArrayController.extend
                 name: @get('newSlideName')
                 position: @get('content').toArray().length
                 slideshow: activeShow
-                
+                title: @get('newSlideName')
       @get('store').commit()
       @set('newSlideName', '')
       slides = App.Slide.find(slideshow: activeShow.get('id'))
       @set('content', slides)
     else
       alert ('name must contain at least one character and no spaces')
+      
+  goToSlideShows: ->
+    @get('controllers.slideshow').exitEditing()
+    @replaceRoute 'slideshows'
