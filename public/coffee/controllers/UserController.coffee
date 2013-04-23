@@ -1,4 +1,5 @@
 App.UserController = Ember.ObjectController.extend
+  needs: ['slideshow']
   content: ''
   formUsername: ''
   formPassword: ''
@@ -6,6 +7,10 @@ App.UserController = Ember.ObjectController.extend
   errorMessage: ''
   loginUser: ''
   loginPassword: ''
+  
+  loggedInUser:(->
+    return @get('content.username')
+  ).property('content.username').cacheable()
   
   createData: (->
     username: @get('formUsername')
@@ -97,6 +102,7 @@ App.UserController = Ember.ObjectController.extend
       success: (data) ->
         Ember.run(@, ()->
           @set('content', null)
+          @get('controllers.slideshow').exitEditing()
           @replaceRoute 'index'
         )
       error: (xhr) ->

@@ -89,14 +89,14 @@ App.SlidesRoute = Em.Route.extend
               into: 'application'
               outlet: 'slidethumbnails'
               controller: 'slides'
-                    
-    @render "rightbar",
-                    into: 'application'
-                    outlet: 'rightbar'
-                    controller: "slides"
     @render "maincontrols",
                     into: 'user'
                     outlet: 'controls'
+                    controller: "slides"
+                            
+    @render "rightbar",
+                    into: 'application'
+                    outlet: 'rightbar'
                     controller: "slides"
                  
 App.SlideRoute = Ember.Route.extend
@@ -108,7 +108,7 @@ App.SlideRoute = Ember.Route.extend
       else
         @replaceWith "slides"
 
-  renderTemplate: (controller) ->
+  renderTemplate: (controller) -> 
     @render "showcontrols",
                     into: 'user'
                     outlet: 'controls'

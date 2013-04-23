@@ -22,10 +22,14 @@ App.SlidesController = Em.ArrayController.extend({
     }
   }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atleastOneSlide: (function() {
-    if (this.get('content').toArray().length === 0) {
+    if (this.get('content')) {
+      if (this.get('content').toArray().length === 0) {
+        return false;
+      }
+      return true;
+    } else {
       return false;
     }
-    return true;
   }).property('content.@each').cacheable(),
   atEnd: (function() {
     var contentLength, index;
@@ -71,7 +75,6 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       curIndex = this.get('activeSlide').get('position');
       newSlide = this.get('arrangedContent').objectAt(curIndex + 1);
-      console.log('newSlide', newSlide);
       return this.send("updateActiveSlide", newSlide);
     }
   },
@@ -109,5 +112,9 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return alert('name must contain at least one character and no spaces');
     }
+  },
+  goToSlideShows: function() {
+    this.get('controllers.slideshow').exitEditing();
+    return this.replaceRoute('slideshows');
   }
 });

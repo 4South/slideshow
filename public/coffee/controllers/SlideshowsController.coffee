@@ -1,6 +1,6 @@
 App.SlideshowsController = Em.ArrayController.extend
   newName: ''
-  needs: ['user']
+  needs: ['user', 'slideshow']
   slideShows: (-> 
     return App.Slideshow.find()        
     ).property('content.@each').cacheable()
@@ -10,6 +10,7 @@ App.SlideshowsController = Em.ArrayController.extend
     newshow = App.Slideshow.createRecord
           title: @get('newName')
           user: user
+          author: user.get('username')
     @get('store').commit()
     @set('newName', '')
 

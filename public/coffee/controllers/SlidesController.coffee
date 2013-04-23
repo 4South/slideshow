@@ -25,8 +25,12 @@ App.SlidesController = Em.ArrayController.extend
   ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
  
   atleastOneSlide: (->
-    if @get('content').toArray().length is 0 then return false
-    return true
+    #check to see if content is null to prevent error
+    if @get('content')
+      if @get('content').toArray().length is 0 then return false
+      return true
+    else
+      return false
   ).property('content.@each').cacheable()
 
   #boolean helpers
@@ -63,7 +67,6 @@ App.SlidesController = Em.ArrayController.extend
     else
       curIndex = @get('activeSlide').get('position')
       newSlide = @get('arrangedContent').objectAt(curIndex+1)
-      console.log 'newSlide', newSlide
       @send "updateActiveSlide", newSlide
 
   back: () ->
@@ -92,3 +95,7 @@ App.SlidesController = Em.ArrayController.extend
       @set('content', slides)
     else
       alert ('name must contain at least one character and no spaces')
+      
+  goToSlideShows: ->
+    @get('controllers.slideshow').exitEditing()
+    @replaceRoute 'slideshows'

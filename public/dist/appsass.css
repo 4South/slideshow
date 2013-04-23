@@ -368,8 +368,10 @@ fieldset {
 }
 
 #showthumbnails {
-  padding-top: 10px;
-  height: 60px;
+  height: 65px;
+  padding-top: 3px;
+  padding-left: 3px;
+  text-align: left;
   margin-bottom: 10px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-image: -moz-linear-gradient(top, #bbbbbb, #333333);
@@ -382,7 +384,7 @@ fieldset {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   border-bottom-color: #b3b3b3;
   border-radius: 5px;
-  color: white;
+  color: #c2efff;
 }
 
 form#slideshowcreate {

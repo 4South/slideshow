@@ -1,4 +1,5 @@
 App.UserController = Ember.ObjectController.extend({
+  needs: ['slideshow'],
   content: '',
   formUsername: '',
   formPassword: '',
@@ -6,6 +7,9 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  loggedInUser: (function() {
+    return this.get('content.username');
+  }).property('content.username').cacheable(),
   createData: (function() {
     return {
       username: this.get('formUsername'),
@@ -102,6 +106,7 @@ App.UserController = Ember.ObjectController.extend({
       success: function(data) {
         return Ember.run(this, function() {
           this.set('content', null);
+          this.get('controllers.slideshow').exitEditing();
           return this.replaceRoute('index');
         });
       },

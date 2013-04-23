@@ -126,14 +126,14 @@ App.SlidesRoute = Em.Route.extend({
       outlet: 'slidethumbnails',
       controller: 'slides'
     });
-    this.render("rightbar", {
-      into: 'application',
-      outlet: 'rightbar',
-      controller: "slides"
-    });
-    return this.render("maincontrols", {
+    this.render("maincontrols", {
       into: 'user',
       outlet: 'controls',
+      controller: "slides"
+    });
+    return this.render("rightbar", {
+      into: 'application',
+      outlet: 'rightbar',
       controller: "slides"
     });
   }
