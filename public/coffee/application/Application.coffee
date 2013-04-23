@@ -12,8 +12,15 @@ Ember.Handlebars.registerBoundHelper('markdown', (value) ->
   if value?
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
 )
+
 Ember.Application.initializer
-  name: "Load Data",
+  name: "load data",
   initialize: (container, application) ->
     App.Slideshow.find()
     App.Slide.find()
+
+Ember.Application.initializer
+  name: "session login",
+  initialize: (container, application) ->
+    userCon = container.lookup('controller:user')
+    userCon.sessionLogin()

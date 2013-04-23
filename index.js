@@ -14,7 +14,7 @@ var app = express();
 
 //DATABASE CONNECT
 var dbPath =  process.env.MONGOLAB_URI || 
-  process.env.MONGOHQ_URL || 'mongodb://localhost:27017/slideshowapp';
+    process.env.MONGOHQ_URL || 'mongodb://localhost:27017/slideshowapp';
 mongoose.connect(dbPath, 
 function() {
   console.log('mongo connected at', dbPath);
@@ -57,6 +57,9 @@ app.post('/slideshows', pass.verifyAuth, slideshowRoutes.postSlideshow);
 app.delete('/slideshows/:id', pass.verifyAuth, slideshowRoutes.deleteSlideshow); 
 
 app.get('/user/logout', userRoutes.getlogout);
+app.get('/user/sessionlogin', 
+        pass.verifyAuth, 
+        userRoutes.getsessionlogin);
 app.post('/user/login', passport.authenticate('local'), userRoutes.postlogin);
 app.post('/user/create',  userRoutes.postcreate, 
                           passport.authenticate('local'),

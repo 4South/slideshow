@@ -80,6 +80,22 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   },
+  sessionLogin: function() {
+    return this.userAjax('/user/sessionlogin', 'GET', {
+      success: function(data) {
+        return Ember.run(this, function() {
+          this.set('content', Ember.Object.create(data));
+          return this.transitionToRoute('slideshows');
+        });
+      },
+      error: function(xhr) {},
+      complete: function() {
+        return Ember.run(this, function() {
+          return this.resetForm();
+        });
+      }
+    });
+  },
   login: function() {
     return this.userAjax('/user/login', 'POST', {
       data: this.get('loginData'),

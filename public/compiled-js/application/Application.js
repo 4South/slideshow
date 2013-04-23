@@ -14,22 +14,20 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   }
 });
 
-<<<<<<< HEAD
-Em.TextField.reopenClass({
-  classNames: ['textfield'],
-  keyUp: function(event) {
-    if (event.keyCode === 13) {
-      return this.get('controller').login();
-    }
-  }
-});
-
-=======
->>>>>>> 0b5a2033fe79679070be77f08e084e11f2bace9c
 Ember.Application.initializer({
-  name: "Load Data",
+  name: "load data",
   initialize: function(container, application) {
     App.Slideshow.find();
     return App.Slide.find();
+  }
+});
+
+Ember.Application.initializer({
+  name: "session login",
+  initialize: function(container, application) {
+    var userCon;
+
+    userCon = container.lookup('controller:user');
+    return userCon.sessionLogin();
   }
 });

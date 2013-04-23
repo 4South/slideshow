@@ -73,7 +73,7 @@ App.SlidesRoute = Em.Route.extend
   #set the content using our model's custom 
   #find method (not ember-data)
   setupController: (controller, model) ->
-    slideshow = @controllerFor('slideshow').get('content') 
+    slideshow = @controllerFor('slideshow').get('content')
     slides = App.Slide.find({slideshow: slideshow.get('id')})
     controller.set('content', slides)
     

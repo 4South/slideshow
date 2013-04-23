@@ -5,6 +5,11 @@ exports.postlogin = function(req, res) {
   res.json( { id: req.user.id, username: req.user.username });
 };
 
+//attempts to log a "new page" in using their cookie
+exports.getsessionlogin = function(req, res) {
+  res.json( { id: req.user.id, username: req.user.username });
+},
+
 //defers to passport.authenticate on success for session token
 exports.postcreate = function(req, res, next) {
   User.findOne({username: req.body.username},

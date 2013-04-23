@@ -79,6 +79,21 @@ App.UserController = Ember.ObjectController.extend
       return true
     else return false
 
+  sessionLogin: () ->
+    @userAjax('/user/sessionlogin', 'GET',
+      success: (data) ->
+        Ember.run(@, () ->
+          @set('content', Ember.Object.create(data))
+          @transitionToRoute 'slideshows'
+        )
+      error: (xhr) ->
+        return
+      complete: () ->
+        Ember.run(@, () ->
+          @resetForm()
+        )
+     )
+
   login: () ->
     @userAjax('/user/login', 'POST',
       data: @get('loginData')
