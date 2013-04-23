@@ -13,7 +13,8 @@ var pass = require('./app/config/PassPort.js')
 var app = express();
 
 //DATABASE CONNECT
-var dbPath = 'mongodb://localhost:27017/slideshowapp';
+var dbPath =  process.env.MONGOLAB_URI || 
+  process.env.MONGOHQ_URL || 'mongodb://localhost:27017/slideshowapp';
 mongoose.connect(dbPath, 
 function() {
   console.log('mongo connected at', dbPath);
