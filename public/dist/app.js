@@ -150,7 +150,8 @@ App.SlidesController = Em.ArrayController.extend({
       App.Slide.createRecord({
         name: this.get('newSlideName'),
         position: this.get('content').toArray().length,
-        slideshow: activeShow
+        slideshow: activeShow,
+        title: this.get('newSlideName')
       });
       this.get('store').commit();
       this.set('newSlideName', '');
@@ -235,8 +236,11 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     pos = slide.get('position') - 1;
     this.send('transitionAfterDeletion', pos);
     slide.deleteRecord();
-    this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
     this.get('store').commit();
+    return Ember.run.later(this, this.updatePos, 250);
+  },
+  updatePos: function() {
+    this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
     return this.set('content', App.Slide.find({
       slideshow: this.get('controllers.slideshow.content.id')
     }));

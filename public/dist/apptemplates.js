@@ -501,7 +501,7 @@ function program1(depth0,data) {
 Ember.TEMPLATES["slideshows"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+  var buffer = '', stack1, hashTypes, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
@@ -517,28 +517,45 @@ function program1(depth0,data) {
 function program2(depth0,data) {
   
   var buffer = '', hashTypes;
-  data.buffer.push("\r\n              <section id = \"showthumbnails\">\r\n                Title: <br> ");
+  data.buffer.push("\r\n              <section id = \"showthumbnails\">\r\n               ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "show.title", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" <br>\r\n                Author: <br> ");
+  data.buffer.push(" <br><br>\r\n                Author: <br> ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "show.author", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
   data.buffer.push("\r\n              </section>  \r\n            ");
   return buffer;
   }
 
-  data.buffer.push("<section id = 'splashpage'>\r\n\r\n      <h3> Welcome ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller.controllers.user.content.username", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" </h3>\r\n      <h5> Choose a Slideshow </h5>\r\n        <div class = \"row-fluid\" id = \"slideshowlist\">\r\n          ");
-  hashTypes = {};
-  stack1 = helpers.each.call(depth0, "show", "in", "controller.content", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n        </div>\r\n      <hr>\r\n           ");
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, options;
+  data.buffer.push("\r\n        ");
   hashTypes = {};
   options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "slideshowcreate", options) : helperMissing.call(depth0, "partial", "slideshowcreate", options))));
-  data.buffer.push("\r\n \r\n</section>");
+  data.buffer.push("\r\n      ");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  
+  data.buffer.push("  \r\n        <h3> Please login to create a slideshow </h3>\r\n      ");
+  }
+
+  data.buffer.push("<section id = 'splashpage'>\r\n\r\n      <h3> Welcome ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller.controllers.user.content.username", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(" </h3>\r\n      <h5> Choose a Slideshow to view</h5>\r\n        <div class = \"row-fluid\" id = \"slideshowlist\">\r\n          ");
+  hashTypes = {};
+  stack1 = helpers.each.call(depth0, "show", "in", "controller.content", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\r\n        </div>\r\n      <hr>\r\n      ");
+  hashTypes = {};
+  stack1 = helpers['if'].call(depth0, "controllers.user.loggedIn", {hash:{},inverse:self.program(6, program6, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\r\n</section>");
   return buffer;
   
 });

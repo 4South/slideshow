@@ -88,7 +88,7 @@ App.SlidesController = Em.ArrayController.extend
                 name: @get('newSlideName')
                 position: @get('content').toArray().length
                 slideshow: activeShow
-                
+                title: @get('newSlideName')
       @get('store').commit()
       @set('newSlideName', '')
       slides = App.Slide.find(slideshow: activeShow.get('id'))
