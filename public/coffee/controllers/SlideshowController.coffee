@@ -3,7 +3,7 @@ App.SlideshowController = Em.ObjectController.extend
   editingMode: false
   
   userIsAuthor: (->
-    author = @get('author')
+    author = @get('content.author')
     user = @get('controllers.user.content.username')
     if author == user
       return true
@@ -16,7 +16,8 @@ App.SlideshowController = Em.ObjectController.extend
     if @get('userIsAuthor')
       @set('editingMode', true)
     else
-      console.log 'This slideshow may only be edited by: ', @get('author')
+      author = @get('content.author')
+      alert('This slideshow may only be edited by: ' + author)
     
   exitEditing: () ->
    @set('editingMode', false)

@@ -177,7 +177,7 @@ App.SlideshowController = Em.ObjectController.extend({
   userIsAuthor: (function() {
     var author, user;
 
-    author = this.get('author');
+    author = this.get('content.author');
     user = this.get('controllers.user.content.username');
     if (author === user) {
       return true;
@@ -186,10 +186,13 @@ App.SlideshowController = Em.ObjectController.extend({
     }
   }).property('content.author', 'controllers.user.content.@each'),
   goToEditing: function() {
+    var author;
+
     if (this.get('userIsAuthor')) {
       return this.set('editingMode', true);
     } else {
-      return console.log('This slideshow may only be edited by: ', this.get('author'));
+      author = this.get('content.author');
+      return alert('This slideshow may only be edited by: ' + author);
     }
   },
   exitEditing: function() {
