@@ -44,31 +44,45 @@ App.UserController = Ember.ObjectController.extend({
     return Ember.$.ajax(hash);
   },
   create: function() {
-    return this.userAjax('/user/create', 'POST', {
-      data: this.get('createData'),
-      success: function(data) {
-        return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
-        });
-      },
-      error: function(xhr) {
-        return Ember.run(this, function() {
-          return this.set('errorMessage', 'account creation failed, try again');
-        });
-      },
-      complete: function() {
-        return Ember.run(this, function() {
-          return this.resetForm();
-        });
-      }
-    });
+    if (this.validNewUser() === true) {
+      return this.userAjax('/user/create', 'POST', {
+        data: this.get('createData'),
+        success: function(data) {
+          return Ember.run(this, function() {
+            this.set('content', Ember.Object.create(data));
+            return this.transitionToRoute('slideshows');
+          });
+        },
+        error: function(xhr) {
+          return Ember.run(this, function() {
+            return this.set('errorMessage', 'account creation failed, try again');
+          });
+        },
+        complete: function() {
+          return Ember.run(this, function() {
+            return this.resetForm();
+          });
+        }
+      });
+    } else {
+      alert('Please fill out each field for User Creation');
+      return this.resetForm();
+    }
+  },
+  validNewUser: function() {
+    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
+      return true;
+    } else {
+      return false;
+    }
   },
   login: function() {
     return this.userAjax('/user/login', 'POST', {
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.set('content', Ember.Object.create(data));
+          return this.transitionToRoute('slideshows');
         });
       },
       error: function(xhr) {
@@ -87,7 +101,8 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/logout', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', null);
+          this.set('content', null);
+          return this.replaceRoute('index');
         });
       },
       error: function(xhr) {
@@ -96,5 +111,8 @@ App.UserController = Ember.ObjectController.extend({
         });
       }
     });
+  },
+  home: function() {
+    return this.replaceRoute('index');
   }
 });

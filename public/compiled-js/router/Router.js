@@ -66,9 +66,13 @@ App.ApplicationRoute = Ember.Route.extend({
 
 App.IndexRoute = Ember.Route.extend({
   renderTemplate: function(controller, model) {
-    return this.render('index', {
+    this.render('index', {
       into: 'application',
       outlet: 'slides'
+    });
+    return this.render("blank", {
+      into: 'application',
+      outlet: 'slidethumbnails'
     });
   }
 });

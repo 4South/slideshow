@@ -21,16 +21,6 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   
 });
 
-Ember.TEMPLATES["_header"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [2,'>= 1.0.0-rc.3'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '';
-
-
-  return buffer;
-  
-});
-
 Ember.TEMPLATES["_loggedin"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
@@ -349,11 +339,11 @@ function program3(depth0,data) {
   var buffer = '', stack1, hashTypes;
   data.buffer.push("\r\n  ");
   hashTypes = {};
-  stack1 = helpers.unless.call(depth0, "App.editingMode", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers.unless.call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n  ");
   hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "App.editingMode", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n");
   return buffer;
@@ -584,7 +574,7 @@ function program1(depth0,data) {
 
   data.buffer.push("<div id = \"btnWrapper\">\r\n  ");
   hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "App.editingMode", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n</div>\r\n\r\n<span class = \"nameWrapper\">\r\n  <p ");
   hashTypes = {};
@@ -658,10 +648,13 @@ function program3(depth0,data) {
     'type': ("password"),
     'valueBinding': ("loginPassword")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" \r\n        </form>\r\n      </li>\r\n      \r\n      <li style = 'padding-top:4px;margin-left:5px;'>\r\n        <button class=\"btn-mini btn-primary\" ");
+  data.buffer.push(" \r\n        </form>\r\n      </li>\r\n      \r\n      <li style = 'padding-top:4px;margin-left:5px;'>\r\n        <button class=\"btn-mini btn-warning\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "login", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">login</button>\r\n      </li>\r\n      \r\n\r\n    </ul>\r\n  ");
+  data.buffer.push(">login</button>\r\n      </li>      \r\n      \r\n      <li style = 'padding-top:4px;margin-left:5px;'>\r\n        <button class=\"btn-mini btn-primary\" ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "home", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(">Home</button>\r\n      </li>\r\n      \r\n\r\n    </ul>\r\n  ");
   return buffer;
   }
 

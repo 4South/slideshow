@@ -1,3 +1,4 @@
 App.SlideshowController = Em.ObjectController.extend({
-  needs: ['slides']
+  needs: ['slides'],
+  editingMode: false
 });

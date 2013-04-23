@@ -1,6 +1,4 @@
-window.App = Ember.Application.create
-  editingMode: false
-
+window.App = Ember.Application.create()
 #require ember data store
 require('store/Store.js')
 #import the router module

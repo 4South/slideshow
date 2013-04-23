@@ -9,14 +9,14 @@
 
 
 {{#if controller.controllers.user.loggedIn}}
-  {{#unless App.editingMode}}
+  {{#unless controller.controllers.slideshow.editingMode}}
     <br>
     <button {{action "goToEditing" 
               target="controllers.application"}}
               class = "btn-small btn-warning">
     Edit Slides </button>
   {{/unless}}
-  {{#if App.editingMode}}
+  {{#if controller.controllers.slideshow.editingMode}}
     <br>
     {{partial slidecreate}}  
     {{partial slideedit}}

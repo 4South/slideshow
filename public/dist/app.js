@@ -1,9 +1,7 @@
 minispade.register('application/Application.js', function() {
 var showdown;
 
-window.App = Ember.Application.create({
-  editingMode: false
-});minispade.require('store/Store.js');minispade.require('router/Router.js');
+window.App = Ember.Application.create();minispade.require('store/Store.js');minispade.require('router/Router.js');
 
 showdown = new Showdown.converter();
 
@@ -33,12 +31,12 @@ Ember.Application.initializer({
 
 minispade.register('controllers/ApplicationController.js', function() {
 App.ApplicationController = Ember.Controller.extend({
-  needs: ['slide', 'user', 'slides'],
+  needs: ['slide', 'user', 'slides', 'slideshow'],
   goToEditing: function() {
-    return Ember.set('App.editingMode', true);
+    return this.set('controllers.slideshow.editingMode', true);
   },
   exitEditing: function() {
-    return Ember.set('App.editingMode', false);
+    return this.set('controllers.slideshow.editingMode', false);
   }
 });
 });
@@ -182,7 +180,8 @@ App.SlidesController = Em.ArrayController.extend({
 
 minispade.register('controllers/SlideshowController.js', function() {
 App.SlideshowController = Em.ObjectController.extend({
-  needs: ['slides']
+  needs: ['slides'],
+  editingMode: false
 });
 });
 
@@ -303,31 +302,45 @@ App.UserController = Ember.ObjectController.extend({
     return Ember.$.ajax(hash);
   },
   create: function() {
-    return this.userAjax('/user/create', 'POST', {
-      data: this.get('createData'),
-      success: function(data) {
-        return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
-        });
-      },
-      error: function(xhr) {
-        return Ember.run(this, function() {
-          return this.set('errorMessage', 'account creation failed, try again');
-        });
-      },
-      complete: function() {
-        return Ember.run(this, function() {
-          return this.resetForm();
-        });
-      }
-    });
+    if (this.validNewUser() === true) {
+      return this.userAjax('/user/create', 'POST', {
+        data: this.get('createData'),
+        success: function(data) {
+          return Ember.run(this, function() {
+            this.set('content', Ember.Object.create(data));
+            return this.transitionToRoute('slideshows');
+          });
+        },
+        error: function(xhr) {
+          return Ember.run(this, function() {
+            return this.set('errorMessage', 'account creation failed, try again');
+          });
+        },
+        complete: function() {
+          return Ember.run(this, function() {
+            return this.resetForm();
+          });
+        }
+      });
+    } else {
+      alert('Please fill out each field for User Creation');
+      return this.resetForm();
+    }
+  },
+  validNewUser: function() {
+    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
+      return true;
+    } else {
+      return false;
+    }
   },
   login: function() {
     return this.userAjax('/user/login', 'POST', {
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.set('content', Ember.Object.create(data));
+          return this.transitionToRoute('slideshows');
         });
       },
       error: function(xhr) {
@@ -346,7 +359,8 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/logout', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', null);
+          this.set('content', null);
+          return this.replaceRoute('index');
         });
       },
       error: function(xhr) {
@@ -355,6 +369,9 @@ App.UserController = Ember.ObjectController.extend({
         });
       }
     });
+  },
+  home: function() {
+    return this.replaceRoute('index');
   }
 });
 });
@@ -592,9 +609,13 @@ App.ApplicationRoute = Ember.Route.extend({
 
 App.IndexRoute = Ember.Route.extend({
   renderTemplate: function(controller, model) {
-    return this.render('index', {
+    this.render('index', {
       into: 'application',
       outlet: 'slides'
+    });
+    return this.render("blank", {
+      into: 'application',
+      outlet: 'slidethumbnails'
     });
   }
 });

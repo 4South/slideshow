@@ -42,7 +42,11 @@ App.IndexRoute = Ember.Route.extend
     @render 'index',
         into: 'application'
         outlet: 'slides'
- 
+    #added this blank template to override thumbnails 
+    #when coming back to this route when logging out
+    @render "blank",
+                  into: 'application'
+                  outlet: 'slidethumbnails'
 App.SlideshowsRoute = Em.Route.extend
   setupController: (controller, model)->
     controller.set('content', App.Slideshow.find())

@@ -1,8 +1,6 @@
 var showdown;
 
-window.App = Ember.Application.create({
-  editingMode: false
-});
+window.App = Ember.Application.create();
 
 require('store/Store.js');
 

@@ -1,9 +1,9 @@
 App.ApplicationController = Ember.Controller.extend
 
-  needs: ['slide', 'user', 'slides']
+  needs: ['slide', 'user', 'slides', 'slideshow']
 
   goToEditing: () ->
-    Ember.set('App.editingMode', true)
+   @set('controllers.slideshow.editingMode', true)
     
   exitEditing: () ->
-    Ember.set('App.editingMode', false)
+   @set('controllers.slideshow.editingMode', false)
