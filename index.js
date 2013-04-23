@@ -63,7 +63,8 @@ app.post('/user/create',  userRoutes.postcreate,
                           userRoutes.postlogin);
 
 //CONNECT SERVER
-app.listen(1234, function(){
-    var msg = "connected on port 1234";
-    console.log(msg);
+var port = process.env.PORT || 1234;
+
+app.listen(port, function(){
+  console.log("connected on", port);
 });
