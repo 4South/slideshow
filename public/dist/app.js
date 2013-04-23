@@ -58,7 +58,7 @@ App.SlideController = Em.ObjectController.extend({
 
 minispade.register('controllers/SlidesController.js', function() {
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['application', 'slide', 'slideshow', 'user', 'slidethumbnails'],
+  needs: ['slide', 'slideshow', 'user', 'slidethumbnails'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
@@ -147,9 +147,6 @@ App.SlidesController = Em.ArrayController.extend({
       newSlide = this.get('arrangedContent').objectAt(curIndex - 1);
       return this.send("updateActiveSlide", newSlide);
     }
-  },
-  clickThumbnail: function(targetSlide) {
-    return this.send("updateActiveSlide", targetSlide);
   },
   create: function() {
     var activeShow, slides;
@@ -247,15 +244,11 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
 
     pos = slide.get('position') - 1;
     this.send('transitionAfterDeletion', pos);
+    console.log(this.get('controllers.slides.content').toArray().length);
     slide.deleteRecord();
-    this.get('store').commit();
-    return Ember.run.later(this, this.updatePos, 250);
-  },
-  updatePos: function() {
+    console.log(this.get('controllers.slides.content').toArray().length);
     this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
-    return this.set('content', App.Slide.find({
-      slideshow: this.get('controllers.slideshow.content.id')
-    }));
+    return this.get('store').commit();
   },
   moveDown: function(slide) {
     if (this.findTarget(slide, this.get('arrangedContent'), +1, 'position') != null) {
@@ -274,6 +267,9 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     decTarget.decrementProperty(property);
     incTarget.incrementProperty(property);
     return this.get('store').commit();
+  },
+  clickThumbnail: function(targetSlide) {
+    return this.send("updateActiveSlide", targetSlide);
   }
 });
 });
@@ -365,8 +361,7 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/sessionlogin', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          this.set('content', Ember.Object.create(data));
-          return this.transitionToRoute('slideshows');
+          return this.set('content', Ember.Object.create(data));
         });
       },
       error: function(xhr) {},
@@ -629,7 +624,7 @@ minispade.require('models/User.js');minispade.require('models/Slideshow.js');min
 App.Router.map(function() {
   this.resource("slideshows");
   return this.resource("slideshow", {
-    path: 'slideshow/:slideshow_id'
+    path: 'slideshows/:slideshow_id'
   }, function() {
     this.resource("slides", {
       path: '/slides'
@@ -712,7 +707,7 @@ App.SlidesRoute = Em.Route.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slides'
+      controller: 'slidethumbnails'
     });
     this.render("maincontrols", {
       into: 'user',

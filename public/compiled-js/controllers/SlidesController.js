@@ -1,5 +1,5 @@
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['application', 'slide', 'slideshow', 'user', 'slidethumbnails'],
+  needs: ['slide', 'slideshow', 'user', 'slidethumbnails'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
@@ -88,9 +88,6 @@ App.SlidesController = Em.ArrayController.extend({
       newSlide = this.get('arrangedContent').objectAt(curIndex - 1);
       return this.send("updateActiveSlide", newSlide);
     }
-  },
-  clickThumbnail: function(targetSlide) {
-    return this.send("updateActiveSlide", targetSlide);
   },
   create: function() {
     var activeShow, slides;

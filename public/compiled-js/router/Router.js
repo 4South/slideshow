@@ -41,7 +41,7 @@ require('views/UserView.js');
 App.Router.map(function() {
   this.resource("slideshows");
   return this.resource("slideshow", {
-    path: 'slideshow/:slideshow_id'
+    path: 'slideshows/:slideshow_id'
   }, function() {
     this.resource("slides", {
       path: '/slides'
@@ -124,7 +124,7 @@ App.SlidesRoute = Em.Route.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slides'
+      controller: 'slidethumbnails'
     });
     this.render("maincontrols", {
       into: 'user',

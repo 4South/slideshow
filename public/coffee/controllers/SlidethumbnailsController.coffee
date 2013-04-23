@@ -13,16 +13,13 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     pos = slide.get('position')-1
     #optional transition if deleted slide is the current route's slide
     @send 'transitionAfterDeletion', pos
+    console.log(@get('controllers.slides.content').toArray().length)
     slide.deleteRecord()
+    console.log(@get('controllers.slides.content').toArray().length)
     #todo fix timing hax with proper callback
+    @get('arrangedContent').forEach(@resort, @get('arrangedContent'))
     @get('store').commit()
-    Ember.run.later(@, @updatePos, 250)
     
-  updatePos: ->
-    @get('arrangedContent').forEach(@resort, @get('arrangedContent')) 
-    @set('content', App.Slide.find(slideshow: @get('controllers.slideshow.content.id')))      
-    
-      
   moveDown: (slide) ->
     if @findTarget(slide, @get('arrangedContent'), +1, 'position')?
       @swap(target, slide, 'position')
@@ -38,3 +35,6 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     decTarget.decrementProperty(property)
     incTarget.incrementProperty(property)
     @get('store').commit()
+
+  clickThumbnail: (targetSlide) ->
+    @send "updateActiveSlide", targetSlide

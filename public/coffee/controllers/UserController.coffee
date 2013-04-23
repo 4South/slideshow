@@ -84,7 +84,8 @@ App.UserController = Ember.ObjectController.extend
       success: (data) ->
         Ember.run(@, () ->
           @set('content', Ember.Object.create(data))
-          @transitionToRoute 'slideshows'
+          #SEND EVENT TO ROUTER FOR CONDITIONAL REDIRECT
+          #IF ON THE MAINPAGE
         )
       error: (xhr) ->
         return

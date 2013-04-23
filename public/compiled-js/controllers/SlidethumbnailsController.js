@@ -12,15 +12,11 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
 
     pos = slide.get('position') - 1;
     this.send('transitionAfterDeletion', pos);
+    console.log(this.get('controllers.slides.content').toArray().length);
     slide.deleteRecord();
-    this.get('store').commit();
-    return Ember.run.later(this, this.updatePos, 250);
-  },
-  updatePos: function() {
+    console.log(this.get('controllers.slides.content').toArray().length);
     this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
-    return this.set('content', App.Slide.find({
-      slideshow: this.get('controllers.slideshow.content.id')
-    }));
+    return this.get('store').commit();
   },
   moveDown: function(slide) {
     if (this.findTarget(slide, this.get('arrangedContent'), +1, 'position') != null) {
@@ -39,5 +35,8 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     decTarget.decrementProperty(property);
     incTarget.incrementProperty(property);
     return this.get('store').commit();
+  },
+  clickThumbnail: function(targetSlide) {
+    return this.send("updateActiveSlide", targetSlide);
   }
 });

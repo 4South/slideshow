@@ -24,7 +24,7 @@ require('views/UserView.js')
 #main router definition
 App.Router.map () ->
   @resource "slideshows"
-  @resource "slideshow", {path: 'slideshow/:slideshow_id'}, ->
+  @resource "slideshow", {path: 'slideshows/:slideshow_id'}, ->
     @resource "slides", {path: '/slides'}
     @resource "slide", {path: 'slides/:slide_id'}
 
@@ -83,10 +83,12 @@ App.SlidesRoute = Em.Route.extend
                     into: 'application'
                     outlet: 'slides'
                     controller: controller
+
     @render "slidethumbnails",
               into: 'application'
               outlet: 'slidethumbnails'
-              controller: 'slides'
+              controller: 'slidethumbnails'
+
     @render "maincontrols",
                     into: 'user'
                     outlet: 'controls'

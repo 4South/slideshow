@@ -1,6 +1,6 @@
 App.SlidesController = Em.ArrayController.extend
 
-  needs: ['application', 'slide', 'slideshow', 'user', 'slidethumbnails']
+  needs: ['slide', 'slideshow', 'user', 'slidethumbnails']
     
   newSlideName: ""
   sortProperties: ['position']
@@ -77,8 +77,6 @@ App.SlidesController = Em.ArrayController.extend
       newSlide = @get('arrangedContent').objectAt(curIndex-1)
       @send "updateActiveSlide", newSlide
 
-  clickThumbnail: (targetSlide) ->
-    @send "updateActiveSlide", targetSlide
 
   #CREATE CRUD
   create: () ->
