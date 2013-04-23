@@ -34,7 +34,7 @@ app.configure(function() {
   app.use(passport.initialize());
   app.use(passport.session());
 });
-
+//
 
 //main page load
 app.get('/', function(req, res) {
