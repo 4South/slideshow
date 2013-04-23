@@ -15,7 +15,6 @@ App.SlidesController = Em.ArrayController.extend({
     }
   }).property('newSlideName').cacheable(),
   activeSlide: (function() {
-    console.log('atleastoneslide', this.get('atleastOneSlide'));
     if (this.get('atleastOneSlide')) {
       return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
     } else {

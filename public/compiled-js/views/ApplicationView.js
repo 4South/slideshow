@@ -11,6 +11,8 @@ App.ApplicationView = Em.View.extend({
       case 38:
       case 37:
         return this.get('controller.controllers.slides').back();
+      case 13:
+        return this.get('controller.controllers.user').login();
     }
   }
 });

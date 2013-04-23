@@ -11,15 +11,6 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   }
 });
 
-Em.TextField.reopen({
-  classNames: ['textfield'],
-  keyUp: function(event) {
-    if (event.keyCode === 13) {
-      return this.get('controller').login();
-    }
-  }
-});
-
 Ember.Application.initializer({
   name: "Load Data",
   initialize: function(container, application) {
@@ -79,7 +70,6 @@ App.SlidesController = Em.ArrayController.extend({
     }
   }).property('newSlideName').cacheable(),
   activeSlide: (function() {
-    console.log('atleastoneslide', this.get('atleastOneSlide'));
     if (this.get('atleastOneSlide')) {
       return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
     } else {
@@ -740,6 +730,8 @@ App.ApplicationView = Em.View.extend({
       case 38:
       case 37:
         return this.get('controller.controllers.slides').back();
+      case 13:
+        return this.get('controller.controllers.user').login();
     }
   }
 });

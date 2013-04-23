@@ -14,15 +14,6 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   }
 });
 
-Em.TextField.reopen({
-  classNames: ['textfield'],
-  keyUp: function(event) {
-    if (event.keyCode === 13) {
-      return this.get('controller').login();
-    }
-  }
-});
-
 Ember.Application.initializer({
   name: "Load Data",
   initialize: function(container, application) {

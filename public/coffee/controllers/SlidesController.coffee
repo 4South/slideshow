@@ -18,7 +18,6 @@ App.SlidesController = Em.ArrayController.extend
   ).property('newSlideName').cacheable()
 
   activeSlide: (->
-    console.log 'atleastoneslide', @get 'atleastOneSlide'
     if @get('atleastOneSlide')
       return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
     else

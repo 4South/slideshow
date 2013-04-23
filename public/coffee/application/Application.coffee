@@ -9,13 +9,7 @@ Ember.Handlebars.registerBoundHelper('markdown', (value) ->
   if value?
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
 )
-
-Em.TextField.reopen
-  classNames: ['textfield']
-  keyUp: (event)->
-    if event.keyCode is 13
-      @get('controller').login()
-         
+      
 Ember.Application.initializer
   name: "Load Data",
   initialize: (container, application) ->
