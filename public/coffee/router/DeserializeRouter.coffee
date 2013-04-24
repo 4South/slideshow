@@ -32,10 +32,6 @@ App.Router.map () ->
         @resource "slide", {path: '/:slide_id'}
 
 App.SmartRoute = Ember.Route.extend
-
-  renderTemplate: (controller, model) ->
-    @resetOutlets()
-
   resetOutlets: () ->
     @render 'blankthumbnails',
                     outlet: 'slidethumbnails'
@@ -46,7 +42,14 @@ App.SmartRoute = Ember.Route.extend
     @render 'blankrightbar',
                     outlet: 'rightbar'
                     into: 'application'
-    #MAY WANT TO ALSO WIPE THE CENTER 
+
+  deserialize: (params) ->
+    model = @model(params)
+    console.log(@get('routeName'), "'s deserialize fired with ", params, model)
+    #this forceably calls renderTemplate on every route change
+    #Ember.run.next(@, @renderTemplate, @controllerFor(@get('routeName')), model)
+    return @currentModel = model
+
 
 App.ApplicationRoute = Ember.Route.extend
   events:
@@ -58,46 +61,41 @@ App.ApplicationRoute = Ember.Route.extend
     transitionAfterDeletion: () ->
       return
 
-    #currently not using, may delete
-    transitionWithRender: (name, parameters) ->
-      if (parameters) then @transitionTo(name, parameters)
-      else @transitionTo(name)
-      targetRoute = @container.lookup('route:'+name)
-      targetRoute.renderFloating.call(targetRoute)
-
-App.IndexRoute = App.SmartRoute.extend
+App.IndexRoute = Ember.Route.extend
   redirect: () ->
     @replaceWith "slideshows"
 
-App.SlideshowsIndexRoute = App.SmartRoute.extend
-  renderTemplate: (controller, model) ->
-    @_super()
-    @render "slideshows",
-                        outlet: 'main'
-                        into: 'application'
-                        controller: 'slideshows'
 
 App.SlideshowsRoute = App.SmartRoute.extend
   model: (params) ->
     return App.Slideshow.find()
 
-App.SlideshowIndexRoute = App.SmartRoute.extend
   renderTemplate: (controller, model) ->
-    @_super()
+    @render "slideshows",
+                    outlet: 'main'
+
+App.SlideshowRoute = App.SmartRoute.extend
+  renderTemplate: (controller, model) ->
     @render "slideshow",
                     into: 'application'
                     outlet: 'main'
-                    controller: 'slideshow'
 
-App.SlideshowRoute = App.SmartRoute.extend()
+  serialize: (model, params) ->
+    console.log(@get('routeName'), ' fired')
+    object = {}
+    object[params[0]] = model.get('id')
+    return object
 
-App.SlidesIndexRoute = App.SmartRoute.extend
+App.SlidesRoute = App.SmartRoute.extend
+  model: (params) ->
+    ssId = @modelFor('slideshow').get('id')
+    return App.Slide.find({slideshow: ssId})
+
   renderTemplate: (controller) ->
-    @_super()
     @render "slides",
                     into: 'application'
                     outlet: 'main'
-                    controller: 'slides'
+                    controller: controller
 
     @render "slidethumbnails",
               into: 'application'
@@ -114,13 +112,6 @@ App.SlidesIndexRoute = App.SmartRoute.extend
                     outlet: 'rightbar'
                     controller: "slides"
 
-App.SlidesRoute = App.SmartRoute.extend
-  model: (params) ->
-    ssId = @modelFor('slideshow').get('id')
-    return App.Slide.find({slideshow: ssId})
-
-App.SlideIndexRoute = App.SmartRoute.extend()
-
 App.SlideRoute = App.SmartRoute.extend
   events:
     transitionAfterDeletion: (pos) ->
@@ -129,6 +120,12 @@ App.SlideRoute = App.SmartRoute.extend
         @replaceWith "slide", slideAtPos
       else
         @replaceWith "slides"
+
+  serialize: (model, params) ->
+    console.log(model, @modelFor('slideshow'))
+    object = {}
+    object[params[0]] = model.get('id')
+    return object
 
   renderTemplate: (controller) ->
     @render "showcontrols",
@@ -139,7 +136,7 @@ App.SlideRoute = App.SmartRoute.extend
     @render "slidedetail",
                     into: 'application'
                     outlet: 'main'
-                    controller: 'slide'
+                    controller: controller
     
     @render "slidethumbnails",
               into: 'application'
@@ -150,4 +147,3 @@ App.SlideRoute = App.SmartRoute.extend
                     into: 'application'
                     outlet: 'rightbar'
                     controller: "slides"
-

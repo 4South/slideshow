@@ -67,9 +67,6 @@ App.Router.map(function() {
 });
 
 App.SmartRoute = Ember.Route.extend({
-  renderTemplate: function(controller, model) {
-    return this.resetOutlets();
-  },
   resetOutlets: function() {
     this.render('blankthumbnails', {
       outlet: 'slidethumbnails',
@@ -83,6 +80,13 @@ App.SmartRoute = Ember.Route.extend({
       outlet: 'rightbar',
       into: 'application'
     });
+  },
+  deserialize: function(params) {
+    var model;
+
+    model = this.model(params);
+    console.log(this.get('routeName'), "'s deserialize fired with ", params, model);
+    return this.currentModel = model;
   }
 });
 
@@ -95,64 +99,58 @@ App.ApplicationRoute = Ember.Route.extend({
       slidesCon.set('activeSlideIndex', newSlide.get('position'));
       return this.transitionTo('slide', slidesCon.get('activeSlide'));
     },
-    transitionAfterDeletion: function() {},
-    transitionWithRender: function(name, parameters) {
-      var targetRoute;
-
-      if (parameters) {
-        this.transitionTo(name, parameters);
-      } else {
-        this.transitionTo(name);
-      }
-      targetRoute = this.container.lookup('route:' + name);
-      return targetRoute.renderFloating.call(targetRoute);
-    }
+    transitionAfterDeletion: function() {}
   }
 });
 
-App.IndexRoute = App.SmartRoute.extend({
+App.IndexRoute = Ember.Route.extend({
   redirect: function() {
     return this.replaceWith("slideshows");
-  }
-});
-
-App.SlideshowsIndexRoute = App.SmartRoute.extend({
-  renderTemplate: function(controller, model) {
-    this._super();
-    return this.render("slideshows", {
-      outlet: 'main',
-      into: 'application',
-      controller: 'slideshows'
-    });
   }
 });
 
 App.SlideshowsRoute = App.SmartRoute.extend({
   model: function(params) {
     return App.Slideshow.find();
-  }
-});
-
-App.SlideshowIndexRoute = App.SmartRoute.extend({
+  },
   renderTemplate: function(controller, model) {
-    this._super();
-    return this.render("slideshow", {
-      into: 'application',
-      outlet: 'main',
-      controller: 'slideshow'
+    return this.render("slideshows", {
+      outlet: 'main'
     });
   }
 });
 
-App.SlideshowRoute = App.SmartRoute.extend();
+App.SlideshowRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller, model) {
+    return this.render("slideshow", {
+      into: 'application',
+      outlet: 'main'
+    });
+  },
+  serialize: function(model, params) {
+    var object;
 
-App.SlidesIndexRoute = App.SmartRoute.extend({
+    console.log(this.get('routeName'), ' fired');
+    object = {};
+    object[params[0]] = model.get('id');
+    return object;
+  }
+});
+
+App.SlidesRoute = App.SmartRoute.extend({
+  model: function(params) {
+    var ssId;
+
+    ssId = this.modelFor('slideshow').get('id');
+    return App.Slide.find({
+      slideshow: ssId
+    });
+  },
   renderTemplate: function(controller) {
-    this._super();
     this.render("slides", {
       into: 'application',
       outlet: 'main',
-      controller: 'slides'
+      controller: controller
     });
     this.render("slidethumbnails", {
       into: 'application',
@@ -172,19 +170,6 @@ App.SlidesIndexRoute = App.SmartRoute.extend({
   }
 });
 
-App.SlidesRoute = App.SmartRoute.extend({
-  model: function(params) {
-    var ssId;
-
-    ssId = this.modelFor('slideshow').get('id');
-    return App.Slide.find({
-      slideshow: ssId
-    });
-  }
-});
-
-App.SlideIndexRoute = App.SmartRoute.extend();
-
 App.SlideRoute = App.SmartRoute.extend({
   events: {
     transitionAfterDeletion: function(pos) {
@@ -198,6 +183,14 @@ App.SlideRoute = App.SmartRoute.extend({
       }
     }
   },
+  serialize: function(model, params) {
+    var object;
+
+    console.log(model, this.modelFor('slideshow'));
+    object = {};
+    object[params[0]] = model.get('id');
+    return object;
+  },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
       into: 'application',
@@ -207,7 +200,7 @@ App.SlideRoute = App.SmartRoute.extend({
     this.render("slidedetail", {
       into: 'application',
       outlet: 'main',
-      controller: 'slide'
+      controller: controller
     });
     this.render("slidethumbnails", {
       into: 'application',

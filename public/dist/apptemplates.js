@@ -375,6 +375,7 @@ function program4(depth0,data) {
   hashTypes = {};
   stack1 = helpers['if'].call(depth0, "controller.controllers.user.loggedIn", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
   return buffer;
   
 });
@@ -591,7 +592,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', hashTypes;
-  data.buffer.push("\n    ");
+  data.buffer.push("\n  ");
   hashTypes = {'contentBinding': "ID"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideThumbnailView", {hash:{
     'contentBinding': ("slide")
