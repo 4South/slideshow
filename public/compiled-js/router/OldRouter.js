@@ -40,29 +40,26 @@ require('views/UserView.js');
 
 App.Router.map(function() {
   this.resource("user", {
-    path: '/user'
+    path: 'user/'
   }, function() {
     this.route("create", {
-      path: '/create'
+      path: 'create/'
     });
     return this.route("edit", {
-      path: '/edit'
+      path: 'edit/'
     });
   });
-  return this.resource("slideshows", {
-    path: '/slideshows'
-  }, function() {
-    return this.resource("slideshow", {
-      path: '/:slideshow_id'
-    }, function() {
-      return this.resource("slides", {
-        path: '/slides'
-      }, function() {
-        return this.resource("slide", {
-          path: '/:slide_id'
-        });
-      });
-    });
+  this.resource("slideshows", {
+    path: 'slideshows/'
+  });
+  this.resource("slideshow", {
+    path: 'slideshows/:slideshow_id/'
+  });
+  this.resource("slides", {
+    path: 'slideshows/:slideshow_id/slides'
+  });
+  return this.resource("slide", {
+    path: 'slideshows/:slideshow_id/slides/:slide_id'
   });
 });
 
@@ -81,12 +78,21 @@ App.SmartRoute = Ember.Route.extend({
       into: 'application'
     });
   },
-  deserialize: function(params) {
-    var model;
+  configureControllers: function() {
+    var slides, thumbnailCon;
 
-    model = this.model(params);
-    console.log(this.get('routeName'), "'s deserialize fired with ", params, model);
-    return this.currentModel = model;
+    this.controllerFor('slideshow').set('content', this.modelFor('slideshow'));
+    slides = App.Slide.find();
+    this.controllerFor('slides').set('content', slides);
+    thumbnailCon = this.container.lookup('controller:slidethumbnails');
+    return thumbnailCon.set('content', slides);
+  },
+  renderTemplate: function(controller, model) {
+    this._super();
+    return this.resetOutlets();
+  },
+  deactivate: function() {
+    return this.resetOutlets();
   }
 });
 
@@ -98,20 +104,19 @@ App.ApplicationRoute = Ember.Route.extend({
       slidesCon = this.controllerFor('slides');
       slidesCon.set('activeSlideIndex', newSlide.get('position'));
       return this.transitionTo('slide', slidesCon.get('activeSlide'));
-    },
-    transitionAfterDeletion: function() {}
+    }
   }
 });
 
-App.IndexRoute = Ember.Route.extend({
+App.IndexRoute = App.SmartRoute.extend({
   redirect: function() {
     return this.replaceWith("slideshows");
   }
 });
 
 App.SlideshowsRoute = App.SmartRoute.extend({
-  model: function(params) {
-    return App.Slideshow.find();
+  setupController: function(controller, model) {
+    return controller.set('content', App.Slideshow.find());
   },
   renderTemplate: function(controller, model) {
     return this.render("slideshows", {
@@ -122,29 +127,39 @@ App.SlideshowsRoute = App.SmartRoute.extend({
 
 App.SlideshowRoute = App.SmartRoute.extend({
   renderTemplate: function(controller, model) {
+    this._super();
     return this.render("slideshow", {
       into: 'application',
       outlet: 'main'
     });
   },
-  serialize: function(model, params) {
-    var object;
-
-    console.log(this.get('routeName'), ' fired');
-    object = {};
-    object[params[0]] = model.get('id');
-    return object;
+  setupController: function(controller, model) {
+    return this.configureControllers();
   }
 });
 
 App.SlidesRoute = App.SmartRoute.extend({
-  model: function(params) {
-    var ssId;
+  events: {
+    transitionAfterDeletion: function() {}
+  },
+  serialize: function(model, params) {
+    var object;
 
-    ssId = this.modelFor('slideshow').get('id');
-    return App.Slide.find({
-      slideshow: ssId
+    object = {};
+    object[params[0]] = this.modelFor('slideshow').get('id');
+    return object;
+  },
+  deserialize: function(params) {
+    var slideshowId;
+
+    console.log('deserializing', params['slideshow_id']);
+    slideshowId = params['slideshow_id'];
+    return this.currentModel = App.Slide.find({
+      slideshow: slideshowId
     });
+  },
+  setupController: function(controller, model) {
+    return this.configureControllers();
   },
   renderTemplate: function(controller) {
     this.render("slides", {
@@ -186,10 +201,13 @@ App.SlideRoute = App.SmartRoute.extend({
   serialize: function(model, params) {
     var object;
 
-    console.log(model, this.modelFor('slideshow'));
     object = {};
-    object[params[0]] = model.get('id');
+    object[params[0]] = this.modelFor('slideshow').get('id');
+    object[params[1]] = model.get('id');
     return object;
+  },
+  setupController: function(controller, model) {
+    return this.configureControllers();
   },
   renderTemplate: function(controller) {
     this.render("showcontrols", {

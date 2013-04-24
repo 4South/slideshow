@@ -30,7 +30,7 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return false;
     }
-  }).property('content.@each').cacheable(),
+  }).property('content.@each.id').cacheable(),
   atStart: (function() {
     var index;
 

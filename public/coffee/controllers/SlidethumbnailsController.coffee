@@ -1,7 +1,6 @@
 App.SlidethumbnailsController = Em.ArrayController.extend
 
   needs: ['slideshow', 'slide', 'user', 'slides']
-  contentBinding: "controllers.slides.content"
   activeSlideBinding: "controllers.slides.activeSlide"
   sortProperties: ['position']
   sortAscending: true
@@ -37,4 +36,5 @@ App.SlidethumbnailsController = Em.ArrayController.extend
     @get('store').commit()
 
   clickThumbnail: (targetSlide) ->
+    console.log('clickthumbnail fired')
     @send "updateActiveSlide", targetSlide

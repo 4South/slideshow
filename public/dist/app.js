@@ -9,6 +9,7 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   if (value != null) {
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value));
   }
+  return "";
 });
 
 Ember.Application.initializer({
@@ -89,7 +90,7 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return false;
     }
-  }).property('content.@each').cacheable(),
+  }).property('content.@each.id').cacheable(),
   atStart: (function() {
     var index;
 
@@ -203,6 +204,9 @@ App.SlideshowController = Em.ObjectController.extend({
   },
   exitEditing: function() {
     return this.set('editingMode', false);
+  },
+  showSlides: function() {
+    return this.transitionToRoute("slides");
   }
 });
 });
@@ -232,7 +236,6 @@ App.SlideshowsController = Em.ArrayController.extend({
 minispade.register('controllers/SlidethumbnailsController.js', function() {
 App.SlidethumbnailsController = Em.ArrayController.extend({
   needs: ['slideshow', 'slide', 'user', 'slides'],
-  contentBinding: "controllers.slides.content",
   activeSlideBinding: "controllers.slides.activeSlide",
   sortProperties: ['position'],
   sortAscending: true,
@@ -269,6 +272,7 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     return this.get('store').commit();
   },
   clickThumbnail: function(targetSlide) {
+    console.log('clickthumbnail fired');
     return this.send("updateActiveSlide", targetSlide);
   }
 });
@@ -618,21 +622,65 @@ App.Slide.reopenClass({
 });
 });
 
-minispade.register('router/Router.js', function() {
+minispade.register('router/OldRouter.js', function() {
 minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
 
 App.Router.map(function() {
-  this.resource("slideshows");
-  return this.resource("slideshow", {
-    path: 'slideshows/:slideshow_id'
+  this.resource("user", {
+    path: 'user/'
   }, function() {
-    this.resource("slides", {
-      path: '/slides'
+    this.route("create", {
+      path: 'create/'
     });
-    return this.resource("slide", {
-      path: 'slides/:slide_id'
+    return this.route("edit", {
+      path: 'edit/'
     });
   });
+  this.resource("slideshows", {
+    path: 'slideshows/'
+  });
+  this.resource("slideshow", {
+    path: 'slideshows/:slideshow_id/'
+  });
+  this.resource("slides", {
+    path: 'slideshows/:slideshow_id/slides'
+  });
+  return this.resource("slide", {
+    path: 'slideshows/:slideshow_id/slides/:slide_id'
+  });
+});
+
+App.SmartRoute = Ember.Route.extend({
+  resetOutlets: function() {
+    this.render('blankthumbnails', {
+      outlet: 'slidethumbnails',
+      into: 'application'
+    });
+    this.render('blankcontrols', {
+      outlet: 'controls',
+      into: 'application'
+    });
+    return this.render('blankrightbar', {
+      outlet: 'rightbar',
+      into: 'application'
+    });
+  },
+  configureControllers: function() {
+    var slides, thumbnailCon;
+
+    this.controllerFor('slideshow').set('content', this.modelFor('slideshow'));
+    slides = App.Slide.find();
+    this.controllerFor('slides').set('content', slides);
+    thumbnailCon = this.container.lookup('controller:slidethumbnails');
+    return thumbnailCon.set('content', slides);
+  },
+  renderTemplate: function(controller, model) {
+    this._super();
+    return this.resetOutlets();
+  },
+  deactivate: function() {
+    return this.resetOutlets();
+  }
 });
 
 App.ApplicationRoute = Ember.Route.extend({
@@ -647,61 +695,63 @@ App.ApplicationRoute = Ember.Route.extend({
   }
 });
 
-App.IndexRoute = Ember.Route.extend({
-  renderTemplate: function(controller, model) {
-    this.render('index', {
-      into: 'application',
-      outlet: 'slides'
-    });
-    return this.render("blank", {
-      into: 'application',
-      outlet: 'slidethumbnails'
-    });
+App.IndexRoute = App.SmartRoute.extend({
+  redirect: function() {
+    return this.replaceWith("slideshows");
   }
 });
 
-App.SlideshowsRoute = Em.Route.extend({
+App.SlideshowsRoute = App.SmartRoute.extend({
   setupController: function(controller, model) {
     return controller.set('content', App.Slideshow.find());
   },
   renderTemplate: function(controller, model) {
-    this.render("slideshows", {
-      into: 'application',
-      outlet: 'slides'
-    });
-    return this.render("blank", {
-      into: 'application',
-      outlet: 'slidethumbnails'
+    return this.render("slideshows", {
+      outlet: 'main'
     });
   }
 });
 
-App.SlideshowRoute = Em.Route.extend({
+App.SlideshowRoute = App.SmartRoute.extend({
   renderTemplate: function(controller, model) {
+    this._super();
     return this.render("slideshow", {
       into: 'application',
-      outlet: 'slides'
+      outlet: 'main'
     });
+  },
+  setupController: function(controller, model) {
+    return this.configureControllers();
   }
 });
 
-App.SlidesRoute = Em.Route.extend({
+App.SlidesRoute = App.SmartRoute.extend({
   events: {
     transitionAfterDeletion: function() {}
   },
-  setupController: function(controller, model) {
-    var slides, slideshow;
+  serialize: function(model, params) {
+    var object;
 
-    slideshow = this.controllerFor('slideshow').get('content');
-    slides = App.Slide.find({
-      slideshow: slideshow.get('id')
+    object = {};
+    object[params[0]] = this.modelFor('slideshow').get('id');
+    return object;
+  },
+  deserialize: function(params) {
+    var slideshowId;
+
+    console.log('deserializing', params['slideshow_id']);
+    slideshowId = params['slideshow_id'];
+    return this.currentModel = App.Slide.find({
+      slideshow: slideshowId
     });
-    return controller.set('content', slides);
+  },
+  setupController: function(controller, model) {
+    return this.configureControllers();
   },
   renderTemplate: function(controller) {
     this.render("slides", {
       into: 'application',
-      outlet: 'slides',
+      outlet: 'main',
       controller: controller
     });
     this.render("slidethumbnails", {
@@ -710,7 +760,7 @@ App.SlidesRoute = Em.Route.extend({
       controller: 'slidethumbnails'
     });
     this.render("maincontrols", {
-      into: 'user',
+      into: 'application',
       outlet: 'controls',
       controller: "slides"
     });
@@ -722,7 +772,7 @@ App.SlidesRoute = Em.Route.extend({
   }
 });
 
-App.SlideRoute = Ember.Route.extend({
+App.SlideRoute = App.SmartRoute.extend({
   events: {
     transitionAfterDeletion: function(pos) {
       var slideAtPos;
@@ -735,16 +785,213 @@ App.SlideRoute = Ember.Route.extend({
       }
     }
   },
+  serialize: function(model, params) {
+    var object;
+
+    object = {};
+    object[params[0]] = this.modelFor('slideshow').get('id');
+    object[params[1]] = model.get('id');
+    return object;
+  },
+  setupController: function(controller, model) {
+    return this.configureControllers();
+  },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
-      into: 'user',
+      into: 'application',
       outlet: 'controls',
       controller: 'slides'
     });
     this.render("slidedetail", {
       into: 'application',
-      outlet: 'slides',
+      outlet: 'main',
       controller: controller
+    });
+    this.render("slidethumbnails", {
+      into: 'application',
+      outlet: 'slidethumbnails',
+      controller: 'slidethumbnails'
+    });
+    return this.render("rightbar", {
+      into: 'application',
+      outlet: 'rightbar',
+      controller: "slides"
+    });
+  }
+});
+});
+
+minispade.register('router/Router.js', function() {
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
+
+App.Router.map(function() {
+  this.resource("user", {
+    path: '/user'
+  }, function() {
+    this.route("create", {
+      path: '/create'
+    });
+    return this.route("edit", {
+      path: '/edit'
+    });
+  });
+  return this.resource("slideshows", {
+    path: '/slideshows'
+  }, function() {
+    return this.resource("slideshow", {
+      path: '/:slideshow_id'
+    }, function() {
+      return this.resource("slides", {
+        path: '/slides'
+      }, function() {
+        return this.resource("slide", {
+          path: '/:slide_id'
+        });
+      });
+    });
+  });
+});
+
+App.SmartRoute = Ember.Route.extend({
+  resetOutlets: function() {
+    this.render('blankthumbnails', {
+      outlet: 'slidethumbnails',
+      into: 'application'
+    });
+    this.render('blankcontrols', {
+      outlet: 'controls',
+      into: 'application'
+    });
+    return this.render('blankrightbar', {
+      outlet: 'rightbar',
+      into: 'application'
+    });
+  },
+  deserialize: function(params) {
+    var model;
+
+    model = this.model(params);
+    console.log(this.get('routeName'), "'s deserialize fired with ", params, model);
+    return this.currentModel = model;
+  }
+});
+
+App.ApplicationRoute = Ember.Route.extend({
+  events: {
+    updateActiveSlide: function(newSlide) {
+      var slidesCon;
+
+      slidesCon = this.controllerFor('slides');
+      slidesCon.set('activeSlideIndex', newSlide.get('position'));
+      return this.transitionTo('slide', slidesCon.get('activeSlide'));
+    },
+    transitionAfterDeletion: function() {}
+  }
+});
+
+App.IndexRoute = Ember.Route.extend({
+  redirect: function() {
+    return this.replaceWith("slideshows");
+  }
+});
+
+App.SlideshowsRoute = App.SmartRoute.extend({
+  model: function(params) {
+    return App.Slideshow.find();
+  },
+  renderTemplate: function(controller, model) {
+    return this.render("slideshows", {
+      outlet: 'main'
+    });
+  }
+});
+
+App.SlideshowRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller, model) {
+    return this.render("slideshow", {
+      into: 'application',
+      outlet: 'main'
+    });
+  },
+  serialize: function(model, params) {
+    var object;
+
+    console.log(this.get('routeName'), ' fired');
+    object = {};
+    object[params[0]] = model.get('id');
+    return object;
+  }
+});
+
+App.SlidesRoute = App.SmartRoute.extend({
+  model: function(params) {
+    var ssId;
+
+    ssId = this.modelFor('slideshow').get('id');
+    return App.Slide.find({
+      slideshow: ssId
+    });
+  },
+  renderTemplate: function(controller) {
+    this.render("slides", {
+      into: 'application',
+      outlet: 'main',
+      controller: controller
+    });
+    this.render("slidethumbnails", {
+      into: 'application',
+      outlet: 'slidethumbnails',
+      controller: 'slidethumbnails'
+    });
+    this.render("maincontrols", {
+      into: 'application',
+      outlet: 'controls',
+      controller: "slides"
+    });
+    return this.render("rightbar", {
+      into: 'application',
+      outlet: 'rightbar',
+      controller: "slides"
+    });
+  }
+});
+
+App.SlideRoute = App.SmartRoute.extend({
+  events: {
+    transitionAfterDeletion: function(pos) {
+      var slideAtPos;
+
+      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
+      if (slideAtPos != null) {
+        return this.replaceWith("slide", slideAtPos);
+      } else {
+        return this.replaceWith("slides");
+      }
+    }
+  },
+  serialize: function(model, params) {
+    var object;
+
+    console.log(model, this.modelFor('slideshow'));
+    object = {};
+    object[params[0]] = model.get('id');
+    return object;
+  },
+  renderTemplate: function(controller) {
+    this.render("showcontrols", {
+      into: 'application',
+      outlet: 'controls',
+      controller: 'slides'
+    });
+    this.render("slidedetail", {
+      into: 'application',
+      outlet: 'main',
+      controller: controller
+    });
+    this.render("slidethumbnails", {
+      into: 'application',
+      outlet: 'slidethumbnails',
+      controller: 'slidethumbnails'
     });
     return this.render("rightbar", {
       into: 'application',
@@ -877,8 +1124,8 @@ App.SlidethumbnailsView = Em.View.extend({
 
 minispade.register('views/UserView.js', function() {
 App.UserView = Ember.View.extend({
-  tagName: "div",
-  classNames: ['navbar', 'navbar-inverse', 'navbar-fixed-top'],
+  tagName: "ul",
+  classNames: ['nav', 'pull-right'],
   templateName: "user"
 });
 });

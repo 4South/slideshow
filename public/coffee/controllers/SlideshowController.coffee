@@ -22,3 +22,6 @@ App.SlideshowController = Em.ObjectController.extend
   exitEditing: () ->
    @set('editingMode', false)
   
+  showSlides: () ->
+    @transitionToRoute "slides"
+

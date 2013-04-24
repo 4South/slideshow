@@ -1,0 +1,46 @@
+CSS on mainlogin page is not quite right
+CSS for Editing forms on rightbar do not fit small monitors
+
+when refreshing on a specific slide, no activeslide is set...bummer
+
+Conditionally redirect on successful login IF current route is the indexroute
+
+add some kind of information to the slideshow splash page (perhaps a form to optionally rename, author info, creation date, etc)
+Consider adding some additional information to the form fr initial slideshow creation (picture/eventname/bleheblehbleheblheblhe)
+
+Cannot navigate to slideshows from a specific slideshow
+
+Display slideshow name in the header when you are viewing a route in slideshows/*
+
+When you are inside a slideshow there is no way to navigate to the list of shows or back to the user/login panel
+THIS IS CAUSED BY A RENDERING ISSUE.  It works if you navigate to the page but not on reload
+
+Edit Slides button should indicate that this includes creation (somehow)
+
+Edit slide box should not appear until there is a slide selected
+
+on slideshow/:id/slides on reload rightsidebar buttons do not reload
+on reload, specific slides do not reload
+
+going back from a slideshow's slides to slideshow does not properly re-render
+
+If a account creation attempt fails because there is a user by that name or email by that name already then the user needs much clearer feedback
+
+similarly, for login failures, wrong passwords, etc all these things need clear feedback
+
+account creation is a route that is optional (available from the navbar)
+when you create an account, you should be re-directed back to the page you were previously on (if possible)
+
+indexroute redirects to slideshows
+
+something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
+
+Up and Down buttons are broken
+
+When you delete a slide, the newly targetted slide is targetted but it is not highlighted correctly
+
+highlighting....how does it work
+
+When you delete an intermediate slide, the navigation buttons and highlighting gets fucked
+
+Edit slides should force you into slide mode and target the currently active slide.  Is not poissible if there are no slides

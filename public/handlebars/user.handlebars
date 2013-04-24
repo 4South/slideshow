@@ -1,48 +1,32 @@
-<div class="navbar-inner">
-  <ul class = "nav">
-    <li> {{outlet controls}} </li>
-  </ul>
+{{#if loggedIn}}
+  <li> <p id = "navlabel"> You logged in as {{username}} </p> </li>
 
-  {{#if loggedIn}}
-  <ul class = "nav pull-right">
-    <li> <p id = "navlabel"> You logged in as {{username}} </p> </li>
+  <li style = 'padding-top:4px;margin-left:5px;'>
+    <button class="btn-mini btn-warning" {{action logout}}>logout</button> 
+  </li>
+{{else}}
+  <li> <p id = "navlabel">{{errorMessage}}</p> </li>
+  <li> <p id = "navlabel">username</p> </li>
+  
+  <li>
+    <form class="navbar-form">
+      {{view Ember.TextField valueBinding="loginUser"}} 
+    </form>
+  </li>
 
-    <li style = 'padding-top:4px;margin-left:5px;'>
-      <button class="btn-mini btn-warning" {{action logout}}>logout</button> 
-    </li>
-  </ul>
-  {{else}}
-    <ul class = "nav pull-right">
-      <li> <p id = "navlabel">{{errorMessage}}</p> </li>
-      <li> <p id = "navlabel">username</p> </li>
-      
-      <li>
-        <form class="navbar-form">
-          {{view Ember.TextField valueBinding="loginUser"}} 
-        </form>
-      </li>
-
-      <li> <p id = "navlabel">password</p> </li>
-      
-      <li>
-        <form class="navbar-form">
-          {{view Ember.TextField type="password" valueBinding="loginPassword"}} 
-        </form>
-      </li>
-      
-      <li style = 'padding-top:4px;margin-left:5px;'>
-        <button class="btn-mini btn-warning" {{action login}}>login</button>
-      </li>      
-      
-      <li style = 'padding-top:4px;margin-left:5px;'>
-        <button class="btn-mini btn-primary" {{action home}}>Home</button>
-      </li>
-      
-
-    </ul>
-  {{/if}}
-
-</div>
-
-
-
+  <li> <p id = "navlabel">password</p> </li>
+  
+  <li>
+    <form class="navbar-form">
+      {{view Ember.TextField type="password" valueBinding="loginPassword"}} 
+    </form>
+  </li>
+  
+  <li style = 'padding-top:4px;margin-left:5px;'>
+    <button class="btn-mini btn-warning" {{action login}}>login</button>
+  </li>      
+  
+  <li style = 'padding-top:4px;margin-left:5px;'>
+    <button class="btn-mini btn-primary" {{action home}}>Home</button>
+  </li>
+{{/if}}

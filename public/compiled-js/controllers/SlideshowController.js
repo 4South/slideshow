@@ -24,5 +24,8 @@ App.SlideshowController = Em.ObjectController.extend({
   },
   exitEditing: function() {
     return this.set('editingMode', false);
+  },
+  showSlides: function() {
+    return this.transitionToRoute("slides");
   }
 });

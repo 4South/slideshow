@@ -1,6 +1,5 @@
 App.SlidethumbnailsController = Em.ArrayController.extend({
   needs: ['slideshow', 'slide', 'user', 'slides'],
-  contentBinding: "controllers.slides.content",
   activeSlideBinding: "controllers.slides.activeSlide",
   sortProperties: ['position'],
   sortAscending: true,
@@ -37,6 +36,7 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
     return this.get('store').commit();
   },
   clickThumbnail: function(targetSlide) {
+    console.log('clickthumbnail fired');
     return this.send("updateActiveSlide", targetSlide);
   }
 });

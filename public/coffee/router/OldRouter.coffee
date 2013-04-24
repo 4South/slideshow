@@ -23,16 +23,16 @@ require('views/UserView.js')
 
 #main router definition
 App.Router.map () ->
-  @resource "user", {path: '/user'}, ->
-    @route "create", {path: '/create'}
-    @route "edit", {path: '/edit'}
-  @resource "slideshows", {path: '/slideshows'}, ->
-    @resource "slideshow", {path: '/:slideshow_id'}, ->
-      @resource "slides", {path: '/slides'}, ->
-        @resource "slide", {path: '/:slide_id'}
+  @resource "user", {path: 'user/'}, ->
+    @route "create", {path: 'create/'}
+    @route "edit", {path: 'edit/'}
+  @resource "slideshows", {path: 'slideshows/'}
+  @resource "slideshow", {path: 'slideshows/:slideshow_id/'}
+  @resource "slides", {path: 'slideshows/:slideshow_id/slides'}
+  @resource "slide", {path: 'slideshows/:slideshow_id/slides/:slide_id'}
 
 App.SmartRoute = Ember.Route.extend
-  resetOutlets: () ->
+  resetOutlets : () ->
     @render 'blankthumbnails',
                     outlet: 'slidethumbnails'
                     into: 'application'
@@ -43,13 +43,20 @@ App.SmartRoute = Ember.Route.extend
                     outlet: 'rightbar'
                     into: 'application'
 
-  deserialize: (params) ->
-    model = @model(params)
-    console.log(@get('routeName'), "'s deserialize fired with ", params, model)
-    #this forceably calls renderTemplate on every route change
-    #Ember.run.next(@, @renderTemplate, @controllerFor(@get('routeName')), model)
-    return @currentModel = model
+  configureControllers: () ->
+    @controllerFor('slideshow').set('content', @modelFor('slideshow'))
+    slides = App.Slide.find()
+    @controllerFor('slides').set('content', slides)
+    thumbnailCon = @container.lookup('controller:slidethumbnails')
+    thumbnailCon.set('content', slides)
+    
 
+  renderTemplate: (controller, model) ->
+    @_super()
+    @resetOutlets()
+
+  deactivate: () ->
+    @resetOutlets()
 
 App.ApplicationRoute = Ember.Route.extend
   events:
@@ -57,41 +64,52 @@ App.ApplicationRoute = Ember.Route.extend
       slidesCon = @controllerFor('slides')
       slidesCon.set('activeSlideIndex', newSlide.get('position'))
       @transitionTo('slide', slidesCon.get('activeSlide'))
-
-    transitionAfterDeletion: () ->
-      return
-
-App.IndexRoute = Ember.Route.extend
+    
+App.IndexRoute = App.SmartRoute.extend
   redirect: () ->
     @replaceWith "slideshows"
 
-
 App.SlideshowsRoute = App.SmartRoute.extend
-  model: (params) ->
-    return App.Slideshow.find()
-
+  setupController: (controller, model)->
+    controller.set('content', App.Slideshow.find())
   renderTemplate: (controller, model) ->
     @render "slideshows",
                     outlet: 'main'
-
+    
 App.SlideshowRoute = App.SmartRoute.extend
   renderTemplate: (controller, model) ->
+    @_super()
     @render "slideshow",
                     into: 'application'
                     outlet: 'main'
+  
+  setupController: (controller, model) ->
+    @configureControllers()
+
+ 
+App.SlidesRoute = App.SmartRoute.extend
+  events:
+    transitionAfterDeletion: () ->
+      return
 
   serialize: (model, params) ->
-    console.log(@get('routeName'), ' fired')
     object = {}
-    object[params[0]] = model.get('id')
+    object[params[0]] = @modelFor('slideshow').get('id')
     return object
 
-App.SlidesRoute = App.SmartRoute.extend
-  model: (params) ->
-    ssId = @modelFor('slideshow').get('id')
-    return App.Slide.find({slideshow: ssId})
+  deserialize: (params)->
+    #console.log "MODEL:", @model
+    console.log 'deserializing', params['slideshow_id']
+    
+    slideshowId = params['slideshow_id']
+    #console.log slideshowId, 'id'
+    return @currentModel = App.Slide.find({slideshow:slideshowId})
 
+  setupController: (controller, model) ->
+    @configureControllers()
+    
   renderTemplate: (controller) ->
+    
     @render "slides",
                     into: 'application'
                     outlet: 'main'
@@ -111,7 +129,7 @@ App.SlidesRoute = App.SmartRoute.extend
                     into: 'application'
                     outlet: 'rightbar'
                     controller: "slides"
-
+                 
 App.SlideRoute = App.SmartRoute.extend
   events:
     transitionAfterDeletion: (pos) ->
@@ -122,10 +140,13 @@ App.SlideRoute = App.SmartRoute.extend
         @replaceWith "slides"
 
   serialize: (model, params) ->
-    console.log(model, @modelFor('slideshow'))
     object = {}
-    object[params[0]] = model.get('id')
+    object[params[0]] = @modelFor('slideshow').get('id')
+    object[params[1]] = model.get('id')
     return object
+     
+  setupController: (controller, model) ->
+    @configureControllers()
 
   renderTemplate: (controller) ->
     @render "showcontrols",
@@ -147,3 +168,4 @@ App.SlideRoute = App.SmartRoute.extend
                     into: 'application'
                     outlet: 'rightbar'
                     controller: "slides"
+

@@ -11,6 +11,7 @@ showdown = new Showdown.converter()
 Ember.Handlebars.registerBoundHelper('markdown', (value) ->
   if value?
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
+  return ""
 )
 
 Ember.Application.initializer

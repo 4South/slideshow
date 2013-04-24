@@ -31,7 +31,7 @@ App.SlidesController = Em.ArrayController.extend
       return true
     else
       return false
-  ).property('content.@each').cacheable()
+  ).property('content.@each.id').cacheable()
 
   #boolean helpers
   atStart: (->

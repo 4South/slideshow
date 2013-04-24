@@ -1,5 +1,5 @@
 App.UserView = Ember.View.extend({
-  tagName: "div",
-  classNames: ['navbar', 'navbar-inverse', 'navbar-fixed-top'],
+  tagName: "ul",
+  classNames: ['nav', 'pull-right'],
   templateName: "user"
 });

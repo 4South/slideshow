@@ -12,6 +12,7 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
   if (value != null) {
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value));
   }
+  return "";
 });
 
 Ember.Application.initializer({
