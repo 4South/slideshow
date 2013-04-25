@@ -41,8 +41,10 @@ exports.deleteSlideById = function(req, res) {
     if (err) { 
       res.json({message: err});
     } else {
-      response['slide'] = formatSlideResponse(result); 
-      res.send(response);
+      //TEST
+      res.status(200).send({});
+      //response['slide'] = formatSlideResponse(result); 
+      //res.send(response);
     }
   });
 };

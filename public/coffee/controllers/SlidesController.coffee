@@ -6,6 +6,14 @@ App.SlidesController = Em.ArrayController.extend
   sortProperties: ['position']
   sortAscending: true
   activeSlideBinding: 'controllers.slide.content'
+  currentSlideShowBinding: 'controllers.slideshow.content'
+
+  filteredContent: (->
+    curSlideShow = @get('currentSlideShow')
+    window.fuckit = @get('contet')
+    console.log(@get('content'))
+    return @get('content').filterProperty('slideshow', curSlideShow)
+  ).property('content.@each', 'currentSlideShow')
 
   #BOOLEAN HELPER COMPUTED PROPS
   #names cannot have spaces or be blank
@@ -40,9 +48,9 @@ App.SlidesController = Em.ArrayController.extend
   #is activeslide the last slide?
   atEnd: (->
     activeSlide = @get('activeSlide')
-    endPosition = @get('arrangedContent').toArray().length-1
+    endPosition = @get('filteredContent').toArray().length-1
     return @isPositionAnExtreme(activeSlide, endPosition)
-  ).property('activeSlide', 'arrangedContent.@each').cacheable()
+  ).property('activeSlide', 'filteredContent.@each').cacheable()
 
   #text used to notify user of unsaved changes
   savedStatus: (->
@@ -88,11 +96,11 @@ App.SlidesController = Em.ArrayController.extend
     @get('store').commit()
 
   moveDown: (slide) ->
-    if @findTarget(slide, @get('arrangedContent'), +1, 'position')?
+    if @findTarget(slide, @get('filteredContent'), +1, 'position')?
       @swap(target, slide, 'position')
 
   moveUp: (slide) ->
-    if @findTarget(slide, @get('arrangedContent'), -1, 'position')?
+    if @findTarget(slide, @get('filteredContent'), -1, 'position')?
       @swap(slide, target, 'position')
 
 
@@ -110,24 +118,22 @@ App.SlidesController = Em.ArrayController.extend
 
       @get('store').commit()
       @set('newSlideName', '')
+      window.bucket = DS.defaultStore.get('defaultTransaction.buckets')
 
   deleteSlide: (slide) ->
-    arrCon = @get('arrangedContent')
+    arrCon = @get('filteredContent')
     currentPos = slide.get('position')
     slide.deleteRecord()
     console.log slide.get('stateManager.currentState.name')
     console.log arrCon.toArray()
     console.log @get('content').toArray()
+    window.bucket = DS.defaultStore.get('defaultTransaction.buckets')
     
-    #if @get('atleastOneSlide') 
-    #  i = 0
-    #  for eachslide in arrCon
-    #    if slide isnt eachslide
-    #      eachslide.set('position', i)
-    #      i=i+1
-    #      
-    #  target = @get('content').filterProperty('position', currentPos)
-    #  if not target
-    #    target = @get('arrangedContent').get('lastObject')
-
+    if @get('atleastOneSlide')
+      i = 0
+      for eachslide in arrCon
+        if slide isnt eachslide
+          eachslide.set('position', i)
+          i=i+1
+          
     @get('store').commit()

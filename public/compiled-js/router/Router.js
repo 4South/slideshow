@@ -171,12 +171,11 @@ App.SlidesIndexRoute = App.SmartRoute.extend({
 
 App.SlidesRoute = App.SmartRoute.extend({
   model: function(params) {
-    var ssId;
+    var parentShow;
 
-    ssId = this.modelFor('slideshow').get('id');
-    return App.Slide.find({
-      slideshow: ssId
-    });
+    return App.Slide.find();
+    parentShow = this.modelFor('slideshow');
+    return console.log(parentShow);
   }
 });
 

@@ -1,13 +1,9 @@
-
-{{#each slide in arrangedContent}}
+{{#each slide in filteredContent}}
   <div class = "slide">
-    {{#view contentBinding = "slide"}}
+    {{#view contentBinding="slide"}}
       {{partial presentationslide}}
     {{/view}}
   </div>
-  
 {{else}}
-  
   <div class="emptyslidesview"><h1>No Slides</h1></div>
-
 {{/each}}

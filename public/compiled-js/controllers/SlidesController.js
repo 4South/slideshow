@@ -4,6 +4,15 @@ App.SlidesController = Em.ArrayController.extend({
   sortProperties: ['position'],
   sortAscending: true,
   activeSlideBinding: 'controllers.slide.content',
+  currentSlideShowBinding: 'controllers.slideshow.content',
+  filteredContent: (function() {
+    var curSlideShow;
+
+    curSlideShow = this.get('currentSlideShow');
+    window.fuckit = this.get('contet');
+    console.log(this.get('content'));
+    return this.get('content').filterProperty('slideshow', curSlideShow);
+  }).property('content.@each', 'currentSlideShow'),
   nameIsValid: (function() {
     var name;
 
@@ -45,9 +54,9 @@ App.SlidesController = Em.ArrayController.extend({
     var activeSlide, endPosition;
 
     activeSlide = this.get('activeSlide');
-    endPosition = this.get('arrangedContent').toArray().length - 1;
+    endPosition = this.get('filteredContent').toArray().length - 1;
     return this.isPositionAnExtreme(activeSlide, endPosition);
-  }).property('activeSlide', 'arrangedContent.@each').cacheable(),
+  }).property('activeSlide', 'filteredContent.@each').cacheable(),
   savedStatus: (function() {
     if (this.get('content').someProperty('isDirty')) {
       return "Unsaved Changes";
@@ -90,12 +99,12 @@ App.SlidesController = Em.ArrayController.extend({
     return this.get('store').commit();
   },
   moveDown: function(slide) {
-    if (this.findTarget(slide, this.get('arrangedContent'), +1, 'position') != null) {
+    if (this.findTarget(slide, this.get('filteredContent'), +1, 'position') != null) {
       return this.swap(target, slide, 'position');
     }
   },
   moveUp: function(slide) {
-    if (this.findTarget(slide, this.get('arrangedContent'), -1, 'position') != null) {
+    if (this.findTarget(slide, this.get('filteredContent'), -1, 'position') != null) {
       return this.swap(slide, target, 'position');
     }
   },
@@ -113,18 +122,30 @@ App.SlidesController = Em.ArrayController.extend({
         title: this.get('newSlideName')
       });
       this.get('store').commit();
-      return this.set('newSlideName', '');
+      this.set('newSlideName', '');
+      return window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
     }
   },
   deleteSlide: function(slide) {
-    var arrCon, currentPos;
+    var arrCon, currentPos, eachslide, i, _i, _len;
 
-    arrCon = this.get('arrangedContent');
+    arrCon = this.get('filteredContent');
     currentPos = slide.get('position');
     slide.deleteRecord();
     console.log(slide.get('stateManager.currentState.name'));
     console.log(arrCon.toArray());
     console.log(this.get('content').toArray());
+    window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
+    if (this.get('atleastOneSlide')) {
+      i = 0;
+      for (_i = 0, _len = arrCon.length; _i < _len; _i++) {
+        eachslide = arrCon[_i];
+        if (slide !== eachslide) {
+          eachslide.set('position', i);
+          i = i + 1;
+        }
+      }
+    }
     return this.get('store').commit();
   }
 });

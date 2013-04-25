@@ -15,3 +15,8 @@ Ember.Application.initializer
   initialize: (container, application) ->
     userCon = container.lookup('controller:user')
     userCon.sessionLogin()
+
+#quick hack to inspect ember data objects
+Ember.run.later(@, (() ->
+  window.bucket = DS.defaultStore.get('defaultTransaction.buckets')), 3000
+)

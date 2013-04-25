@@ -24,3 +24,7 @@ Ember.Application.initializer({
     return userCon.sessionLogin();
   }
 });
+
+Ember.run.later(this, (function() {
+  return window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
+}), 3000);

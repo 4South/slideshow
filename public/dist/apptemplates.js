@@ -412,7 +412,7 @@ function program1(depth0,data) {
     'contentBinding': ("slide")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[],types:[],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n  </div>\n  \n");
+  data.buffer.push("\n  </div>\n");
   return buffer;
   }
 function program2(depth0,data) {
@@ -429,12 +429,11 @@ function program2(depth0,data) {
 function program4(depth0,data) {
   
   
-  data.buffer.push("\n  \n  <div class=\"emptyslidesview\"><h1>No Slides</h1></div>\n\n");
+  data.buffer.push("\n  <div class=\"emptyslidesview\"><h1>No Slides</h1></div>\n");
   }
 
-  data.buffer.push("\n");
   hashTypes = {};
-  stack1 = helpers.each.call(depth0, "slide", "in", "arrangedContent", {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers.each.call(depth0, "slide", "in", "filteredContent", {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
@@ -551,6 +550,8 @@ function program1(depth0,data) {
   data.buffer.push(">");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "slide.name", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "slide.position", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
   data.buffer.push("</p>\n</span>\n");
   return buffer;
   
@@ -565,7 +566,7 @@ function program1(depth0,data) {
   
   var buffer = '', hashTypes;
   data.buffer.push("\n  ");
-  hashTypes = {'contentBinding': "ID"};
+  hashTypes = {'contentBinding': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideThumbnailView", {hash:{
     'contentBinding': ("slide")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
@@ -575,7 +576,7 @@ function program1(depth0,data) {
 
   data.buffer.push("<ul style = \"height:inherit;\">\n");
   hashTypes = {};
-  stack1 = helpers.each.call(depth0, "slide", "in", "controller.arrangedContent", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers.each.call(depth0, "slide", "in", "controller.filteredContent", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n</ul>\n");
   return buffer;

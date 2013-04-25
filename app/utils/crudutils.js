@@ -28,7 +28,6 @@ exports.formatSlideshowResponse = function(model) {
   if (model) {
     var formattedModel = model.toObject();
     formattedModel.id = formattedModel._id;
-    formattedModel.user_id = formattedModel._user[0];
     delete formattedModel._user
     delete formattedModel.password
     delete formattedModel._id;
