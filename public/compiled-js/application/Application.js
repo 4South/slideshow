@@ -16,14 +16,6 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
 });
 
 Ember.Application.initializer({
-  name: "load data",
-  initialize: function(container, application) {
-    App.Slideshow.find();
-    return App.Slide.find();
-  }
-});
-
-Ember.Application.initializer({
   name: "session login",
   initialize: function(container, application) {
     var userCon;

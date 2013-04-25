@@ -32,7 +32,6 @@ App.Router.map () ->
         @resource "slide", {path: '/:slide_id'}
 
 App.SmartRoute = Ember.Route.extend
-
   renderTemplate: (controller, model) ->
     @resetOutlets()
 
@@ -51,12 +50,13 @@ App.SmartRoute = Ember.Route.extend
 App.ApplicationRoute = Ember.Route.extend
   events:
     updateActiveSlide: (newSlide) ->
-      slidesCon = @controllerFor('slides')
-      slidesCon.set('activeSlideIndex', newSlide.get('position'))
-      @transitionTo('slide', slidesCon.get('activeSlide'))
+      @transitionTo('slide', newSlide)
 
     transitionAfterDeletion: () ->
       return
+
+    transitionToSlideshows: () ->
+      @transitionTo("slideshows")
 
     #currently not using, may delete
     transitionWithRender: (name, parameters) ->
@@ -92,6 +92,7 @@ App.SlideshowIndexRoute = App.SmartRoute.extend
 App.SlideshowRoute = App.SmartRoute.extend()
 
 App.SlidesIndexRoute = App.SmartRoute.extend
+
   renderTemplate: (controller) ->
     @_super()
     @render "slides",

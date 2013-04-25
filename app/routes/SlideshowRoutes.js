@@ -1,4 +1,4 @@
-var formatDbResponse = require('./../utils/crudutils.js').formatDbResponse
+var formatSlideshowResponse = require('./../utils/crudutils.js').formatSlideshowResponse
   , Slideshow = require('./../models/models.js').Slideshow;
 
 //NO PUT OPERATION CURRENTLY IMPLEMENTED
@@ -19,7 +19,7 @@ exports.getSlideshows = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slideshows'] = results.map(formatDbResponse);
+      response['slideshows'] = results.map(formatSlideshowResponse);
       res.send(response);
     } 
   });
@@ -32,7 +32,7 @@ exports.getSlideshowById = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slideshows'] = formatDbResponse(result); 
+      response['slideshows'] = formatSlideshowResponse(result); 
       res.send(response);
     } 
   });
@@ -61,7 +61,7 @@ exports.postSlideshow = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slideshow'] = formatDbResponse(result);
+      response['slideshow'] = formatSlideshowResponse(result);
       res.send(response);
     } 
   });
@@ -75,7 +75,7 @@ exports.putSlideshow = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slideshow'] = formatDbResponse(result);
+      response['slideshow'] = formatSlideshowResponse(result);
       res.send(response);
     }
   });

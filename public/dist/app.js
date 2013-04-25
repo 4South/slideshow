@@ -13,14 +13,6 @@ Ember.Handlebars.registerBoundHelper('markdown', function(value) {
 });
 
 Ember.Application.initializer({
-  name: "load data",
-  initialize: function(container, application) {
-    App.Slideshow.find();
-    return App.Slide.find();
-  }
-});
-
-Ember.Application.initializer({
   name: "session login",
   initialize: function(container, application) {
     var userCon;
@@ -63,6 +55,7 @@ App.SlidesController = Em.ArrayController.extend({
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
+  activeSlideBinding: 'controllers.slide.content',
   activeSlideIndex: 0,
   nameIsValid: (function() {
     var name;
@@ -74,13 +67,6 @@ App.SlidesController = Em.ArrayController.extend({
       return false;
     }
   }).property('newSlideName').cacheable(),
-  activeSlide: (function() {
-    if (this.get('atleastOneSlide')) {
-      return this.get('arrangedContent').objectAt(this.get('activeSlideIndex'));
-    } else {
-      return null;
-    }
-  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
   atleastOneSlide: (function() {
     if (this.get('content')) {
       if (this.get('content').toArray().length === 0) {
@@ -92,26 +78,32 @@ App.SlidesController = Em.ArrayController.extend({
     }
   }).property('content.@each.id').cacheable(),
   atStart: (function() {
-    var index;
+    var activeSlide;
 
-    index = this.get('activeSlideIndex');
-    if (index === 0) {
+    activeSlide = this.get('activeSlide');
+    if (!activeSlide) {
+      return false;
+    }
+    if (activeSlide.get('position') === 0) {
       return true;
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
+  }).property('activeSlide').cacheable(),
   atEnd: (function() {
-    var contentLength, index;
+    var activeSlide, endPosition;
 
-    index = this.get('activeSlideIndex');
-    contentLength = this.get('arrangedContent').toArray().length;
-    if (index === contentLength - 1) {
+    activeSlide = this.get('activeSlide');
+    endPosition = this.get('arrangedContent').toArray().length - 1;
+    if (!activeSlide) {
+      return false;
+    }
+    if (activeSlide.get('position') === endPosition) {
       return true;
     } else {
       return false;
     }
-  }).property('activeSlideIndex', 'arrangedContent.@each').cacheable(),
+  }).property('activeSlide', 'arrangedContent.@each').cacheable(),
   savedStatus: (function() {
     if (this.get('content').someProperty('isDirty')) {
       return "Unsaved Changes";
@@ -127,27 +119,22 @@ App.SlidesController = Em.ArrayController.extend({
   pauseShow: function() {
     return this.transitionToRoute('slides');
   },
-  forward: function() {
-    var curIndex, newSlide;
+  findNewSlide: function(shouldExit, positionDelta) {
+    var newPosition, newSlide;
 
-    if (this.get('atEnd')) {
+    if (shouldExit) {
 
     } else {
-      curIndex = this.get('activeSlide').get('position');
-      newSlide = this.get('arrangedContent').objectAt(curIndex + 1);
+      newPosition = this.get('activeSlide').get('position') + positionDelta;
+      newSlide = this.get('content').findProperty('position', newPosition);
       return this.send("updateActiveSlide", newSlide);
     }
   },
+  forward: function() {
+    return this.findNewSlide(this.get('atEnd'), 1);
+  },
   back: function() {
-    var curIndex, newSlide;
-
-    if (this.get('atStart')) {
-
-    } else {
-      curIndex = this.get('activeSlide').get('position');
-      newSlide = this.get('arrangedContent').objectAt(curIndex - 1);
-      return this.send("updateActiveSlide", newSlide);
-    }
+    return this.findNewSlide(this.get('atStart'), -1);
   },
   create: function() {
     var activeShow, slides;
@@ -169,10 +156,6 @@ App.SlidesController = Em.ArrayController.extend({
     } else {
       return alert('name must contain at least one character and no spaces');
     }
-  },
-  goToSlideShows: function() {
-    this.get('controllers.slideshow').exitEditing();
-    return this.replaceRoute('slideshows');
   }
 });
 });
@@ -180,31 +163,6 @@ App.SlidesController = Em.ArrayController.extend({
 minispade.register('controllers/SlideshowController.js', function() {
 App.SlideshowController = Em.ObjectController.extend({
   needs: ['slides', 'user'],
-  editingMode: false,
-  userIsAuthor: (function() {
-    var author, user;
-
-    author = this.get('content.author');
-    user = this.get('controllers.user.content.username');
-    if (author === user) {
-      return true;
-    } else {
-      return false;
-    }
-  }).property('content.author', 'controllers.user.content.@each'),
-  goToEditing: function() {
-    var author;
-
-    if (this.get('userIsAuthor')) {
-      return this.set('editingMode', true);
-    } else {
-      author = this.get('content.author');
-      return alert('This slideshow may only be edited by: ' + author);
-    }
-  },
-  exitEditing: function() {
-    return this.set('editingMode', false);
-  },
   showSlides: function() {
     return this.transitionToRoute("slides");
   }
@@ -238,20 +196,26 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
   needs: ['slideshow', 'slide', 'user', 'slides'],
   activeSlideBinding: "controllers.slides.activeSlide",
   contentBinding: 'controllers.slides.content',
+  arrangedContentBinding: 'controllers.slides.arrangedContent',
   sortProperties: ['position'],
   sortAscending: true,
-  resort: function(slide, index, enumerable) {
-    return slide.set('position', index);
-  },
+  atleastOneSlide: (function() {
+    if (this.get('content')) {
+      if (this.get('content').toArray().length === 0) {
+        return false;
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }).property('content.@each.id').cacheable(),
   "delete": function(slide) {
-    var pos;
+    var arrCon, currentPos;
 
-    pos = slide.get('position') - 1;
-    this.send('transitionAfterDeletion', pos);
-    console.log(this.get('controllers.slides.content').toArray().length);
+    arrCon = this.get('arrangedContent');
+    currentPos = slide.get('position');
     slide.deleteRecord();
-    console.log(this.get('controllers.slides.content').toArray().length);
-    this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
+    console.log(arrCon.toString());
     return this.get('store').commit();
   },
   moveDown: function(slide) {
@@ -264,17 +228,17 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
       return this.swap(slide, target, 'position');
     }
   },
-  findTarget: function(slide, array, relativeSearch, property) {
-    return array.objectAt(slide.get(property) + relativeSearch);
+  findTarget: function(slide, array, relativesearch, property) {
+    return array.objectAt(slide.get(property) + relativesearch);
   },
-  swap: function(decTarget, incTarget, property) {
-    decTarget.decrementProperty(property);
-    incTarget.incrementProperty(property);
+  swap: function(dectarget, inctarget, property) {
+    dectarget.decrementProperty(property);
+    inctarget.incrementProperty(property);
     return this.get('store').commit();
   },
-  clickThumbnail: function(targetSlide) {
+  clickThumbnail: function(targetslide) {
     console.log('clickthumbnail fired');
-    return this.send("updateActiveSlide", targetSlide);
+    return this.send("updateActiveSlide", targetslide);
   }
 });
 });
@@ -289,9 +253,41 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  editingMode: false,
+  editingButtonText: (function() {
+    if (this.get('editingMode')) {
+      return "viewing mode";
+    } else {
+      return "editing mode";
+    }
+  }).property('editingMode'),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
+  permissionToEdit: (function() {
+    var author, user;
+
+    author = this.get('controllers.slideshow.content.author');
+    user = this.get('username');
+    if (author === user) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('controllers.slideshow.content.author', 'username'),
+  permittedAndEditing: (function() {
+    if (this.get('permissionToEdit') && this.get('editingMode')) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('permissionToEdit', 'editingMode'),
+  toggleEditing: function() {
+    return this.toggleProperty('editingMode');
+  },
+  exitEditing: function() {
+    return this.set('editingMode', false);
+  },
   createData: (function() {
     return {
       username: this.get('formUsername'),
@@ -382,8 +378,7 @@ App.UserController = Ember.ObjectController.extend({
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          this.set('content', Ember.Object.create(data));
-          return this.transitionToRoute('slideshows');
+          return this.set('content', Ember.Object.create(data));
         });
       },
       error: function(xhr) {
@@ -403,8 +398,7 @@ App.UserController = Ember.ObjectController.extend({
       success: function(data) {
         return Ember.run(this, function() {
           this.set('content', null);
-          this.get('controllers.slideshow').exitEditing();
-          return this.replaceRoute('index');
+          return this.get('controllers.slideshow').exitEditing();
         });
       },
       error: function(xhr) {
@@ -1057,13 +1051,12 @@ App.SmartRoute = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
   events: {
     updateActiveSlide: function(newSlide) {
-      var slidesCon;
-
-      slidesCon = this.controllerFor('slides');
-      slidesCon.set('activeSlideIndex', newSlide.get('position'));
-      return this.transitionTo('slide', slidesCon.get('activeSlide'));
+      return this.transitionTo('slide', newSlide);
     },
     transitionAfterDeletion: function() {},
+    transitionToSlideshows: function() {
+      return this.transitionTo("slideshows");
+    },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
 

@@ -315,12 +315,7 @@ aside.rightbar #savedStatus {
   text-align: center;
 }
 
-div.controls {
-  margin-left: 2px;
-  margin-top: 8px;
-}
-
-div.showcontrols {
+li.controls {
   margin-left: 2px;
   margin-top: 8px;
 }

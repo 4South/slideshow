@@ -1,23 +1,6 @@
-<button class = 'btn-warning btn-small'
-        {{action 'goToSlideShows' 
-        target = 'controller'}}> 
-Slideshows </button>
-
-<hr><span id = "subtitle"> 
-  Slideshow Title: {{controller.controllers.slideshow.content.title}}
-</span>
-
-{{#if controller.controllers.user.loggedIn}}
-    {{#unless controller.controllers.slideshow.editingMode}}
-      <br>
-      <button {{action "goToEditing" 
-                target="controllers.slideshow"}}
-                class = "btn-small btn-warning">
-      Edit Slides </button>
-    {{/unless}}
-    {{#if controller.controllers.slideshow.editingMode}}
-      <br>
-      {{partial slidecreate}}  
-      {{partial slideedit}}
-    {{/if}}
+{{#if controller.controllers.user.permittedAndEditing}}
+  {{partial slidecreate}}  
+  {{#if activeSlide}}
+    {{partial slideedit}}
+  {{/if}}
 {{/if}}

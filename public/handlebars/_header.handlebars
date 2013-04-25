@@ -1,7 +1,12 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <ul class = "nav">
-      <li> {{outlet controls}} </li>
+      <li class="controls"> 
+        <button class="btn-small btn-warning" {{action transitionToSlideshows}}>
+        Slideshows
+        </button> 
+      </li>
+      <li class="controls"> {{outlet controls}} </li>
     </ul>
     {{render "user"}}
   </div>

@@ -7,9 +7,41 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  editingMode: false,
+  editingButtonText: (function() {
+    if (this.get('editingMode')) {
+      return "viewing mode";
+    } else {
+      return "editing mode";
+    }
+  }).property('editingMode'),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
+  permissionToEdit: (function() {
+    var author, user;
+
+    author = this.get('controllers.slideshow.content.author');
+    user = this.get('username');
+    if (author === user) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('controllers.slideshow.content.author', 'username'),
+  permittedAndEditing: (function() {
+    if (this.get('permissionToEdit') && this.get('editingMode')) {
+      return true;
+    } else {
+      return false;
+    }
+  }).property('permissionToEdit', 'editingMode'),
+  toggleEditing: function() {
+    return this.toggleProperty('editingMode');
+  },
+  exitEditing: function() {
+    return this.set('editingMode', false);
+  },
   createData: (function() {
     return {
       username: this.get('formUsername'),
@@ -100,8 +132,7 @@ App.UserController = Ember.ObjectController.extend({
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          this.set('content', Ember.Object.create(data));
-          return this.transitionToRoute('slideshows');
+          return this.set('content', Ember.Object.create(data));
         });
       },
       error: function(xhr) {
@@ -121,8 +152,7 @@ App.UserController = Ember.ObjectController.extend({
       success: function(data) {
         return Ember.run(this, function() {
           this.set('content', null);
-          this.get('controllers.slideshow').exitEditing();
-          return this.replaceRoute('index');
+          return this.get('controllers.slideshow').exitEditing();
         });
       },
       error: function(xhr) {

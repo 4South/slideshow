@@ -1,7 +1,12 @@
 {{#if loggedIn}}
+  <li class="controls"> 
+    <button class="btn-mini btn-warning" {{action "toggleEditing"}}>
+      {{editingButtonText}}
+    </button>
+  </li>
   <li> <p id = "navlabel"> You logged in as {{username}} </p> </li>
 
-  <li style = 'padding-top:4px;margin-left:5px;'>
+  <li class="controls">
     <button class="btn-mini btn-warning" {{action logout}}>logout</button> 
   </li>
 {{else}}

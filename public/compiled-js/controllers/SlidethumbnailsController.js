@@ -2,20 +2,26 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
   needs: ['slideshow', 'slide', 'user', 'slides'],
   activeSlideBinding: "controllers.slides.activeSlide",
   contentBinding: 'controllers.slides.content',
+  arrangedContentBinding: 'controllers.slides.arrangedContent',
   sortProperties: ['position'],
   sortAscending: true,
-  resort: function(slide, index, enumerable) {
-    return slide.set('position', index);
-  },
+  atleastOneSlide: (function() {
+    if (this.get('content')) {
+      if (this.get('content').toArray().length === 0) {
+        return false;
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }).property('content.@each.id').cacheable(),
   "delete": function(slide) {
-    var pos;
+    var arrCon, currentPos;
 
-    pos = slide.get('position') - 1;
-    this.send('transitionAfterDeletion', pos);
-    console.log(this.get('controllers.slides.content').toArray().length);
+    arrCon = this.get('arrangedContent');
+    currentPos = slide.get('position');
     slide.deleteRecord();
-    console.log(this.get('controllers.slides.content').toArray().length);
-    this.get('arrangedContent').forEach(this.resort, this.get('arrangedContent'));
+    console.log(arrCon.toString());
     return this.get('store').commit();
   },
   moveDown: function(slide) {
@@ -28,16 +34,16 @@ App.SlidethumbnailsController = Em.ArrayController.extend({
       return this.swap(slide, target, 'position');
     }
   },
-  findTarget: function(slide, array, relativeSearch, property) {
-    return array.objectAt(slide.get(property) + relativeSearch);
+  findTarget: function(slide, array, relativesearch, property) {
+    return array.objectAt(slide.get(property) + relativesearch);
   },
-  swap: function(decTarget, incTarget, property) {
-    decTarget.decrementProperty(property);
-    incTarget.incrementProperty(property);
+  swap: function(dectarget, inctarget, property) {
+    dectarget.decrementProperty(property);
+    inctarget.incrementProperty(property);
     return this.get('store').commit();
   },
-  clickThumbnail: function(targetSlide) {
+  clickThumbnail: function(targetslide) {
     console.log('clickthumbnail fired');
-    return this.send("updateActiveSlide", targetSlide);
+    return this.send("updateActiveSlide", targetslide);
   }
 });

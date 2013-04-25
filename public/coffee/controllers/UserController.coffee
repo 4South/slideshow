@@ -7,10 +7,33 @@ App.UserController = Ember.ObjectController.extend
   errorMessage: ''
   loginUser: ''
   loginPassword: ''
+  editingMode: false
   
+  editingButtonText: (->
+    return if @get('editingMode') then "viewing mode" else "editing mode"
+  ).property('editingMode')
+
   loggedInUser:(->
     return @get('content.username')
   ).property('content.username').cacheable()
+  
+  permissionToEdit: (->
+    author = @get('controllers.slideshow.content.author')
+    user = @get('username')
+    if author is user then return true
+    else return false
+  ).property('controllers.slideshow.content.author', 'username')
+
+  permittedAndEditing: (->
+    if (@get('permissionToEdit') and @get('editingMode')) then true
+    else false
+  ).property('permissionToEdit', 'editingMode')
+
+  toggleEditing: () ->
+    @toggleProperty('editingMode')
+    
+  exitEditing: () ->
+   @set('editingMode', false)
   
   createData: (->
     username: @get('formUsername')
@@ -101,7 +124,6 @@ App.UserController = Ember.ObjectController.extend
       success: (data) ->
         Ember.run(@, () ->
           @set('content', Ember.Object.create(data))
-          @transitionToRoute 'slideshows'
         )
       error: (xhr) ->
         Ember.run(@, () ->
@@ -119,7 +141,6 @@ App.UserController = Ember.ObjectController.extend
         Ember.run(@, ()->
           @set('content', null)
           @get('controllers.slideshow').exitEditing()
-          @replaceRoute 'index'
         )
       error: (xhr) ->
         Ember.run(@, ()->

@@ -24,10 +24,13 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 Ember.TEMPLATES["_header"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  var buffer = '', stack1, hashTypes, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
-  data.buffer.push("<div class=\"navbar navbar-inverse navbar-fixed-top\">\n  <div class=\"navbar-inner\">\n    <ul class = \"nav\">\n      <li> ");
+  data.buffer.push("<div class=\"navbar navbar-inverse navbar-fixed-top\">\n  <div class=\"navbar-inner\">\n    <ul class = \"nav\">\n      <li class=\"controls\"> \n        <button class=\"btn-small btn-warning\" ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "transitionToSlideshows", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n        Slideshows\n        </button> \n      </li>\n      <li class=\"controls\"> ");
   hashTypes = {};
   options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.outlet),stack1 ? stack1.call(depth0, "controls", options) : helperMissing.call(depth0, "outlet", "controls", options))));
@@ -113,12 +116,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<button class=\"btn-small btn-warning\"");
-  hashTypes = {'target': "STRING"};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "exitEditing", {hash:{
-    'target': ("controllers.slideshow")
-  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n  Exit Editing Mode\n</button>\n\n<hr>\n\n<form id = \"slidecreate\">\n  <fieldset>\n    <legend class = \"formlabel\">Create New</legend>\n    <label id = \"subtitle\">New Slide Title</label>\n    \n    ");
+  data.buffer.push("<form id = \"slidecreate\">\n  <fieldset>\n    <legend class = \"formlabel\">Create New</legend>\n    <label id = \"subtitle\">New Slide Title</label>\n    \n    ");
   hashTypes = {'valueBinding': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
     'valueBinding': ("newSlideName")
@@ -126,7 +124,7 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   data.buffer.push("      \n  </fieldset>\n  \n  <button class=\"btn-small btn-primary\"");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "create", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("> Create\n  </button>\n\n  </form>\n");
+  data.buffer.push("> Create\n  </button>\n</form>\n");
   return buffer;
   
 });
@@ -301,18 +299,17 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', hashTypes;
-  data.buffer.push("\n    <button class=\"btn-small btn-warning\" ");
+  data.buffer.push("\n  <button class=\"btn-small btn-warning\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "startShow", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n      Play\n    </button>\n  ");
+  data.buffer.push(">\n    Play\n  </button>\n");
   return buffer;
   }
 
-  data.buffer.push("<div class=\"controls\">\n  ");
   hashTypes = {};
   stack1 = helpers['if'].call(depth0, "controller.atleastOneSlide", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n</div>\n");
+  data.buffer.push("\n");
   return buffer;
   
 });
@@ -320,60 +317,35 @@ function program1(depth0,data) {
 Ember.TEMPLATES["rightbar"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+  var buffer = '', stack1, hashTypes, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashTypes;
-  data.buffer.push("\n    ");
+  var buffer = '', stack1, stack2, hashTypes, options;
+  data.buffer.push("\n  ");
   hashTypes = {};
-  stack1 = helpers.unless.call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n    ");
+  options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "slidecreate", options) : helperMissing.call(depth0, "partial", "slidecreate", options))));
+  data.buffer.push("  \n  ");
   hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  stack2 = helpers['if'].call(depth0, "activeSlide", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n");
   return buffer;
   }
 function program2(depth0,data) {
   
-  var buffer = '', hashTypes;
-  data.buffer.push("\n      <br>\n      <button ");
-  hashTypes = {'target': "STRING"};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "goToEditing", {hash:{
-    'target': ("controllers.slideshow")
-  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n                class = \"btn-small btn-warning\">\n      Edit Slides </button>\n    ");
-  return buffer;
-  }
-
-function program4(depth0,data) {
-  
   var buffer = '', stack1, hashTypes, options;
-  data.buffer.push("\n      <br>\n      ");
-  hashTypes = {};
-  options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "slidecreate", options) : helperMissing.call(depth0, "partial", "slidecreate", options))));
-  data.buffer.push("  \n      ");
+  data.buffer.push("\n    ");
   hashTypes = {};
   options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "slideedit", options) : helperMissing.call(depth0, "partial", "slideedit", options))));
-  data.buffer.push("\n    ");
+  data.buffer.push("\n  ");
   return buffer;
   }
 
-  data.buffer.push("<button class = 'btn-warning btn-small'\n        ");
-  hashTypes = {'target': "STRING"};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "goToSlideShows", {hash:{
-    'target': ("controller")
-  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("> \nSlideshows </button>\n\n<hr><span id = \"subtitle\"> \n  Slideshow Title: ");
   hashTypes = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller.controllers.slideshow.content.title", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n</span>\n\n");
-  hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "controller.controllers.user.loggedIn", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "controller.controllers.user.permittedAndEditing", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
@@ -386,16 +358,16 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
 
 
-  data.buffer.push("<div class=\"showcontrols\">\n  <button class=\"btn-small btn-warning\" ");
+  data.buffer.push("<button class=\"btn-small btn-warning\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "pauseShow", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n    Pause\n  </button>\n  <button class=\"btn-small btn-primary\" ");
+  data.buffer.push(">\n  Pause\n</button>\n<button class=\"btn-small btn-primary\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "back", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n    Back\n  </button>\n  <button class=\"btn-small btn-primary\" ");
+  data.buffer.push(">\n  Back\n</button>\n<button class=\"btn-small btn-primary\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "forward", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n    Forward\n  </button>\n</div>\n");
+  data.buffer.push(">\n  Forward\n</button>\n");
   return buffer;
   
 });
@@ -571,7 +543,7 @@ function program1(depth0,data) {
 
   data.buffer.push("<div id = \"btnWrapper\">\n  ");
   hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "controller.controllers.slideshow.editingMode", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers['if'].call(depth0, "controller.controllers.user.permittedAndEditing", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n</div>\n\n<span class = \"nameWrapper\">\n  <p ");
   hashTypes = {};
@@ -618,10 +590,16 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 function program1(depth0,data) {
   
   var buffer = '', hashTypes;
-  data.buffer.push("\n  <li> <p id = \"navlabel\"> You logged in as ");
+  data.buffer.push("\n  <li class=\"controls\"> \n    <button class=\"btn-mini btn-warning\" ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "toggleEditing", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n      ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "editingButtonText", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </button>\n  </li>\n  <li> <p id = \"navlabel\"> You logged in as ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "username", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" </p> </li>\n\n  <li style = 'padding-top:4px;margin-left:5px;'>\n    <button class=\"btn-mini btn-warning\" ");
+  data.buffer.push(" </p> </li>\n\n  <li class=\"controls\">\n    <button class=\"btn-mini btn-warning\" ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "logout", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
   data.buffer.push(">logout</button> \n  </li>\n");

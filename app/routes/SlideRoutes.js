@@ -1,19 +1,21 @@
-var formatDbResponse = require('./../utils/crudutils.js').formatDbResponse
+var formatSlideResponse = require('./../utils/crudutils.js').formatSlideResponse
   , Slide = require('./../models/models.js').Slide;
 
 exports.getSlides = function(req, res) {
   var query = req.query;
-  if (query !== {}) {
+  if (query.slideshow) {
     query._slideshow = query.slideshow;
     delete query.slideshow;
   };
+  console.log("QUERY", query);
   Slide.find(query, 
   function(err, results) {
     var response = {};
     if (err) {
       res.json({message: err});
     } else {
-      response['slides'] = results.map(formatDbResponse)
+      response['slides'] = results.map(formatSlideResponse)
+      console.log("RESULTS", response);
       res.send(response);
     } 
   });
@@ -26,7 +28,7 @@ exports.getSlideById = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slide'] = formatDbResponse(result); 
+      response['slide'] = formatSlideResponse(result); 
       res.send(response);
     } 
   });
@@ -35,10 +37,12 @@ exports.getSlideById = function(req, res) {
 exports.deleteSlideById = function(req, res) {
   Slide.findOneAndRemove({_id: req.params.id}, 
   function (err, result) {
+    var response = {};
     if (err) { 
       res.json({message: err});
     } else {
-      res.send(req.body);
+      response['slide'] = formatSlideResponse(result); 
+      res.send(response);
     }
   });
 };
@@ -53,7 +57,7 @@ exports.postSlide = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slide'] = formatDbResponse(result);
+      response['slide'] = formatSlideResponse(result);
       res.send(response);
     } 
   });
@@ -66,7 +70,7 @@ exports.putSlide = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slide'] = formatDbResponse(result);
+      response['slide'] = formatSlideResponse(result);
       res.send(response);
     }
   });

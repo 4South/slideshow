@@ -89,13 +89,12 @@ App.SmartRoute = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
   events: {
     updateActiveSlide: function(newSlide) {
-      var slidesCon;
-
-      slidesCon = this.controllerFor('slides');
-      slidesCon.set('activeSlideIndex', newSlide.get('position'));
-      return this.transitionTo('slide', slidesCon.get('activeSlide'));
+      return this.transitionTo('slide', newSlide);
     },
     transitionAfterDeletion: function() {},
+    transitionToSlideshows: function() {
+      return this.transitionTo("slideshows");
+    },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
 

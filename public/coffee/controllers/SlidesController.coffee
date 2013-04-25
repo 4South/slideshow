@@ -5,6 +5,7 @@ App.SlidesController = Em.ArrayController.extend
   newSlideName: ""
   sortProperties: ['position']
   sortAscending: true
+  activeSlideBinding: 'controllers.slide.content'
 
   #index of currently active slide
   activeSlideIndex: 0
@@ -17,13 +18,6 @@ App.SlidesController = Em.ArrayController.extend
     else return false
   ).property('newSlideName').cacheable()
 
-  activeSlide: (->
-    if @get('atleastOneSlide')
-      return @get('arrangedContent').objectAt(@get('activeSlideIndex'))
-    else
-      return null
-  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
- 
   atleastOneSlide: (->
     #check to see if content is null to prevent error
     if @get('content')
@@ -35,15 +29,20 @@ App.SlidesController = Em.ArrayController.extend
 
   #boolean helpers
   atStart: (->
-    index = @get('activeSlideIndex')
-    return if (index == 0) then true else false
-  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
+    activeSlide = @get('activeSlide')
+    if not activeSlide then return false
+    if activeSlide.get('position') is 0 then return true
+    else return false
+  ).property('activeSlide').cacheable()
 
   atEnd: (->
-    index = @get('activeSlideIndex')
-    contentLength = @get('arrangedContent').toArray().length
-    return if (index is contentLength-1) then true else false
-  ).property('activeSlideIndex', 'arrangedContent.@each').cacheable()
+    activeSlide = @get('activeSlide')
+    endPosition = @get('arrangedContent').toArray().length-1
+    if not activeSlide then return false
+    if (activeSlide.get('position') is endPosition)
+      return true
+    else return false
+  ).property('activeSlide', 'arrangedContent.@each').cacheable()
 
 
   #text used to notify user of unsaved changes
@@ -63,19 +62,18 @@ App.SlidesController = Em.ArrayController.extend
     @transitionToRoute('slides')
 
   #SLIDE NAVIGATION UTILS
-  forward: () ->
-    if @get('atEnd') then return
+  findNewSlide: (shouldExit, positionDelta) ->
+    if shouldExit then return
     else
-      curIndex = @get('activeSlide').get('position')
-      newSlide = @get('arrangedContent').objectAt(curIndex+1)
+      newPosition = @get('activeSlide').get('position')+positionDelta
+      newSlide = @get('content').findProperty('position', newPosition)
       @send "updateActiveSlide", newSlide
 
+  forward: () ->
+    @findNewSlide(@get('atEnd'), 1)
+
   back: () ->
-    if @get('atStart') then return
-    else
-      curIndex = @get('activeSlide').get('position')
-      newSlide = @get('arrangedContent').objectAt(curIndex-1)
-      @send "updateActiveSlide", newSlide
+    @findNewSlide(@get('atStart'), -1)
 
 
   #CREATE CRUD
@@ -93,7 +91,3 @@ App.SlidesController = Em.ArrayController.extend
       @set('content', slides)
     else
       alert ('name must contain at least one character and no spaces')
-      
-  goToSlideShows: ->
-    @get('controllers.slideshow').exitEditing()
-    @replaceRoute 'slideshows'
