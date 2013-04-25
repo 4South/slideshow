@@ -14,8 +14,6 @@ require('controllers/SlideController.js');
 
 require('controllers/SlidesController.js');
 
-require('controllers/SlidethumbnailsController.js');
-
 require('controllers/SlideshowsController.js');
 
 require('controllers/SlideshowController.js');
@@ -156,7 +154,7 @@ App.SlidesIndexRoute = App.SmartRoute.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
+      controller: 'slides'
     });
     this.render("maincontrols", {
       into: 'application',
@@ -211,7 +209,7 @@ App.SlideRoute = App.SmartRoute.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
+      controller: 'slides'
     });
     return this.render("rightbar", {
       into: 'application',

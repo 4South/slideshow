@@ -1,9 +1,5 @@
-#change App.editingMode to a route of slideview
-#move handlebars helpers to separate file
-#remove hasMany experiments from Store
-
 window.App = Ember.Application.create()
-#require ember data store
+
 require('store/Store.js')
 require('router/Router.js')
 
@@ -11,7 +7,7 @@ showdown = new Showdown.converter()
 Ember.Handlebars.registerBoundHelper('markdown', (value) ->
   if value?
     return new Ember.Handlebars.SafeString(showdown.makeHtml(value))
-  return ""
+  return new Ember.Handlebars.SafeString(showdown.makeHtml(""))
 )
 
 Ember.Application.initializer

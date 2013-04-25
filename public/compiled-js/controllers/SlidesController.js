@@ -1,10 +1,9 @@
 App.SlidesController = Em.ArrayController.extend({
-  needs: ['slide', 'slideshow', 'user', 'slidethumbnails'],
+  needs: ['slide', 'slideshow', 'user'],
   newSlideName: "",
   sortProperties: ['position'],
   sortAscending: true,
   activeSlideBinding: 'controllers.slide.content',
-  activeSlideIndex: 0,
   nameIsValid: (function() {
     var name;
 
@@ -19,38 +18,35 @@ App.SlidesController = Em.ArrayController.extend({
     if (this.get('content')) {
       if (this.get('content').toArray().length === 0) {
         return false;
+      } else {
+        return true;
       }
-      return true;
     } else {
       return false;
     }
   }).property('content.@each.id').cacheable(),
-  atStart: (function() {
-    var activeSlide;
-
-    activeSlide = this.get('activeSlide');
+  isPositionAnExtreme: function(activeSlide, extremeValue) {
     if (!activeSlide) {
       return false;
     }
-    if (activeSlide.get('position') === 0) {
+    if (activeSlide.get('position') === extremeValue) {
       return true;
     } else {
       return false;
     }
+  },
+  atStart: (function() {
+    var activeSlide;
+
+    activeSlide = this.get('activeSlide');
+    return this.isPositionAnExtreme(activeSlide, 0);
   }).property('activeSlide').cacheable(),
   atEnd: (function() {
     var activeSlide, endPosition;
 
     activeSlide = this.get('activeSlide');
     endPosition = this.get('arrangedContent').toArray().length - 1;
-    if (!activeSlide) {
-      return false;
-    }
-    if (activeSlide.get('position') === endPosition) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.isPositionAnExtreme(activeSlide, endPosition);
   }).property('activeSlide', 'arrangedContent.@each').cacheable(),
   savedStatus: (function() {
     if (this.get('content').someProperty('isDirty')) {
@@ -59,6 +55,9 @@ App.SlidesController = Em.ArrayController.extend({
       return "All Changes Saved";
     }
   }).property('content.@each.isDirty').cacheable(),
+  clickThumbnail: function(targetSlide) {
+    return this.transitionToRoute("slide", targetSlide);
+  },
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));
@@ -70,9 +69,7 @@ App.SlidesController = Em.ArrayController.extend({
   findNewSlide: function(shouldExit, positionDelta) {
     var newPosition, newSlide;
 
-    if (shouldExit) {
-
-    } else {
+    if (!shouldExit) {
       newPosition = this.get('activeSlide').get('position') + positionDelta;
       newSlide = this.get('content').findProperty('position', newPosition);
       return this.send("updateActiveSlide", newSlide);
@@ -84,11 +81,31 @@ App.SlidesController = Em.ArrayController.extend({
   back: function() {
     return this.findNewSlide(this.get('atStart'), -1);
   },
-  create: function() {
-    var activeShow, slides;
+  findTarget: function(slide, array, relativesearch, property) {
+    return array.objectAt(slide.get(property) + relativesearch);
+  },
+  swap: function(dectarget, inctarget, property) {
+    dectarget.decrementProperty(property);
+    inctarget.incrementProperty(property);
+    return this.get('store').commit();
+  },
+  moveDown: function(slide) {
+    if (this.findTarget(slide, this.get('arrangedContent'), +1, 'position') != null) {
+      return this.swap(target, slide, 'position');
+    }
+  },
+  moveUp: function(slide) {
+    if (this.findTarget(slide, this.get('arrangedContent'), -1, 'position') != null) {
+      return this.swap(slide, target, 'position');
+    }
+  },
+  createSlide: function() {
+    var activeShow;
 
     activeShow = this.get('controllers.slideshow.content');
-    if (this.get('nameIsValid')) {
+    if (!this.get('nameIsValid')) {
+      return alert('name must contain at least one character and no spaces');
+    } else {
       App.Slide.createRecord({
         name: this.get('newSlideName'),
         position: this.get('content').toArray().length,
@@ -96,13 +113,18 @@ App.SlidesController = Em.ArrayController.extend({
         title: this.get('newSlideName')
       });
       this.get('store').commit();
-      this.set('newSlideName', '');
-      slides = App.Slide.find({
-        slideshow: activeShow.get('id')
-      });
-      return this.set('content', slides);
-    } else {
-      return alert('name must contain at least one character and no spaces');
+      return this.set('newSlideName', '');
     }
+  },
+  deleteSlide: function(slide) {
+    var arrCon, currentPos;
+
+    arrCon = this.get('arrangedContent');
+    currentPos = slide.get('position');
+    slide.deleteRecord();
+    console.log(slide.get('stateManager.currentState.name'));
+    console.log(arrCon.toArray());
+    console.log(this.get('content').toArray());
+    return this.get('store').commit();
   }
 });

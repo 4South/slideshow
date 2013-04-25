@@ -1,16 +1,14 @@
 App.SlidesController = Em.ArrayController.extend
 
-  needs: ['slide', 'slideshow', 'user', 'slidethumbnails']
+  needs: ['slide', 'slideshow', 'user']
     
   newSlideName: ""
   sortProperties: ['position']
   sortAscending: true
   activeSlideBinding: 'controllers.slide.content'
 
-  #index of currently active slide
-  activeSlideIndex: 0
-  
-  #determines if current "new slide" name is valid for creation
+  #BOOLEAN HELPER COMPUTED PROPS
+  #names cannot have spaces or be blank
   nameIsValid: (->
     name = @get('newSlideName')
     if (name.indexOf(" ") is -1) and name isnt ""
@@ -18,32 +16,33 @@ App.SlidesController = Em.ArrayController.extend
     else return false
   ).property('newSlideName').cacheable()
 
+  #is there at least one slide in content?
   atleastOneSlide: (->
     #check to see if content is null to prevent error
     if @get('content')
       if @get('content').toArray().length is 0 then return false
-      return true
-    else
-      return false
+      else return true
+    else return false
   ).property('content.@each.id').cacheable()
 
-  #boolean helpers
+  #helper method for atStart/atEnd
+  isPositionAnExtreme: (activeSlide, extremeValue) ->
+    if not activeSlide then return false
+    if activeSlide.get('position') is extremeValue then return true
+    else return false
+
+  #is activeslide the first slide?
   atStart: (->
     activeSlide = @get('activeSlide')
-    if not activeSlide then return false
-    if activeSlide.get('position') is 0 then return true
-    else return false
+    return @isPositionAnExtreme(activeSlide, 0)
   ).property('activeSlide').cacheable()
 
+  #is activeslide the last slide?
   atEnd: (->
     activeSlide = @get('activeSlide')
     endPosition = @get('arrangedContent').toArray().length-1
-    if not activeSlide then return false
-    if (activeSlide.get('position') is endPosition)
-      return true
-    else return false
+    return @isPositionAnExtreme(activeSlide, endPosition)
   ).property('activeSlide', 'arrangedContent.@each').cacheable()
-
 
   #text used to notify user of unsaved changes
   savedStatus: (->
@@ -52,19 +51,21 @@ App.SlidesController = Em.ArrayController.extend
     else return "All Changes Saved"
   ).property('content.@each.isDirty').cacheable()
 
-  #start the slideshow
+  #SHOW CONTROLS
+
+  clickThumbnail: (targetSlide)->
+    @transitionToRoute "slide", targetSlide
+
   startShow: () ->
     if @get('activeSlide')?
       @transitionToRoute('slide', @get('activeSlide'))
   
-  #pause show
   pauseShow: () ->
     @transitionToRoute('slides')
 
-  #SLIDE NAVIGATION UTILS
+  #helper method for forward/back 
   findNewSlide: (shouldExit, positionDelta) ->
-    if shouldExit then return
-    else
+    if not shouldExit
       newPosition = @get('activeSlide').get('position')+positionDelta
       newSlide = @get('content').findProperty('position', newPosition)
       @send "updateActiveSlide", newSlide
@@ -75,19 +76,58 @@ App.SlidesController = Em.ArrayController.extend
   back: () ->
     @findNewSlide(@get('atStart'), -1)
 
+  #CHANGE SLIDE ORDER FUNCTIONS
+  #helper method for moveDown/moveUp
+  findTarget: (slide, array, relativesearch, property) ->
+    return array.objectAt(slide.get(property) + relativesearch)
 
-  #CREATE CRUD
-  create: () ->
+  #helper method for moveDown/moveUp
+  swap: (dectarget, inctarget, property) ->
+    dectarget.decrementProperty(property)
+    inctarget.incrementProperty(property)
+    @get('store').commit()
+
+  moveDown: (slide) ->
+    if @findTarget(slide, @get('arrangedContent'), +1, 'position')?
+      @swap(target, slide, 'position')
+
+  moveUp: (slide) ->
+    if @findTarget(slide, @get('arrangedContent'), -1, 'position')?
+      @swap(slide, target, 'position')
+
+
+  #ADD/REMOVE SLIDES
+  createSlide: () ->
     activeShow = @get('controllers.slideshow.content')
-    if @get('nameIsValid')
+    if not @get('nameIsValid')
+      alert 'name must contain at least one character and no spaces'
+    else
       App.Slide.createRecord
                 name: @get('newSlideName')
                 position: @get('content').toArray().length
                 slideshow: activeShow
                 title: @get('newSlideName')
+
       @get('store').commit()
       @set('newSlideName', '')
-      slides = App.Slide.find(slideshow: activeShow.get('id'))
-      @set('content', slides)
-    else
-      alert ('name must contain at least one character and no spaces')
+
+  deleteSlide: (slide) ->
+    arrCon = @get('arrangedContent')
+    currentPos = slide.get('position')
+    slide.deleteRecord()
+    console.log slide.get('stateManager.currentState.name')
+    console.log arrCon.toArray()
+    console.log @get('content').toArray()
+    
+    #if @get('atleastOneSlide') 
+    #  i = 0
+    #  for eachslide in arrCon
+    #    if slide isnt eachslide
+    #      eachslide.set('position', i)
+    #      i=i+1
+    #      
+    #  target = @get('content').filterProperty('position', currentPos)
+    #  if not target
+    #    target = @get('arrangedContent').get('lastObject')
+
+    @get('store').commit()

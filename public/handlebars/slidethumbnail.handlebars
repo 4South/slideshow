@@ -1,21 +1,17 @@
-<div id = "btnWrapper">
+<div id="btnWrapper">
   {{#if controller.controllers.user.permittedAndEditing}}
-    <button class="btn-mini btn-danger"
-              {{action 'delete' view.content }}>
+    <button class="btn-mini btn-danger" {{action 'deleteSlide' slide}}>
       X
     </button>
-    <button class="btn-mini btn"
-         {{action 'moveUp' view.content }}>
+    <button class="btn-mini btn" {{action 'moveUp' slide}}>
       UP 
     </button>
-    <button class="btn-mini btn"
-        {{action 'moveDown' view.content }}>
+    <button class="btn-mini btn" {{action 'moveDown' slide}}>
       DN 
     </button>
   {{/if}}
 </div>
 
-<span class = "nameWrapper">
-  <p {{action 'clickThumbnail' view.content }}>{{view.content.name}}
-  </p>
+<span class="nameWrapper">
+  <p {{action 'clickThumbnail' slide}}>{{slide.name}}</p>
 </span>

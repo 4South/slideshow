@@ -7,7 +7,6 @@ require('controllers/HeaderController.js')
 require('controllers/ApplicationController.js')
 require('controllers/SlideController.js')
 require('controllers/SlidesController.js')
-require('controllers/SlidethumbnailsController.js')
 require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
@@ -103,7 +102,7 @@ App.SlidesIndexRoute = App.SmartRoute.extend
     @render "slidethumbnails",
               into: 'application'
               outlet: 'slidethumbnails'
-              controller: 'slidethumbnails'
+              controller: 'slides'
 
     @render "maincontrols",
                     into: 'application'
@@ -145,7 +144,7 @@ App.SlideRoute = App.SmartRoute.extend
     @render "slidethumbnails",
               into: 'application'
               outlet: 'slidethumbnails'
-              controller: 'slidethumbnails'
+              controller: 'slides'
 
     @render "rightbar",
                     into: 'application'
