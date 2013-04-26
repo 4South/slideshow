@@ -1,0 +1,37 @@
+slide urls should not be full ids
+
+animated outlets and animated transitions in general
+
+intra-slide forward/back featrues for revealing portions of the slide one at a time
+
+get highlight.js working for code coloring
+
+if an edited content is "inFlight", display a greyed out box with the text "saving"
+
+change user model and whole system to run w/ basic adapter interface.  incorporate use model into the heirarchy chain for ember data
+
+add filtration rto the backend to say that only the slides associated with the current slideshow are rendered (this is to get around the limitations of filteredRecordArrays on the front-end)
+
+Add drag and drop resorting for slide order
+
+Add themes for slide shows and for individual slides.  Support a "theming system" that allows them to specify appearance for the slideshow, background on a per-slide basis, file uploads for backgrounds, 
+
+An option for full screen mode w/ no navigation UI (supports hotkeys)
+
+markdown cheatsheet (some kind of referenceable modal or possibly slideout menu that doesn't block the current slide or editing interface
+
+Support for exporting their slideshows as pdf or image file of some kind
+
+Add thematic support throughout the app for customizable appearance 
+
+optional per-slide audiofile upload/recording interface
+
+Support for "real-time" recording of a talk that tracks audio through phone or mic and tracks current slide.
+
+Add support for draggable elements?
+
+Make the underlying css rules for the slide formatting editable
+
+Guard against XSS attacks (made possible by the safestring flag on the markdown parser)
+
+

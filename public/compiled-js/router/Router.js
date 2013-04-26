@@ -186,7 +186,7 @@ App.SlideRoute = App.SmartRoute.extend({
     transitionAfterDeletion: function(pos) {
       var slideAtPos;
 
-      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
+      slideAtPos = this.controllerFor('slides').get('filteredContent').objectAt(pos);
       if (slideAtPos != null) {
         return this.replaceWith("slide", slideAtPos);
       } else {

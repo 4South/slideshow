@@ -128,7 +128,7 @@ App.SlideIndexRoute = App.SmartRoute.extend()
 App.SlideRoute = App.SmartRoute.extend
   events:
     transitionAfterDeletion: (pos) ->
-      slideAtPos = @controllerFor('slides').get('arrangedContent').objectAt(pos)
+      slideAtPos = @controllerFor('slides').get('filteredContent').objectAt(pos)
       if slideAtPos?
         @replaceWith "slide", slideAtPos
       else

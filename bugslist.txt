@@ -1,5 +1,9 @@
 Conditionally redirect on successful login IF current route is the indexroute
 create user login/creation shit in header
+CSS for Editing forms on rightbar do not fit small monitors
+can mongo NOT produce the massive-sized ids?
+PURGE THE BULLSHIT from the repo and consider pushing to master
+perhaps move current master to ...legacy or w/e
 
 add some kind of information to the slideshow splash page (perhaps a form to optionally rename, author info, creation date, etc)
 Consider adding some additional information to the form fr initial slideshow creation (picture/eventname/bleheblehbleheblheblhe)
@@ -16,13 +20,6 @@ when you create an account, you should be re-directed back to the page you were 
 something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
 
 
-bugs
-Play button does not work w/o a activeslide
-Add backend checking for formatDbResponse
-Up and Down buttons are broken
-
+BUGS
+User's must actually "own" the slides as far as the backend is concerned
 When you delete a slide, the newly targetted slide is targetted but it is not highlighted correctly
-
-When you delete an intermediate slide, the navigation buttons and highlighting gets fucked
-
-CSS for Editing forms on rightbar do not fit small monitors

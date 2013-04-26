@@ -1,19 +1,23 @@
+App.SortedFilteredSet = Ember.ArrayProxy.extend Ember.SortableMixin,
+  sortProperties: []
+  sortAscending: true
+
 App.SlidesController = Em.ArrayController.extend
 
   needs: ['slide', 'slideshow', 'user']
     
   newSlideName: ""
-  sortProperties: ['position']
-  sortAscending: true
   activeSlideBinding: 'controllers.slide.content'
-  currentSlideShowBinding: 'controllers.slideshow.content'
+  currentSlideshowBinding: 'controllers.slideshow.content'
 
   filteredContent: (->
-    curSlideShow = @get('currentSlideShow')
-    window.fuckit = @get('contet')
-    console.log(@get('content'))
-    return @get('content').filterProperty('slideshow', curSlideShow)
-  ).property('content.@each', 'currentSlideShow')
+    curSlideShow = @get('currentSlideshow')
+    filteredArray = @get('content').filterProperty('slideshow', curSlideShow)
+    return App.SortedFilteredSet.create
+      content: filteredArray
+      sortProperties: ['position']
+      sortAscending: true
+  ).property('content.@each', 'currentSlideshow')
 
   #BOOLEAN HELPER COMPUTED PROPS
   #names cannot have spaces or be blank
@@ -28,7 +32,7 @@ App.SlidesController = Em.ArrayController.extend
   atleastOneSlide: (->
     #check to see if content is null to prevent error
     if @get('content')
-      if @get('content').toArray().length is 0 then return false
+      if @get('filteredContent').toArray().length is 0 then return false
       else return true
     else return false
   ).property('content.@each.id').cacheable()
@@ -60,34 +64,34 @@ App.SlidesController = Em.ArrayController.extend
   ).property('content.@each.isDirty').cacheable()
 
   #SHOW CONTROLS
-
   clickThumbnail: (targetSlide)->
     @transitionToRoute "slide", targetSlide
 
   startShow: () ->
     if @get('activeSlide')?
       @transitionToRoute('slide', @get('activeSlide'))
+    else if @get('filteredContent').toArray().length isnt 0
+      @transitionToRoute('slide', @get('filteredContent.firstObject'))
+     
   
   pauseShow: () ->
     @transitionToRoute('slides')
 
   #helper method for forward/back 
-  findNewSlide: (shouldExit, positionDelta) ->
-    if not shouldExit
-      newPosition = @get('activeSlide').get('position')+positionDelta
-      newSlide = @get('content').findProperty('position', newPosition)
-      @send "updateActiveSlide", newSlide
+  findNewSlide: (positionDelta) ->
+    newPosition = @get('activeSlide').get('position')+positionDelta
+    return @get('content').findProperty('position', newPosition)
 
   forward: () ->
-    @findNewSlide(@get('atEnd'), 1)
+    if not @get('atEnd') then @send "updateActiveSlide", @findNewSlide(1)
 
   back: () ->
-    @findNewSlide(@get('atStart'), -1)
+    if not @get('atStart') then @send "updateActiveSlide", @findNewSlide(-1)
 
   #CHANGE SLIDE ORDER FUNCTIONS
   #helper method for moveDown/moveUp
-  findTarget: (slide, array, relativesearch, property) ->
-    return array.objectAt(slide.get(property) + relativesearch)
+  findTarget: (slide, array, deltaPos) ->
+    return array.findProperty('position', slide.get('position')+deltaPos)
 
   #helper method for moveDown/moveUp
   swap: (dectarget, inctarget, property) ->
@@ -96,44 +100,46 @@ App.SlidesController = Em.ArrayController.extend
     @get('store').commit()
 
   moveDown: (slide) ->
-    if @findTarget(slide, @get('filteredContent'), +1, 'position')?
+    target = @findTarget(slide, @get('filteredContent'), 1, 'position')
+    if target?
       @swap(target, slide, 'position')
 
   moveUp: (slide) ->
-    if @findTarget(slide, @get('filteredContent'), -1, 'position')?
+    target = @findTarget(slide, @get('filteredContent'), -1, 'position')
+    if target?
       @swap(slide, target, 'position')
 
 
   #ADD/REMOVE SLIDES
   createSlide: () ->
-    activeShow = @get('controllers.slideshow.content')
+    activeShow = @get('currentSlideshow')
     if not @get('nameIsValid')
       alert 'name must contain at least one character and no spaces'
     else
       App.Slide.createRecord
                 name: @get('newSlideName')
-                position: @get('content').toArray().length
+                position: @get('filteredContent').toArray().length
                 slideshow: activeShow
                 title: @get('newSlideName')
 
       @get('store').commit()
       @set('newSlideName', '')
-      window.bucket = DS.defaultStore.get('defaultTransaction.buckets')
 
   deleteSlide: (slide) ->
     arrCon = @get('filteredContent')
     currentPos = slide.get('position')
     slide.deleteRecord()
-    console.log slide.get('stateManager.currentState.name')
-    console.log arrCon.toArray()
-    console.log @get('content').toArray()
-    window.bucket = DS.defaultStore.get('defaultTransaction.buckets')
-    
+    console.log(@get('atleastOneSlide'))
     if @get('atleastOneSlide')
       i = 0
-      for eachslide in arrCon
+      for eachslide in arrCon.toArray()
+        console.log(i, eachslide.get('name'))
         if slide isnt eachslide
           eachslide.set('position', i)
           i=i+1
-          
     @get('store').commit()
+
+
+
+
+

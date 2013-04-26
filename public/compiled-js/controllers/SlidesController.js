@@ -1,18 +1,24 @@
+App.SortedFilteredSet = Ember.ArrayProxy.extend(Ember.SortableMixin, {
+  sortProperties: [],
+  sortAscending: true
+});
+
 App.SlidesController = Em.ArrayController.extend({
   needs: ['slide', 'slideshow', 'user'],
   newSlideName: "",
-  sortProperties: ['position'],
-  sortAscending: true,
   activeSlideBinding: 'controllers.slide.content',
-  currentSlideShowBinding: 'controllers.slideshow.content',
+  currentSlideshowBinding: 'controllers.slideshow.content',
   filteredContent: (function() {
-    var curSlideShow;
+    var curSlideShow, filteredArray;
 
-    curSlideShow = this.get('currentSlideShow');
-    window.fuckit = this.get('contet');
-    console.log(this.get('content'));
-    return this.get('content').filterProperty('slideshow', curSlideShow);
-  }).property('content.@each', 'currentSlideShow'),
+    curSlideShow = this.get('currentSlideshow');
+    filteredArray = this.get('content').filterProperty('slideshow', curSlideShow);
+    return App.SortedFilteredSet.create({
+      content: filteredArray,
+      sortProperties: ['position'],
+      sortAscending: true
+    });
+  }).property('content.@each', 'currentSlideshow'),
   nameIsValid: (function() {
     var name;
 
@@ -25,7 +31,7 @@ App.SlidesController = Em.ArrayController.extend({
   }).property('newSlideName').cacheable(),
   atleastOneSlide: (function() {
     if (this.get('content')) {
-      if (this.get('content').toArray().length === 0) {
+      if (this.get('filteredContent').toArray().length === 0) {
         return false;
       } else {
         return true;
@@ -70,28 +76,31 @@ App.SlidesController = Em.ArrayController.extend({
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));
+    } else if (this.get('filteredContent').toArray().length !== 0) {
+      return this.transitionToRoute('slide', this.get('filteredContent.firstObject'));
     }
   },
   pauseShow: function() {
     return this.transitionToRoute('slides');
   },
-  findNewSlide: function(shouldExit, positionDelta) {
-    var newPosition, newSlide;
+  findNewSlide: function(positionDelta) {
+    var newPosition;
 
-    if (!shouldExit) {
-      newPosition = this.get('activeSlide').get('position') + positionDelta;
-      newSlide = this.get('content').findProperty('position', newPosition);
-      return this.send("updateActiveSlide", newSlide);
-    }
+    newPosition = this.get('activeSlide').get('position') + positionDelta;
+    return this.get('content').findProperty('position', newPosition);
   },
   forward: function() {
-    return this.findNewSlide(this.get('atEnd'), 1);
+    if (!this.get('atEnd')) {
+      return this.send("updateActiveSlide", this.findNewSlide(1));
+    }
   },
   back: function() {
-    return this.findNewSlide(this.get('atStart'), -1);
+    if (!this.get('atStart')) {
+      return this.send("updateActiveSlide", this.findNewSlide(-1));
+    }
   },
-  findTarget: function(slide, array, relativesearch, property) {
-    return array.objectAt(slide.get(property) + relativesearch);
+  findTarget: function(slide, array, deltaPos) {
+    return array.findProperty('position', slide.get('position') + deltaPos);
   },
   swap: function(dectarget, inctarget, property) {
     dectarget.decrementProperty(property);
@@ -99,47 +108,51 @@ App.SlidesController = Em.ArrayController.extend({
     return this.get('store').commit();
   },
   moveDown: function(slide) {
-    if (this.findTarget(slide, this.get('filteredContent'), +1, 'position') != null) {
+    var target;
+
+    target = this.findTarget(slide, this.get('filteredContent'), 1, 'position');
+    if (target != null) {
       return this.swap(target, slide, 'position');
     }
   },
   moveUp: function(slide) {
-    if (this.findTarget(slide, this.get('filteredContent'), -1, 'position') != null) {
+    var target;
+
+    target = this.findTarget(slide, this.get('filteredContent'), -1, 'position');
+    if (target != null) {
       return this.swap(slide, target, 'position');
     }
   },
   createSlide: function() {
     var activeShow;
 
-    activeShow = this.get('controllers.slideshow.content');
+    activeShow = this.get('currentSlideshow');
     if (!this.get('nameIsValid')) {
       return alert('name must contain at least one character and no spaces');
     } else {
       App.Slide.createRecord({
         name: this.get('newSlideName'),
-        position: this.get('content').toArray().length,
+        position: this.get('filteredContent').toArray().length,
         slideshow: activeShow,
         title: this.get('newSlideName')
       });
       this.get('store').commit();
-      this.set('newSlideName', '');
-      return window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
+      return this.set('newSlideName', '');
     }
   },
   deleteSlide: function(slide) {
-    var arrCon, currentPos, eachslide, i, _i, _len;
+    var arrCon, currentPos, eachslide, i, _i, _len, _ref;
 
     arrCon = this.get('filteredContent');
     currentPos = slide.get('position');
     slide.deleteRecord();
-    console.log(slide.get('stateManager.currentState.name'));
-    console.log(arrCon.toArray());
-    console.log(this.get('content').toArray());
-    window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
+    console.log(this.get('atleastOneSlide'));
     if (this.get('atleastOneSlide')) {
       i = 0;
-      for (_i = 0, _len = arrCon.length; _i < _len; _i++) {
-        eachslide = arrCon[_i];
+      _ref = arrCon.toArray();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        eachslide = _ref[_i];
+        console.log(i, eachslide.get('name'));
         if (slide !== eachslide) {
           eachslide.set('position', i);
           i = i + 1;

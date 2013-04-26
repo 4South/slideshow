@@ -10,9 +10,9 @@ App.UserController = Ember.ObjectController.extend({
   editingMode: false,
   editingButtonText: (function() {
     if (this.get('editingMode')) {
-      return "viewing mode";
+      return "goto viewing mode";
     } else {
-      return "editing mode";
+      return "goto editing mode";
     }
   }).property('editingMode'),
   loggedInUser: (function() {

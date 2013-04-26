@@ -14,7 +14,10 @@ exports.formatSlideResponse = function(model) {
   if (model) {
     var formattedModel = model.toObject();
     formattedModel.id = formattedModel._id;
-    formattedModel.slideshow_id = formattedModel._slideshow[0];
+    console.log(formattedModel);
+    if (formattedModel._slideshow) {
+      formattedModel.slideshow_id = formattedModel._slideshow[0];
+    }
     delete formattedModel._slideshow
     delete formattedModel.password
     delete formattedModel._id;
