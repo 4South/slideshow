@@ -1,8 +1,14 @@
 {{#if loggedIn}}
   <li class="controls"> 
-    <button class="btn-mini btn-warning" {{action "toggleEditing"}}>
-      {{editingButtonText}}
-    </button>
+    {{#if editingMode}}
+      <button class="btn-mini btn-primary" {{action "exitEditing"}}>
+        {{editingButtonText}}
+      </button>
+    {{else}}
+      <button class="btn-mini btn-warning" {{action "enterEditingMode"}}>
+        {{editingButtonText}}
+      </button>
+    {{/if}}
   </li>
   <li> <p id = "navlabel"> You logged in as {{username}} </p> </li>
 
@@ -27,11 +33,11 @@
     </form>
   </li>
   
-  <li style = 'padding-top:4px;margin-left:5px;'>
-    <button class="btn-mini btn-warning" {{action login}}>login</button>
-  </li>      
-  
-  <li style = 'padding-top:4px;margin-left:5px;'>
-    <button class="btn-mini btn-primary" {{action home}}>Home</button>
+  <li class = "controls">
+    <button class="btn-mini btn-warning" {{action login}}>Login</button>
   </li>
+
+  <li class = "controls">
+    <button class="btn-mini btn-primary" {{action createUser}}>Create</button>
+  </li>      
 {{/if}}

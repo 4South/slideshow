@@ -29,11 +29,11 @@ App.UserController = Ember.ObjectController.extend
     else false
   ).property('permissionToEdit', 'editingMode')
 
-  toggleEditing: () ->
-    @toggleProperty('editingMode')
+  enterEditingMode: () ->
+    @set('editingMode', true)
     
   exitEditing: () ->
-   @set('editingMode', false)
+    @set('editingMode', false)
   
   createData: (->
     username: @get('formUsername')
@@ -140,7 +140,7 @@ App.UserController = Ember.ObjectController.extend
       success: (data) ->
         Ember.run(@, ()->
           @set('content', null)
-          @get('controllers.slideshow').exitEditing()
+          @exitEditing()
         )
       error: (xhr) ->
         Ember.run(@, ()->

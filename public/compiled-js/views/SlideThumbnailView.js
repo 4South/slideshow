@@ -10,5 +10,5 @@ App.SlideThumbnailView = Em.View.extend({
     } else {
       return false;
     }
-  }).property('controller.activeSlide').cacheable()
+  }).property('controller.activeSlide.@each')
 });

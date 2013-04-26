@@ -36,8 +36,8 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('permissionToEdit', 'editingMode'),
-  toggleEditing: function() {
-    return this.toggleProperty('editingMode');
+  enterEditingMode: function() {
+    return this.set('editingMode', true);
   },
   exitEditing: function() {
     return this.set('editingMode', false);
@@ -152,7 +152,7 @@ App.UserController = Ember.ObjectController.extend({
       success: function(data) {
         return Ember.run(this, function() {
           this.set('content', null);
-          return this.get('controllers.slideshow').exitEditing();
+          return this.exitEditing();
         });
       },
       error: function(xhr) {

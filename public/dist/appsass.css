@@ -357,17 +357,12 @@ li.controls {
   color: #c2efff;
 }
 
-fieldset {
-  width: 40%;
-  text-align: left;
-}
-
 #showthumbnails {
-  height: 65px;
+  height: 80px;
   padding: 3px;
   text-align: left;
   margin-bottom: 10px;
-  background-color: rgba(125, 125, 125, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 5px;
   font-weight: normal;
   font-family: "Jacques Francois";
@@ -381,7 +376,7 @@ form#slideshowcreate {
   margin-right: auto;
   height: 175px;
   width: 275px;
-  background-color: rgba(125, 125, 125, 0.3);
+  background-color: rgba(175, 175, 175, 0.3);
   border-radius: 5px;
 }
 form#slideshowcreate fieldset {
@@ -395,4 +390,27 @@ form#slideshowcreate fieldset {
   margin: auto;
   overflow: none;
   overflow-y: auto;
+}
+#slideshowlist p#showtitle {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 1.2em;
+  color: #2e74ff;
+}
+
+section#editslideshow {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  padding: 10px;
+  height: 200px;
+  width: 500px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+}
+section#editslideshow section#slideshowButtons {
+  width: 100%;
+  position: relative;
+  bottom: 0;
 }
