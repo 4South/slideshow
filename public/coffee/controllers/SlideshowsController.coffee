@@ -11,3 +11,4 @@ App.SlideshowsController = Em.ArrayController.extend
           author: user.get('username')
     @get('store').commit()
     @set('newName', '')
+    

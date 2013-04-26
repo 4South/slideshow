@@ -1,4 +1,24 @@
 <section id = "splashpage">
-<h1> Slideshow Title: {{content.title}} </h1>
-<button class="btn" {{action showSlides}}>Show Slides</button>
+  <h1> Slideshow Title: {{content.title}} </h1>
+  <button class="btn-warning btn-small" {{action "showSlides"}}>
+    Show Slides
+  </button><br>
+
+  {{#if controllers.user.editingMode}}
+  <section id = "editslideshow">
+    <span id = "subtitle"> Edit Title: </span>
+    {{view App.SlideTextField valueBinding = "content.title"}}
+
+    <section id = "slideshowButtons">
+      <button {{action "saveSlideshowTitle"}} class = "btn-small btn-warning">
+        Save
+      </button>  
+      <button {{action "deleteSlideshow"}} class = "btn-small btn-danger">
+        Delete Show
+      </button>
+    </section>
+  </section>
+{{/if}}
+
 </section>
+ 

@@ -115,13 +115,8 @@ App.SlidesIndexRoute = App.SmartRoute.extend
                     controller: "slides"
 
 App.SlidesRoute = App.SmartRoute.extend
-  model: (params) ->
-    
-    #TEST W/O FILTER
+  model: (params) ->   
     return App.Slide.find()
-    parentShow = @modelFor('slideshow')
-    console.log(parentShow)
-    #return App.Slide.find(slideshow: parentShow)
 
 App.SlideIndexRoute = App.SmartRoute.extend()
 

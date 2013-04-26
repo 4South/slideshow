@@ -225,6 +225,16 @@ App.SlideshowController = Em.ObjectController.extend({
   needs: ['slides', 'user'],
   showSlides: function() {
     return this.transitionToRoute("slides");
+  },
+  deleteSlideshow: function() {
+    if (confirm("Really delete this slideshow?")) {
+      this.get('model').deleteRecord();
+      this.get('store').commit();
+      return this.replaceRoute('slideshows');
+    }
+  },
+  saveSlideshowTitle: function() {
+    return this.get('store').commit();
   }
 });
 });
@@ -287,8 +297,8 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('permissionToEdit', 'editingMode'),
-  toggleEditing: function() {
-    return this.toggleProperty('editingMode');
+  enterEditingMode: function() {
+    return this.set('editingMode', true);
   },
   exitEditing: function() {
     return this.set('editingMode', false);
@@ -587,11 +597,7 @@ App.SlidesIndexRoute = App.SmartRoute.extend({
 
 App.SlidesRoute = App.SmartRoute.extend({
   model: function(params) {
-    var parentShow;
-
     return App.Slide.find();
-    parentShow = this.modelFor('slideshow');
-    return console.log(parentShow);
   }
 });
 
@@ -706,7 +712,7 @@ App.SlideThumbnailView = Em.View.extend({
     } else {
       return false;
     }
-  }).property('controller.activeSlide').cacheable()
+  }).property('controller.activeSlide.@each')
 });
 });
 
@@ -722,11 +728,9 @@ App.SlidesView = Em.View.extend({
   classNames: ['slideslist'],
   tagName: 'section',
   didInsertElement: function() {
-    return Ember.run.later((function() {
-      return $('.slideslist').jScrollPane({
-        autoReinitialise: true
-      });
-    }), 200);
+    return $('.slideslist').jScrollPane({
+      autoReinitialise: true
+    });
   }
 });
 });
@@ -734,11 +738,9 @@ App.SlidesView = Em.View.extend({
 minispade.register('views/SlideshowsView.js', function() {
 App.SlideshowsView = Em.View.extend({
   didInsertElement: function() {
-    return Ember.run.later((function() {
-      return $('#slideshowlist').jScrollPane({
-        autoReinitialise: true
-      });
-    }), 200);
+    return $('#slideshowlist').jScrollPane({
+      autoReinitialise: true
+    });
   }
 });
 });
@@ -746,11 +748,9 @@ App.SlideshowsView = Em.View.extend({
 minispade.register('views/SlidesthumbnailsView.js', function() {
 App.SlidethumbnailsView = Em.View.extend({
   didInsertElement: function() {
-    return Ember.run.later((function() {
-      return $('.leftbar').jScrollPane({
-        autoReinitialise: true
-      });
-    }), 200);
+    return $('.leftbar').jScrollPane({
+      autoReinitialise: true
+    });
   }
 });
 });

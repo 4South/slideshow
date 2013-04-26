@@ -36,8 +36,8 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('permissionToEdit', 'editingMode'),
-  toggleEditing: function() {
-    return this.toggleProperty('editingMode');
+  enterEditingMode: function() {
+    return this.set('editingMode', true);
   },
   exitEditing: function() {
     return this.set('editingMode', false);

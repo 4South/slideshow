@@ -29,11 +29,11 @@ App.UserController = Ember.ObjectController.extend
     else false
   ).property('permissionToEdit', 'editingMode')
 
-  toggleEditing: () ->
-    @toggleProperty('editingMode')
+  enterEditingMode: () ->
+    @set('editingMode', true)
     
   exitEditing: () ->
-   @set('editingMode', false)
+    @set('editingMode', false)
   
   createData: (->
     username: @get('formUsername')
