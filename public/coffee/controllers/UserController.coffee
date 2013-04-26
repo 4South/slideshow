@@ -51,6 +51,13 @@ App.UserController = Ember.ObjectController.extend
     if @get('content') then return true else return false
   ).property('content')
 
+  validNewUser: ->
+    if @get('formUsername') != '' and
+    @get('formPassword') != '' and
+    @get('formPassword') != ''
+      return true
+    else return false
+
   resetForm: () ->
     @set('formUsername', '')
     @set('formPassword', '')
@@ -78,7 +85,8 @@ App.UserController = Ember.ObjectController.extend
         data: @get('createData')
         success: (data) ->
           Ember.run(@, () ->
-            @set('content', Ember.Object.create(data))
+            @get('store').load(App.User, data)
+            @set('content', App.User.find(data.id))
             @transitionToRoute('slideshows')
           )
         error: (xhr) ->
@@ -95,20 +103,12 @@ App.UserController = Ember.ObjectController.extend
       alert 'Please fill out each field for User Creation'
       @resetForm()
             
-  validNewUser: ->
-    if @get('formUsername') != '' and
-    @get('formPassword') != '' and
-    @get('formPassword') != ''
-      return true
-    else return false
-
   sessionLogin: () ->
     @userAjax('/user/sessionlogin', 'GET',
       success: (data) ->
         Ember.run(@, () ->
-          @set('content', Ember.Object.create(data))
-          #SEND EVENT TO ROUTER FOR CONDITIONAL REDIRECT
-          #IF ON THE MAINPAGE
+          @get('store').load(App.User, data)
+          @set('content', App.User.find(data.id))
         )
       error: (xhr) ->
         return
@@ -123,7 +123,8 @@ App.UserController = Ember.ObjectController.extend
       data: @get('loginData')
       success: (data) ->
         Ember.run(@, () ->
-          @set('content', Ember.Object.create(data))
+          @get('store').load(App.User, data)
+          @set('content', App.User.find(data.id))
         )
       error: (xhr) ->
         Ember.run(@, () ->
@@ -139,14 +140,12 @@ App.UserController = Ember.ObjectController.extend
     @userAjax('/user/logout', 'GET',
       success: (data) ->
         Ember.run(@, ()->
+          @get('store').unloadRecord(@get('content'))
           @set('content', null)
-          @get('controllers.slideshow').exitEditing()
+          @exitEditing()
         )
       error: (xhr) ->
         Ember.run(@, ()->
           @set('errorMessage', 'logout failed')
         )
      )
-     
-  home: ->
-    @replaceRoute 'index'

@@ -62,6 +62,13 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('content'),
+  validNewUser: function() {
+    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
   resetForm: function() {
     this.set('formUsername', '');
     this.set('formPassword', '');
@@ -85,7 +92,8 @@ App.UserController = Ember.ObjectController.extend({
         data: this.get('createData'),
         success: function(data) {
           return Ember.run(this, function() {
-            this.set('content', Ember.Object.create(data));
+            this.get('store').load(App.User, data);
+            this.set('content', App.User.find(data.id));
             return this.transitionToRoute('slideshows');
           });
         },
@@ -105,18 +113,12 @@ App.UserController = Ember.ObjectController.extend({
       return this.resetForm();
     }
   },
-  validNewUser: function() {
-    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
-      return true;
-    } else {
-      return false;
-    }
-  },
   sessionLogin: function() {
     return this.userAjax('/user/sessionlogin', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {},
@@ -132,7 +134,8 @@ App.UserController = Ember.ObjectController.extend({
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {
@@ -151,8 +154,9 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/logout', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
+          this.get('store').unloadRecord(this.get('content'));
           this.set('content', null);
-          return this.get('controllers.slideshow').exitEditing();
+          return this.exitEditing();
         });
       },
       error: function(xhr) {
@@ -161,8 +165,5 @@ App.UserController = Ember.ObjectController.extend({
         });
       }
     });
-  },
-  home: function() {
-    return this.replaceRoute('index');
   }
 });
