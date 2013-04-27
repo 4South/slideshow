@@ -21,10 +21,6 @@ Ember.Application.initializer({
     return userCon.sessionLogin();
   }
 });
-
-Ember.run.later(this, (function() {
-  return window.bucket = DS.defaultStore.get('defaultTransaction.buckets');
-}), 3000);
 });
 
 minispade.register('controllers/ApplicationController.js', function() {
@@ -223,6 +219,13 @@ App.SlidesController = Em.ArrayController.extend({
 minispade.register('controllers/SlideshowController.js', function() {
 App.SlideshowController = Em.ObjectController.extend({
   needs: ['slides', 'user'],
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   showSlides: function() {
     return this.transitionToRoute("slides");
   },
@@ -347,7 +350,7 @@ App.UserController = Ember.ObjectController.extend({
         success: function(data) {
           return Ember.run(this, function() {
             this.set('content', Ember.Object.create(data));
-            return this.transitionToRoute('slideshows');
+            return this.replaceRoute('user');
           });
         },
         error: function(xhr) {
@@ -422,9 +425,6 @@ App.UserController = Ember.ObjectController.extend({
         });
       }
     });
-  },
-  home: function() {
-    return this.replaceRoute('index');
   }
 });
 });
@@ -447,13 +447,15 @@ App.Slide = DS.Model.extend({
 minispade.register('models/Slideshow.js', function() {
 App.Slideshow = DS.Model.extend({
   title: DS.attr('string'),
-  author: DS.attr('string')
+  author: DS.attr('string'),
+  description: DS.attr('string')
 });
 });
 
 minispade.register('models/User.js', function() {
 App.User = DS.Model.extend({
-  username: DS.attr('string')
+  username: DS.attr('string'),
+  email: DS.attr('string')
 });
 });
 
@@ -971,12 +973,15 @@ App.SmartRoute = Ember.Route.extend({
 
 App.ApplicationRoute = Ember.Route.extend({
   events: {
+    createEditUser: function() {
+      return this.transitionTo('user');
+    },
     updateActiveSlide: function(newSlide) {
       return this.transitionTo('slide', newSlide);
     },
     transitionAfterDeletion: function() {},
     transitionToSlideshows: function() {
-      return this.transitionTo("slideshows");
+      return this.transitionTo("slideshows.index");
     },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
@@ -1095,6 +1100,46 @@ App.SlideRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
+    });
+  }
+});
+
+App.UserIndexRoute = App.SmartRoute.extend({
+  events: {
+    viewEditUser: function() {
+      return this.transitionTo('user.edit');
+    },
+    createNewUser: function() {
+      return this.transitionTo('user.create');
+    }
+  },
+  renderTemplate: function(controller) {
+    return this.render("usermanagement", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserRoute = App.SmartRoute.extend();
+
+App.UserCreateRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("usercreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserEditRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("useredit", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
     });
   }
 });

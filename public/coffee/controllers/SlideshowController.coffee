@@ -1,6 +1,13 @@
 App.SlideshowController = Em.ObjectController.extend
   needs: ['slides', 'user']
 
+  savedStatus: (->
+    if @get('content.isDirty')
+      return "Unsaved Changes"
+    else return "All Changes Saved"
+  ).property('content.isDirty').cacheable()
+  
+  
   showSlides: ->
     @transitionToRoute "slides"
 

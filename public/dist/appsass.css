@@ -20,22 +20,6 @@ body, html {
   top: 40px;
 }
 
-.navbar {
-  background-color: rgba(0, 0, 0, 0);
-  height: 40px;
-  margin-bottom: 0px;
-  position: fixed;
-  width: 100%;
-}
-
-.navbar-inverse .navbar-inner {
-  margin-bottom: 0px;
-  background-color: rgba(0, 0, 0, 0.8);
-  background-image: none;
-  border: none;
-  height: 40px;
-}
-
 textarea {
   min-height: 250px;
   padding: none;
@@ -270,6 +254,49 @@ section#splashpage #userlogin {
   border-radius: 10px;
 }
 
+section#usermanagement {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  margin-top: 50px;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 600px;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+section#usercreate {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  margin-top: 50px;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 600px;
+  overflow-x: hidden;
+  text-align: center;
+}
+section#usercreate form {
+  text-align: center;
+}
+section#usercreate form fieldset {
+  width: 30%;
+  margin: auto;
+  text-align: left;
+}
+
+#userinfo {
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 50%;
+  margin: auto;
+  margin-top: 25px;
+}
+
 aside {
   margin: 0;
   padding: 0;
@@ -318,21 +345,12 @@ aside.rightbar #savedStatus {
 li.controls {
   margin-left: 2px;
   margin-top: 8px;
+  margin-right: 2px;
 }
 
 .btn-mini, .btn-small, .btn {
   font-family: "Share Tech Mono", serif;
   font-size: 1em;
-}
-
-#navlabel {
-  font-family: "Share Tech Mono", serif;
-  color: #2e74ff;
-  vertical-align: middle;
-  display: inline-block;
-  margin-top: 6px;
-  margin-right: 5px;
-  margin-left: 5px;
 }
 
 .loginfield {
@@ -384,6 +402,26 @@ form#slideshowcreate fieldset {
   text-align: center;
 }
 
+section#slideshowSplashpage {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  margin-top: 50px;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 600px;
+  overflow-x: hidden;
+}
+section#slideshowSplashpage h1 {
+  text-align: center;
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 3em;
+  color: #2e74ff;
+}
+
 #slideshowlist {
   height: 250px;
   width: 80%;
@@ -398,19 +436,75 @@ form#slideshowcreate fieldset {
   color: #2e74ff;
 }
 
-section#editslideshow {
+section#slideshowDescription {
+  text-align: left;
+  margin-left: 10%;
+  width: 70%;
+}
+
+form#editslideshow {
+  text-align: left;
   margin-left: auto;
   margin-right: auto;
   margin-top: 15px;
   padding: 10px;
-  height: 200px;
+  height: 50%;
   width: 500px;
-  text-align: center;
   background-color: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
+  bottom: 0px;
 }
-section#editslideshow section#slideshowButtons {
+
+.slideshowText {
+  width: 80%;
+  height: 100px;
+  min-height: 50px;
+}
+
+section#slideshowButtons #savedStatus {
+  width: 125px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  background-color: #2e74ff;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 0.75em;
+  color: white;
+  border-radius: 5px;
+}
+
+.navbar {
+  background-color: rgba(0, 0, 0, 0);
+  height: 40px;
+  margin-bottom: 0px;
+  position: fixed;
   width: 100%;
-  position: relative;
-  bottom: 0;
+}
+
+.navbar-inverse .navbar-inner {
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+  background-image: none;
+  border: none;
+  height: 40px;
+}
+
+.headerTextfield {
+  padding-top: 3px;
+  width: 100px;
+  min-width: none;
+  margin-right: 5px;
+}
+.headerTextfield input {
+  width: 100px;
+}
+
+#navlabel {
+  font-family: "Share Tech Mono", serif;
+  color: #2e74ff;
+  vertical-align: middle;
+  display: inline-block;
+  margin-top: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
 }

@@ -86,12 +86,15 @@ App.SmartRoute = Ember.Route.extend({
 
 App.ApplicationRoute = Ember.Route.extend({
   events: {
+    createEditUser: function() {
+      return this.transitionTo('user');
+    },
     updateActiveSlide: function(newSlide) {
       return this.transitionTo('slide', newSlide);
     },
     transitionAfterDeletion: function() {},
     transitionToSlideshows: function() {
-      return this.transitionTo("slideshows");
+      return this.transitionTo("slideshows.index");
     },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
@@ -210,6 +213,46 @@ App.SlideRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
+    });
+  }
+});
+
+App.UserIndexRoute = App.SmartRoute.extend({
+  events: {
+    viewEditUser: function() {
+      return this.transitionTo('user.edit');
+    },
+    createNewUser: function() {
+      return this.transitionTo('user.create');
+    }
+  },
+  renderTemplate: function(controller) {
+    return this.render("usermanagement", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserRoute = App.SmartRoute.extend();
+
+App.UserCreateRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("usercreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserEditRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("useredit", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
     });
   }
 });

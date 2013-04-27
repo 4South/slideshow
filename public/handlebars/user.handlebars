@@ -19,17 +19,23 @@
   <li> <p id = "navlabel">{{errorMessage}}</p> </li>
   <li> <p id = "navlabel">username</p> </li>
   
-  <li>
+  <li class = "headerTextfield">
     <form class="navbar-form">
-      {{view Ember.TextField valueBinding="loginUser"}} 
+      {{input type=text
+              value=loginUser
+              maxlength=10
+              size=8}} 
     </form>
   </li>
 
   <li> <p id = "navlabel">password</p> </li>
   
-  <li>
+  <li class = "headerTextfield">
     <form class="navbar-form">
-      {{view Ember.TextField type="password" valueBinding="loginPassword"}} 
+      {{input type=password 
+              value=loginPassword
+              maxlength=10
+              size=8}} 
     </form>
   </li>
   
@@ -38,6 +44,6 @@
   </li>
 
   <li class = "controls">
-    <button class="btn-mini btn-primary" {{action createUser}}>Create</button>
+    <button class="btn-mini btn-primary" {{action createEditUser}}>Create/Edit User</button>
   </li>      
 {{/if}}

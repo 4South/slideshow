@@ -79,7 +79,7 @@ App.UserController = Ember.ObjectController.extend
         success: (data) ->
           Ember.run(@, () ->
             @set('content', Ember.Object.create(data))
-            @transitionToRoute('slideshows')
+            @replaceRoute 'user'
           )
         error: (xhr) ->
           Ember.run(@, () ->
@@ -146,7 +146,4 @@ App.UserController = Ember.ObjectController.extend
         Ember.run(@, ()->
           @set('errorMessage', 'logout failed')
         )
-     )
-     
-  home: ->
-    @replaceRoute 'index'
+     )    

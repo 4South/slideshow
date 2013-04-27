@@ -86,7 +86,7 @@ App.UserController = Ember.ObjectController.extend({
         success: function(data) {
           return Ember.run(this, function() {
             this.set('content', Ember.Object.create(data));
-            return this.transitionToRoute('slideshows');
+            return this.replaceRoute('user');
           });
         },
         error: function(xhr) {
@@ -161,8 +161,5 @@ App.UserController = Ember.ObjectController.extend({
         });
       }
     });
-  },
-  home: function() {
-    return this.replaceRoute('index');
   }
 });

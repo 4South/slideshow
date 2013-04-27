@@ -48,6 +48,8 @@ App.SmartRoute = Ember.Route.extend
 
 App.ApplicationRoute = Ember.Route.extend
   events:
+    createEditUser: ->
+      @transitionTo 'user'
     updateActiveSlide: (newSlide) ->
       @transitionTo('slide', newSlide)
 
@@ -55,7 +57,7 @@ App.ApplicationRoute = Ember.Route.extend
       return
 
     transitionToSlideshows: () ->
-      @transitionTo("slideshows")
+      @transitionTo("slideshows.index")
 
     #currently not using, may delete
     transitionWithRender: (name, parameters) ->
@@ -150,3 +152,30 @@ App.SlideRoute = App.SmartRoute.extend
                     outlet: 'rightbar'
                     controller: "slides"
 
+App.UserIndexRoute = App.SmartRoute.extend
+  events:
+    viewEditUser: ->
+      @transitionTo 'user.edit'
+    createNewUser: ->
+      @transitionTo 'user.create'
+  renderTemplate: (controller)->
+    @render "usermanagement",
+                    into: 'application'
+                    outlet: 'main'
+                    controller: 'user'
+
+App.UserRoute = App.SmartRoute.extend()                    
+                    
+App.UserCreateRoute = App.SmartRoute.extend
+  renderTemplate: (controller)->
+    @render "usercreate",
+      into: 'application'
+      outlet: 'main'
+      controller: 'user'
+      
+App.UserEditRoute = App.SmartRoute.extend
+  renderTemplate: (controller)->
+    @render "useredit",
+      into: 'application'
+      outlet: 'main'
+      controller: 'user'
