@@ -2,7 +2,7 @@ var formatDbResponse = require('./../utils/crudutils.js').formatDbResponse
   , User = require('./../models/models.js').User;
 
 exports.postlogin = function(req, res) {
-  res.json( { id: req.user.id, username: req.user.username });
+  res.json( { id: req.user.id, username: req.user.username});
 };
 
 //attempts to log a "new page" in using their cookie
@@ -38,6 +38,19 @@ exports.postcreate = function(req, res, next) {
         delete req.body.email;
         next();
       }); 
+    }
+  });
+};
+
+exports.putUser = function(req, res) {
+  User.findOneAndUpdate({_id: req.params.id}, {$set: req.body.user},
+  function (err, result) {
+    var response = {};
+    if (err) {
+      res.json({message: err});
+    } else {
+      response['user'] = formatDbResponse(result);
+      res.send(response);
     }
   });
 };

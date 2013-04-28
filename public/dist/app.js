@@ -263,7 +263,7 @@ App.SlideshowsController = Em.ArrayController.extend({
 
 minispade.register('controllers/UserController.js', function() {
 App.UserController = Ember.ObjectController.extend({
-  needs: ['slideshow'],
+  needs: ['slideshow', 'slide'],
   content: '',
   formUsername: '',
   formPassword: '',
@@ -271,6 +271,7 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  userEditingMode: false,
   editingMode: false,
   editingButtonText: (function() {
     if (this.get('editingMode')) {
@@ -279,6 +280,13 @@ App.UserController = Ember.ObjectController.extend({
       return "goto editing mode";
     }
   }).property('editingMode'),
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
@@ -326,10 +334,25 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('content'),
+  validNewUser: function() {
+    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
   resetForm: function() {
     this.set('formUsername', '');
     this.set('formPassword', '');
     return this.set('formEmail', '');
+  },
+  editUserInfo: function() {
+    return this.set('userEditingMode', true);
+  },
+  saveUserInfo: function() {
+    this.get('store').commit();
+    this.resetForm();
+    return this.set('userEditingMode', false);
   },
   userAjax: function(url, type, hash) {
     this.set('errorMessage', '');
@@ -349,8 +372,9 @@ App.UserController = Ember.ObjectController.extend({
         data: this.get('createData'),
         success: function(data) {
           return Ember.run(this, function() {
-            this.set('content', Ember.Object.create(data));
-            return this.replaceRoute('user');
+            this.get('store').load(App.User, data);
+            this.set('content', App.User.find(data.id));
+            return this.transitionToRoute('user');
           });
         },
         error: function(xhr) {
@@ -369,18 +393,12 @@ App.UserController = Ember.ObjectController.extend({
       return this.resetForm();
     }
   },
-  validNewUser: function() {
-    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
-      return true;
-    } else {
-      return false;
-    }
-  },
   sessionLogin: function() {
     return this.userAjax('/user/sessionlogin', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {},
@@ -396,7 +414,8 @@ App.UserController = Ember.ObjectController.extend({
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {
@@ -415,6 +434,7 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/logout', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
+          this.get('store').unloadRecord(this.get('content'));
           this.set('content', null);
           return this.exitEditing();
         });
@@ -448,7 +468,8 @@ minispade.register('models/Slideshow.js', function() {
 App.Slideshow = DS.Model.extend({
   title: DS.attr('string'),
   author: DS.attr('string'),
-  description: DS.attr('string')
+  description: DS.attr('string'),
+  user: DS.belongsTo('App.User')
 });
 });
 
@@ -456,467 +477,6 @@ minispade.register('models/User.js', function() {
 App.User = DS.Model.extend({
   username: DS.attr('string'),
   email: DS.attr('string')
-});
-});
-
-minispade.register('models/handrolledSlide.js', function() {
-App.Record = Ember.ObjectProxy.extend(Ember.Evented, Ember.DeferredMixin, {
-  content: null,
-  tester: ""
-});
-
-App.RecordArray = Ember.ArrayProxy.extend(Ember.Evented, Ember.DeferredMixin, {
-  content: Em.A(),
-  notAlreadyLoaded: function(record) {
-    if (!this.mapProperty('id').contains(record.id)) {
-      return true;
-    } else {
-      return false;
-    }
-  },
-  load: function(hash) {
-    var results, _this;
-
-    _this = hash._this;
-    return results = hash.results;
-  },
-  loadAll: function(hash) {
-    var results, _this;
-
-    _this = hash._this;
-    results = hash.results;
-    return Ember.run(_this, function() {
-      var result, _i, _len, _results;
-
-      _results = [];
-      for (_i = 0, _len = results.length; _i < _len; _i++) {
-        result = results[_i];
-        if (this.notAlreadyLoaded(result)) {
-          _results.push(_this.pushObject(App.Slide.create(result)));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    });
-  }
-});
-
-App.Slide = Em.Object.extend(Ember.DeferredMixin, {
-  templateName: "baseslide",
-  name: "default slide",
-  slideNumber: null,
-  active: false
-});
-
-App.Slide.reopenClass({
-  find: function(id) {
-    var rec;
-
-    if (id) {
-      rec = App.Record.create();
-      rec.then(rec.load);
-      return rec;
-    }
-    return this.findAll();
-  },
-  findAll: function() {
-    window.slides = App.RecordArray.create();
-    slides.then(slides.loadAll);
-    Ember.$.ajax({
-      contentType: "application/json",
-      url: "slides",
-      method: 'GET',
-      context: slides,
-      success: function(results) {
-        return this.loadAll({
-          _this: this,
-          results: results
-        });
-      }
-    });
-    return slides;
-  }
-});
-});
-
-minispade.register('router/DeserializeRouter.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
-
-App.Router.map(function() {
-  this.resource("user", {
-    path: '/user'
-  }, function() {
-    this.route("create", {
-      path: '/create'
-    });
-    return this.route("edit", {
-      path: '/edit'
-    });
-  });
-  return this.resource("slideshows", {
-    path: '/slideshows'
-  }, function() {
-    return this.resource("slideshow", {
-      path: '/:slideshow_id'
-    }, function() {
-      return this.resource("slides", {
-        path: '/slides'
-      }, function() {
-        return this.resource("slide", {
-          path: '/:slide_id'
-        });
-      });
-    });
-  });
-});
-
-App.SmartRoute = Ember.Route.extend({
-  resetOutlets: function() {
-    this.render('blankthumbnails', {
-      outlet: 'slidethumbnails',
-      into: 'application'
-    });
-    this.render('blankcontrols', {
-      outlet: 'controls',
-      into: 'application'
-    });
-    return this.render('blankrightbar', {
-      outlet: 'rightbar',
-      into: 'application'
-    });
-  },
-  deserialize: function(params) {
-    var model;
-
-    model = this.model(params);
-    console.log(this.get('routeName'), "'s deserialize fired with ", params, model);
-    return this.currentModel = model;
-  }
-});
-
-App.ApplicationRoute = Ember.Route.extend({
-  events: {
-    updateActiveSlide: function(newSlide) {
-      var slidesCon;
-
-      slidesCon = this.controllerFor('slides');
-      slidesCon.set('activeSlideIndex', newSlide.get('position'));
-      return this.transitionTo('slide', slidesCon.get('activeSlide'));
-    },
-    transitionAfterDeletion: function() {}
-  }
-});
-
-App.IndexRoute = Ember.Route.extend({
-  redirect: function() {
-    return this.replaceWith("slideshows");
-  }
-});
-
-App.SlideshowsRoute = App.SmartRoute.extend({
-  model: function(params) {
-    return App.Slideshow.find();
-  },
-  renderTemplate: function(controller, model) {
-    return this.render("slideshows", {
-      outlet: 'main'
-    });
-  }
-});
-
-App.SlideshowRoute = App.SmartRoute.extend({
-  renderTemplate: function(controller, model) {
-    return this.render("slideshow", {
-      into: 'application',
-      outlet: 'main'
-    });
-  },
-  serialize: function(model, params) {
-    var object;
-
-    console.log(this.get('routeName'), ' fired');
-    object = {};
-    object[params[0]] = model.get('id');
-    return object;
-  }
-});
-
-App.SlidesRoute = App.SmartRoute.extend({
-  model: function(params) {
-    var ssId;
-
-    ssId = this.modelFor('slideshow').get('id');
-    return App.Slide.find({
-      slideshow: ssId
-    });
-  },
-  renderTemplate: function(controller) {
-    this.render("slides", {
-      into: 'application',
-      outlet: 'main',
-      controller: controller
-    });
-    this.render("slidethumbnails", {
-      into: 'application',
-      outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
-    });
-    this.render("maincontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: "slides"
-    });
-    return this.render("rightbar", {
-      into: 'application',
-      outlet: 'rightbar',
-      controller: "slides"
-    });
-  }
-});
-
-App.SlideRoute = App.SmartRoute.extend({
-  events: {
-    transitionAfterDeletion: function(pos) {
-      var slideAtPos;
-
-      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
-      if (slideAtPos != null) {
-        return this.replaceWith("slide", slideAtPos);
-      } else {
-        return this.replaceWith("slides");
-      }
-    }
-  },
-  serialize: function(model, params) {
-    var object;
-
-    console.log(model, this.modelFor('slideshow'));
-    object = {};
-    object[params[0]] = model.get('id');
-    return object;
-  },
-  renderTemplate: function(controller) {
-    this.render("showcontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: 'slides'
-    });
-    this.render("slidedetail", {
-      into: 'application',
-      outlet: 'main',
-      controller: controller
-    });
-    this.render("slidethumbnails", {
-      into: 'application',
-      outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
-    });
-    return this.render("rightbar", {
-      into: 'application',
-      outlet: 'rightbar',
-      controller: "slides"
-    });
-  }
-});
-});
-
-minispade.register('router/OldRouter.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
-
-App.Router.map(function() {
-  this.resource("user", {
-    path: 'user/'
-  }, function() {
-    this.route("create", {
-      path: 'create/'
-    });
-    return this.route("edit", {
-      path: 'edit/'
-    });
-  });
-  this.resource("slideshows", {
-    path: 'slideshows/'
-  });
-  this.resource("slideshow", {
-    path: 'slideshows/:slideshow_id/'
-  });
-  this.resource("slides", {
-    path: 'slideshows/:slideshow_id/slides'
-  });
-  return this.resource("slide", {
-    path: 'slideshows/:slideshow_id/slides/:slide_id'
-  });
-});
-
-App.SmartRoute = Ember.Route.extend({
-  resetOutlets: function() {
-    this.render('blankthumbnails', {
-      outlet: 'slidethumbnails',
-      into: 'application'
-    });
-    this.render('blankcontrols', {
-      outlet: 'controls',
-      into: 'application'
-    });
-    return this.render('blankrightbar', {
-      outlet: 'rightbar',
-      into: 'application'
-    });
-  },
-  configureControllers: function() {
-    var slides, thumbnailCon;
-
-    this.controllerFor('slideshow').set('content', this.modelFor('slideshow'));
-    slides = App.Slide.find();
-    this.controllerFor('slides').set('content', slides);
-    thumbnailCon = this.container.lookup('controller:slidethumbnails');
-    return thumbnailCon.set('content', slides);
-  },
-  renderTemplate: function(controller, model) {
-    this._super();
-    return this.resetOutlets();
-  },
-  deactivate: function() {
-    return this.resetOutlets();
-  }
-});
-
-App.ApplicationRoute = Ember.Route.extend({
-  events: {
-    updateActiveSlide: function(newSlide) {
-      var slidesCon;
-
-      slidesCon = this.controllerFor('slides');
-      slidesCon.set('activeSlideIndex', newSlide.get('position'));
-      return this.transitionTo('slide', slidesCon.get('activeSlide'));
-    }
-  }
-});
-
-App.IndexRoute = App.SmartRoute.extend({
-  redirect: function() {
-    return this.replaceWith("slideshows");
-  }
-});
-
-App.SlideshowsRoute = App.SmartRoute.extend({
-  setupController: function(controller, model) {
-    return controller.set('content', App.Slideshow.find());
-  },
-  renderTemplate: function(controller, model) {
-    return this.render("slideshows", {
-      outlet: 'main'
-    });
-  }
-});
-
-App.SlideshowRoute = App.SmartRoute.extend({
-  renderTemplate: function(controller, model) {
-    this._super();
-    return this.render("slideshow", {
-      into: 'application',
-      outlet: 'main'
-    });
-  },
-  setupController: function(controller, model) {
-    return this.configureControllers();
-  }
-});
-
-App.SlidesRoute = App.SmartRoute.extend({
-  events: {
-    transitionAfterDeletion: function() {}
-  },
-  serialize: function(model, params) {
-    var object;
-
-    object = {};
-    object[params[0]] = this.modelFor('slideshow').get('id');
-    return object;
-  },
-  deserialize: function(params) {
-    var slideshowId;
-
-    console.log('deserializing', params['slideshow_id']);
-    slideshowId = params['slideshow_id'];
-    return this.currentModel = App.Slide.find({
-      slideshow: slideshowId
-    });
-  },
-  setupController: function(controller, model) {
-    return this.configureControllers();
-  },
-  renderTemplate: function(controller) {
-    this.render("slides", {
-      into: 'application',
-      outlet: 'main',
-      controller: controller
-    });
-    this.render("slidethumbnails", {
-      into: 'application',
-      outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
-    });
-    this.render("maincontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: "slides"
-    });
-    return this.render("rightbar", {
-      into: 'application',
-      outlet: 'rightbar',
-      controller: "slides"
-    });
-  }
-});
-
-App.SlideRoute = App.SmartRoute.extend({
-  events: {
-    transitionAfterDeletion: function(pos) {
-      var slideAtPos;
-
-      slideAtPos = this.controllerFor('slides').get('arrangedContent').objectAt(pos);
-      if (slideAtPos != null) {
-        return this.replaceWith("slide", slideAtPos);
-      } else {
-        return this.replaceWith("slides");
-      }
-    }
-  },
-  serialize: function(model, params) {
-    var object;
-
-    object = {};
-    object[params[0]] = this.modelFor('slideshow').get('id');
-    object[params[1]] = model.get('id');
-    return object;
-  },
-  setupController: function(controller, model) {
-    return this.configureControllers();
-  },
-  renderTemplate: function(controller) {
-    this.render("showcontrols", {
-      into: 'application',
-      outlet: 'controls',
-      controller: 'slides'
-    });
-    this.render("slidedetail", {
-      into: 'application',
-      outlet: 'main',
-      controller: controller
-    });
-    this.render("slidethumbnails", {
-      into: 'application',
-      outlet: 'slidethumbnails',
-      controller: 'slidethumbnails'
-    });
-    return this.render("rightbar", {
-      into: 'application',
-      outlet: 'rightbar',
-      controller: "slides"
-    });
-  }
 });
 });
 

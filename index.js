@@ -47,15 +47,16 @@ app.get('/', function(req, res) {
 app.get('/slides', slideRoutes.getSlides);
 app.get('/slides/:id', slideRoutes.getSlideById);
 app.post('/slides', pass.verifyAuth, slideRoutes.postSlide);
-app.delete('/slides/:id', pass.verifyAuth, slideRoutes.deleteSlideById); 
 app.put('/slides/:id', pass.verifyAuth, slideRoutes.putSlide);
-app.put('/slideshows/:id', pass.verifyAuth, slideshowRoutes.putSlideshow);
-
+app.delete('/slides/:id', pass.verifyAuth, slideRoutes.deleteSlideById); 
 app.get('/slideshows', slideshowRoutes.getSlideshows);
 app.get('/slideshows/:id', slideshowRoutes.getSlideshowById);
 app.post('/slideshows', pass.verifyAuth, slideshowRoutes.postSlideshow);
+app.put('/slideshows/:id', pass.verifyAuth, slideshowRoutes.putSlideshow);
 app.delete('/slideshows/:id', pass.verifyAuth, slideshowRoutes.deleteSlideshow); 
 
+
+app.put('/users/:id', pass.verifyAuth, userRoutes.putUser);
 app.get('/user/logout', userRoutes.getlogout);
 app.get('/user/sessionlogin', 
         pass.verifyAuth, 

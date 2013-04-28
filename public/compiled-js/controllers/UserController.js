@@ -1,5 +1,5 @@
 App.UserController = Ember.ObjectController.extend({
-  needs: ['slideshow'],
+  needs: ['slideshow', 'slide'],
   content: '',
   formUsername: '',
   formPassword: '',
@@ -7,6 +7,7 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  userEditingMode: false,
   editingMode: false,
   editingButtonText: (function() {
     if (this.get('editingMode')) {
@@ -15,6 +16,13 @@ App.UserController = Ember.ObjectController.extend({
       return "goto editing mode";
     }
   }).property('editingMode'),
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
@@ -62,10 +70,25 @@ App.UserController = Ember.ObjectController.extend({
       return false;
     }
   }).property('content'),
+  validNewUser: function() {
+    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
   resetForm: function() {
     this.set('formUsername', '');
     this.set('formPassword', '');
     return this.set('formEmail', '');
+  },
+  editUserInfo: function() {
+    return this.set('userEditingMode', true);
+  },
+  saveUserInfo: function() {
+    this.get('store').commit();
+    this.resetForm();
+    return this.set('userEditingMode', false);
   },
   userAjax: function(url, type, hash) {
     this.set('errorMessage', '');
@@ -85,8 +108,9 @@ App.UserController = Ember.ObjectController.extend({
         data: this.get('createData'),
         success: function(data) {
           return Ember.run(this, function() {
-            this.set('content', Ember.Object.create(data));
-            return this.replaceRoute('user');
+            this.get('store').load(App.User, data);
+            this.set('content', App.User.find(data.id));
+            return this.transitionToRoute('user');
           });
         },
         error: function(xhr) {
@@ -105,18 +129,12 @@ App.UserController = Ember.ObjectController.extend({
       return this.resetForm();
     }
   },
-  validNewUser: function() {
-    if (this.get('formUsername') !== '' && this.get('formPassword') !== '' && this.get('formPassword') !== '') {
-      return true;
-    } else {
-      return false;
-    }
-  },
   sessionLogin: function() {
     return this.userAjax('/user/sessionlogin', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {},
@@ -132,7 +150,8 @@ App.UserController = Ember.ObjectController.extend({
       data: this.get('loginData'),
       success: function(data) {
         return Ember.run(this, function() {
-          return this.set('content', Ember.Object.create(data));
+          this.get('store').load(App.User, data);
+          return this.set('content', App.User.find(data.id));
         });
       },
       error: function(xhr) {
@@ -151,6 +170,7 @@ App.UserController = Ember.ObjectController.extend({
     return this.userAjax('/user/logout', 'GET', {
       success: function(data) {
         return Ember.run(this, function() {
+          this.get('store').unloadRecord(this.get('content'));
           this.set('content', null);
           return this.exitEditing();
         });
