@@ -1,0 +1,18 @@
+<section id = "usermanagement">
+  <section id = "userinfo">
+    <h4> Username: {{username}} </h4>
+    <button class = "btn-mini btn-warning"
+      {{action "editUserInfo"}}> Edit User Info </button>
+    
+    {{#if userEditingMode}}
+      {{partial usereditform}}
+    {{/if}}
+      
+  </section>
+
+  
+  
+  
+
+
+</section>
