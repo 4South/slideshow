@@ -70,9 +70,6 @@ App.SlidesController = Em.ArrayController.extend({
       return "All Changes Saved";
     }
   }).property('content.@each.isDirty').cacheable(),
-  clickThumbnail: function(targetSlide) {
-    return this.transitionToRoute("slide", targetSlide);
-  },
   startShow: function() {
     if (this.get('activeSlide') != null) {
       return this.transitionToRoute('slide', this.get('activeSlide'));
@@ -91,12 +88,12 @@ App.SlidesController = Em.ArrayController.extend({
   },
   forward: function() {
     if (!this.get('atEnd')) {
-      return this.send("updateActiveSlide", this.findNewSlide(1));
+      return this.transitionToRoute("slide", this.findNewSlide(1));
     }
   },
   back: function() {
     if (!this.get('atStart')) {
-      return this.send("updateActiveSlide", this.findNewSlide(-1));
+      return this.transitionToRoute("slide", this.findNewSlide(-1));
     }
   },
   findTarget: function(slide, array, deltaPos) {
@@ -141,24 +138,25 @@ App.SlidesController = Em.ArrayController.extend({
     }
   },
   deleteSlide: function(slide) {
-    var arrCon, currentPos, eachslide, i, _i, _len, _ref;
+    var arrCon, currentPos, target, withoutDeleted;
 
     arrCon = this.get('filteredContent');
+    withoutDeleted = arrCon.without(slide);
     currentPos = slide.get('position');
     slide.deleteRecord();
-    console.log(this.get('atleastOneSlide'));
+    withoutDeleted.forEach(function(eachslide, index) {
+      return eachslide.set('position', index);
+    });
+    this.get('store').commit();
     if (this.get('atleastOneSlide')) {
-      i = 0;
-      _ref = arrCon.toArray();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        eachslide = _ref[_i];
-        console.log(i, eachslide.get('name'));
-        if (slide !== eachslide) {
-          eachslide.set('position', i);
-          i = i + 1;
-        }
+      target = withoutDeleted.findProperty('position', currentPos);
+      if (target) {
+        return this.replaceRoute('slide', target);
+      } else {
+        return this.replaceRoute('slide', withoutDeleted.get('lastObject'));
       }
+    } else {
+      return this.replaceRoute('slides');
     }
-    return this.get('store').commit();
   }
 });

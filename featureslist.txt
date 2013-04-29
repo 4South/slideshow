@@ -1,3 +1,5 @@
+guide lines for height of slides for compatibility wirth different devices including mobile, lowend compuiters/projector vbleh bleh
+
 slide urls should not be full ids
 
 animated outlets and animated transitions in general
@@ -7,8 +9,6 @@ intra-slide forward/back featrues for revealing portions of the slide one at a t
 get highlight.js working for code coloring
 
 if an edited content is "inFlight", display a greyed out box with the text "saving"
-
-change user model and whole system to run w/ basic adapter interface.  incorporate use model into the heirarchy chain for ember data
 
 add filtration rto the backend to say that only the slides associated with the current slideshow are rendered (this is to get around the limitations of filteredRecordArrays on the front-end)
 
@@ -33,5 +33,3 @@ Add support for draggable elements?
 Make the underlying css rules for the slide formatting editable
 
 Guard against XSS attacks (made possible by the safestring flag on the markdown parser)
-
-

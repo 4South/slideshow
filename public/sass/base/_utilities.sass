@@ -16,6 +16,28 @@
   border: $thickness $style $color
   border-radius: $radius
 
+@mixin lowerBar($width, $height)
+  position: absolute
+  left: 0px
+  bottom: 0px
+  width: $width
+  height: $height
+
+@mixin leftBar($width, $height)
+  position: absolute
+  right: leftpx
+  top: 0px
+  width: $width
+  height: $height
+  
+@mixin rightBar($width, $height)
+  position: absolute
+  right: 0px
+  top: 0px
+  width: $width
+  height: $height
+  
+
 @mixin gradient($topColor, $bottomColor)
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)
   background-image: -moz-linear-gradient(top, $topColor, $bottomColor)

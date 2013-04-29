@@ -1,17 +1,1 @@
-<div id="btnWrapper">
-  {{#if controller.controllers.user.permittedAndEditing}}
-    <button class="btn-mini btn-danger" {{action 'deleteSlide' slide}}>
-      X
-    </button>
-    <button class="btn-mini btn" {{action 'moveUp' slide}}>
-      UP 
-    </button>
-    <button class="btn-mini btn" {{action 'moveDown' slide}}>
-      DN 
-    </button>
-  {{/if}}
-</div>
-
-<span class="nameWrapper">
-  <p {{action 'clickThumbnail' slide}}>{{slide.name}}</p>
-</span>
+{{slide.name}}

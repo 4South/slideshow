@@ -37,7 +37,7 @@ body, html {
 }
 
 textarea {
-  min-height: 250px;
+  min-height: 150px;
   padding: none;
   margin: none;
 }
@@ -47,63 +47,13 @@ ul, li {
   margin: 0px;
 }
 
-li.slides-thumbnail {
+li.slidethumbnail {
   font-family: "Share Tech Mono", serif;
-  padding: 0px;
-  border-radius: 5px;
-  list-style: none;
-  margin: 5px 0px 5px 10px;
-  box-sizing: border-box;
-  height: 55px;
-  width: 180px;
-  color: white;
-  border: 1px solid #cccccc;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-image: -moz-linear-gradient(top, #bbbbbb, #333333);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#bbbbbb), to(#333333));
-  background-image: -webkit-linear-gradient(top, #bbbbbb, #333333);
-  background-image: -o-linear-gradient(top, #bbbbbb, #333333);
-  background-image: linear-gradient(to bottom, #bbbbbb, #333333);
-  background-repeat: repeat-x;
-  border-color: #333333 #333333 #bfbfbf;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-bottom-color: #b3b3b3;
+  font-size: large;
+  width: 100px;
 }
-li.slides-thumbnail div#btnWrapper {
-  min-height: 30px;
-  padding-left: 4px;
-  padding-top: 2px;
-  text-align: left;
-  box-sizing: border-box;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-li.slides-thumbnail span.nameWrapper {
-  display: block;
-  height: 20px;
-  padding-left: 5px;
-  box-sizing: border-box;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  font-size: 18px;
-  overflow: none;
-  cursor: pointer;
-}
-
-li.slides-thumbnail.highlighted {
-  list-style: none;
-  background-color: #006dcc;
-  *background-color: #0044cc;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
-  background-repeat: repeat-x;
-  border-color: #0044cc #0044cc #bfbfbf;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-bottom-color: #b3b3b3;
+li.slidethumbnail a.active {
+  color: red;
 }
 
 div.slide {
@@ -271,32 +221,32 @@ section#splashpage #userlogin {
 }
 
 aside {
-  margin: 0;
-  padding: 0;
-  border: 0;
+  font-weight: normal;
+  font-family: serif;
   font-size: 100%;
-  font: inherit;
+  color: white;
+  border: none;
   vertical-align: baseline;
   display: block;
-  background-color: rgba(0, 0, 0, 0.8);
   height: inherit;
 }
 
 aside.leftbar {
   position: absolute;
-  left: 0;
+  right: leftpx;
+  top: 0px;
   width: 225px;
+  height: inherit;
   overflow-y: auto;
 }
 
 aside.rightbar {
   position: absolute;
-  padding-left: 10px;
-  padding-right: 4px;
+  right: 0px;
   top: 0px;
-  right: 0;
   width: 225px;
-  color: white;
+  height: inherit;
+  padding: auto 10px;
 }
 aside.rightbar #slidecreate {
   color: #c2efff;
@@ -313,6 +263,38 @@ aside.rightbar #savedStatus {
   color: white;
   border-radius: 5px;
   text-align: center;
+}
+
+footer.sitefooter {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+div.slidethumbnailsviewport {
+  height: 80px;
+  width: 800px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+div.slidethumbnailsviewport ul#slidethumbnails {
+  position: absolute;
+  bottom: 10px;
+  list-style-type: none;
+  height: 30px;
+}
+div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnail {
+  float: left;
+  display: inline-block;
+  padding: 0px;
+  margin: 0px;
+  height: 30px;
 }
 
 li.controls {

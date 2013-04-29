@@ -2,7 +2,6 @@ Conditionally redirect on successful login IF current route is the indexroute
 create user login/creation shit in header
 CSS for Editing forms on rightbar do not fit small monitors
 can mongo NOT produce the massive-sized ids?
-PURGE THE BULLSHIT from the repo and consider pushing to master
 perhaps move current master to ...legacy or w/e
 
 add some kind of information to the slideshow splash page (perhaps a form to optionally rename, author info, creation date, etc)
@@ -18,8 +17,3 @@ account creation is a route that is optional (available from the navbar)
 when you create an account, you should be re-directed back to the page you were previously on (if possible)
 
 something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
-
-
-BUGS
-User's must actually "own" the slides as far as the backend is concerned
-When you delete a slide, the newly targetted slide is targetted but it is not highlighted correctly
