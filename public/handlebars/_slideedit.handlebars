@@ -1,14 +1,14 @@
 <form id = "slidecreate">
   <fieldset>
-    <legend class = "formlabel">Edit Slide </legend>
-    <label id = "subtitle"> Slide Header </label>
+    <label id = "subtitle">Name</label>
+      {{view App.SlideTextField valueBinding = "controllers.slide.content.name"}}
+    <label id = "subtitle">Header</label>
       {{view App.SlideTextField valueBinding = "controllers.slide.content.title"}}
-    <label id = "subtitle"> Slide Content </label>
+    <label id = "subtitle">Content</label>
       {{view App.SlideTextArea 
         valueBinding = "controllers.slide.content.content"}}
     
     <div id = "savedStatus"> {{controller.savedStatus}} </div>
-
     <button class = "btn-small btn-warning" {{action save target = "controllers.slide"}}> 
       Save 
     </button>

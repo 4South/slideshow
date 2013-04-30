@@ -7,6 +7,7 @@ require('controllers/HeaderController.js')
 require('controllers/ApplicationController.js')
 require('controllers/SlideController.js')
 require('controllers/SlidesController.js')
+require('controllers/SlidethumbnailsController.js')
 require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
@@ -48,16 +49,11 @@ App.SmartRoute = Ember.Route.extend
 
 App.ApplicationRoute = Ember.Route.extend
   events:
-    createEditUser: ->
-      @transitionTo 'user'
-    updateActiveSlide: (newSlide) ->
-      @transitionTo('slide', newSlide)
-
-    transitionAfterDeletion: () ->
-      return
-
     transitionToSlideshows: () ->
       @transitionTo("slideshows.index")
+
+    updateActiveSlide: (slide) ->
+      @transitionTo("slide", slide)
 
     #currently not using, may delete
     transitionWithRender: (name, parameters) ->
@@ -104,7 +100,7 @@ App.SlidesIndexRoute = App.SmartRoute.extend
     @render "slidethumbnails",
               into: 'application'
               outlet: 'slidethumbnails'
-              controller: 'slides'
+              controller: 'slidethumbnails'
 
     @render "maincontrols",
                     into: 'application'
@@ -117,20 +113,12 @@ App.SlidesIndexRoute = App.SmartRoute.extend
                     controller: "slides"
 
 App.SlidesRoute = App.SmartRoute.extend
-  model: (params) ->   
+  model: (params) ->
     return App.Slide.find()
 
 App.SlideIndexRoute = App.SmartRoute.extend()
 
 App.SlideRoute = App.SmartRoute.extend
-  events:
-    transitionAfterDeletion: (pos) ->
-      slideAtPos = @controllerFor('slides').get('filteredContent').objectAt(pos)
-      if slideAtPos?
-        @replaceWith "slide", slideAtPos
-      else
-        @replaceWith "slides"
-
   renderTemplate: (controller) ->
     @render "showcontrols",
                     into: 'application'
@@ -145,7 +133,7 @@ App.SlideRoute = App.SmartRoute.extend
     @render "slidethumbnails",
               into: 'application'
               outlet: 'slidethumbnails'
-              controller: 'slides'
+              controller: 'slidethumbnails'
 
     @render "rightbar",
                     into: 'application'

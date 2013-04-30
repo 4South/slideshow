@@ -14,6 +14,8 @@ require('controllers/SlideController.js');
 
 require('controllers/SlidesController.js');
 
+require('controllers/SlidethumbnailsController.js');
+
 require('controllers/SlideshowsController.js');
 
 require('controllers/SlideshowController.js');
@@ -86,15 +88,11 @@ App.SmartRoute = Ember.Route.extend({
 
 App.ApplicationRoute = Ember.Route.extend({
   events: {
-    createEditUser: function() {
-      return this.transitionTo('user');
-    },
-    updateActiveSlide: function(newSlide) {
-      return this.transitionTo('slide', newSlide);
-    },
-    transitionAfterDeletion: function() {},
     transitionToSlideshows: function() {
       return this.transitionTo("slideshows.index");
+    },
+    updateActiveSlide: function(slide) {
+      return this.transitionTo("slide", slide);
     },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
@@ -157,7 +155,7 @@ App.SlidesIndexRoute = App.SmartRoute.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slides'
+      controller: 'slidethumbnails'
     });
     this.render("maincontrols", {
       into: 'application',
@@ -181,18 +179,6 @@ App.SlidesRoute = App.SmartRoute.extend({
 App.SlideIndexRoute = App.SmartRoute.extend();
 
 App.SlideRoute = App.SmartRoute.extend({
-  events: {
-    transitionAfterDeletion: function(pos) {
-      var slideAtPos;
-
-      slideAtPos = this.controllerFor('slides').get('filteredContent').objectAt(pos);
-      if (slideAtPos != null) {
-        return this.replaceWith("slide", slideAtPos);
-      } else {
-        return this.replaceWith("slides");
-      }
-    }
-  },
   renderTemplate: function(controller) {
     this.render("showcontrols", {
       into: 'application',
@@ -207,7 +193,7 @@ App.SlideRoute = App.SmartRoute.extend({
     this.render("slidethumbnails", {
       into: 'application',
       outlet: 'slidethumbnails',
-      controller: 'slides'
+      controller: 'slidethumbnails'
     });
     return this.render("rightbar", {
       into: 'application',

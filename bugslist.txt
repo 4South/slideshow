@@ -1,7 +1,10 @@
 Conditionally redirect on successful login IF current route is the indexroute
 create user login/creation shit in header
 can mongo NOT produce the massive-sized ids?
+<<<<<<< HEAD
 
+=======
+>>>>>>> febbb65d20b6e87cb9b36395f63bf1425c46a0a5
 perhaps move current master to ...legacy or w/e
 
 add some kind of information to the slideshow splash page (perhaps a form to optionally rename, author info, creation date, etc)
@@ -16,8 +19,12 @@ similarly, for login failures, wrong passwords, etc all these things need clear 
 account creation is a route that is optional (available from the navbar)
 when you create an account, you should be re-directed back to the page you were previously on (if possible)
 
+<<<<<<< HEAD
 - something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
 
 
 BUGS
 When you delete a slide, the newly targetted slide is targetted but it is not highlighted correctly
+=======
+something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
+>>>>>>> febbb65d20b6e87cb9b36395f63bf1425c46a0a5

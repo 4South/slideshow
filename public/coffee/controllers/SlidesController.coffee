@@ -63,10 +63,6 @@ App.SlidesController = Em.ArrayController.extend
     else return "All Changes Saved"
   ).property('content.@each.isDirty').cacheable()
 
-  #SHOW CONTROLS
-  clickThumbnail: (targetSlide)->
-    @transitionToRoute "slide", targetSlide
-
   startShow: () ->
     if @get('activeSlide')?
       @transitionToRoute('slide', @get('activeSlide'))
@@ -83,10 +79,10 @@ App.SlidesController = Em.ArrayController.extend
     return @get('content').findProperty('position', newPosition)
 
   forward: () ->
-    if not @get('atEnd') then @send "updateActiveSlide", @findNewSlide(1)
+    if not @get('atEnd') then @transitionToRoute "slide", @findNewSlide(1)
 
   back: () ->
-    if not @get('atStart') then @send "updateActiveSlide", @findNewSlide(-1)
+    if not @get('atStart') then @transitionToRoute "slide", @findNewSlide(-1)
 
   #CHANGE SLIDE ORDER FUNCTIONS
   #helper method for moveDown/moveUp
@@ -127,19 +123,15 @@ App.SlidesController = Em.ArrayController.extend
 
   deleteSlide: (slide) ->
     arrCon = @get('filteredContent')
+    withoutDeleted = arrCon.without(slide)
     currentPos = slide.get('position')
     slide.deleteRecord()
-    console.log(@get('atleastOneSlide'))
-    if @get('atleastOneSlide')
-      i = 0
-      for eachslide in arrCon.toArray()
-        console.log(i, eachslide.get('name'))
-        if slide isnt eachslide
-          eachslide.set('position', i)
-          i=i+1
+    withoutDeleted.forEach( (eachslide, index) ->
+      eachslide.set('position', index)
+    )
     @get('store').commit()
-
-
-
-
-
+    if @get('atleastOneSlide')
+      target = withoutDeleted.findProperty('position', currentPos)
+      if target then @replaceRoute 'slide', target
+      else @replaceRoute('slide', withoutDeleted.get('lastObject'))
+    else @replaceRoute 'slides'

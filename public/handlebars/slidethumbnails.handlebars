@@ -1,4 +1,4 @@
-<ul style = "height:inherit;">
+<ul id="slidethumbnails" {{bindAttr style="view.viewportWidth"}}>
 {{#each slide in controller.filteredContent}}
   {{view App.SlideThumbnailView contentBinding="slide"}}
 {{/each}}
