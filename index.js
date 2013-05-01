@@ -8,6 +8,8 @@ var pass = require('./app/config/PassPort.js')
   , userRoutes = require('./app/routes/UserRoutes.js')
   , slideRoutes = require('./app/routes/SlideRoutes.js')
   , slideshowRoutes = require('./app/routes/SlideshowRoutes.js')
+  , themeRoutes = require('./app/routes/ThemeRoutes.js')
+  , fontSettingRoutes = require('./app/routes/FontSettingRoutes.js');
 
 //APP SETUP
 var app = express();
@@ -63,6 +65,19 @@ app.post('/user/login', passport.authenticate('local'), userRoutes.postlogin);
 app.post('/user/create',  userRoutes.postcreate, 
                           passport.authenticate('local'),
                           userRoutes.postlogin);
+
+app.get('/themes', themeRoutes.getThemes);
+app.get('/themes/:id', themeRoutes.getThemeById);
+app.post('/themes', themeRoutes.postTheme);
+app.put('themes/:id', themeRoutes.putTheme);
+app.get('/fontSettings', fontSettingRoutes.getFontSettings);
+app.get('/fontSettings/:id', fontSettingRoutes.getFontSettingById);
+app.post('/fontSettings', fontSettingRoutes.postFontSetting);
+app.put('fontSettings/:id', fontSettingRoutes.putFontSetting);
+
+
+
+
 
 //CONNECT SERVER
 var port = process.env.PORT || 1234;

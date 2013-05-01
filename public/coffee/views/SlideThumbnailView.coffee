@@ -23,37 +23,3 @@ App.SlideThumbnailView = Em.View.extend
       return true
     return false
   ).property('controller.dragSlide', 'content')
-
-  #target should be gleaned from event details if possible
-  mouseUp: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    @get('controller.manager').send "mouseUp",
-                                    @get('controller'),
-                                    @get('content'),
-                                    event.offsetX
-  
-  mouseDown: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    @get('controller.manager').send "mouseDown",
-                                    @get('controller'),
-                                    @get('content'),
-                                    event.offsetX
-
-  #possible way to identify drop target?
-  #consider extracting target from this event
-  mouseEnter: (event) ->
-    return
-
-  mouseMove: (event) ->
-    @get('controller.manager').send "mouseMove",
-                                    @get('controller'),
-                                    @get('content'),
-                                    event.offsetX
-  
-  #defined to prevent default behavior.  Not used!
-  drag: (event) ->
-    event.preventDefault()
-    console.log 'should not be seeing this dragevent!'
-

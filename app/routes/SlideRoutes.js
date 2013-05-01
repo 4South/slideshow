@@ -14,7 +14,7 @@ exports.getSlides = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['slides'] = results.map(formatSlideResponse)
+      response['slides'] = results.map(formatSlideResponse);
       console.log("RESULTS", response);
       res.send(response);
     } 

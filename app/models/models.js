@@ -49,13 +49,40 @@ var SlideSchema = new mongoose.Schema({
   position: Number,
   title: String,
   _slideshow: [{type: Schema.Types.ObjectId, ref: 'Slideshow'}],
+  _theme: [{type: Schema.Types.ObjectId, ref: 'Theme'}],
   content: String,  
+});
+
+var FontSettingSchema = new mongoose.Schema({
+  size:       Number,
+  font:       String,
+  color:      String,
+  alignment:  String,
+});
+
+var ThemeSchema = new mongoose.Schema({
+  _h1:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _h2:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _h3:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _h4:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _h5:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _h6:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _p:       [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _pre:     [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _li:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _span:    [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _div:     [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
+  _section: [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
 });
 
 var User = mongoose.model('User', UserSchema);
 var Slideshow = mongoose.model('Slideshow', SlideshowSchema);
 var Slide = mongoose.model('Slide', SlideSchema);
+var Theme = mongoose.model('Theme', ThemeSchema);
+var FontSetting = mongoose.model('FontSetting', FontSettingSchema);
 
 module.exports = {'Slide':Slide,
                   'Slideshow':Slideshow,
-                  'User': User};
+                  'User': User,
+                  'FontSetting': FontSetting,
+                  'Theme': Theme     };

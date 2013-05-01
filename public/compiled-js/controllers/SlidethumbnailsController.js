@@ -1,10 +1,7 @@
-require('controllers/SlidethumbnailsManager.js');
-
 App.SlidethumbnailsController = Ember.ArrayController.extend({
   needs: ['slides'],
   contentBinding: 'controllers.slides.content',
   filteredContentBinding: 'controllers.slides.filteredContent',
-  manager: App.SlidethumbnailsManager.create(),
   thumbnailWrapperWidth: 160,
   thumbnailWidth: (function() {
     return this.get('thumbnailWrapperWidth') * .9;

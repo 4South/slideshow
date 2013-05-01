@@ -207,13 +207,10 @@ App.SlideshowsController = Em.ArrayController.extend({
 });
 
 minispade.register('controllers/SlidethumbnailsController.js', function() {
-minispade.require('controllers/SlidethumbnailsManager.js');
-
 App.SlidethumbnailsController = Ember.ArrayController.extend({
   needs: ['slides'],
   contentBinding: 'controllers.slides.content',
   filteredContentBinding: 'controllers.slides.filteredContent',
-  manager: App.SlidethumbnailsManager.create(),
   thumbnailWrapperWidth: 160,
   thumbnailWidth: (function() {
     return this.get('thumbnailWrapperWidth') * .9;
@@ -281,27 +278,27 @@ App.SlidethumbnailsController = Ember.ArrayController.extend({
 });
 
 minispade.register('controllers/SlidethumbnailsManager.js', function() {
-App.TNTargetSelf = Ember.State.extend({
-  hoverLeft: function(manager, controller) {},
-  hoverRight: function(manager, controller) {}
+App.DnDTargetSelf = Ember.State.extend({
+  hoverLeft: function(manager) {},
+  hoverRight: function(manager) {}
 });
 
-App.TNTargetNeighborLeft = Ember.State.extend({
-  hoverRight: function(manager, controller) {}
+App.DnDTargetNeighborLeft = Ember.State.extend({
+  hoverRight: function(manager) {}
 });
 
-App.TNTargetNeighborRight = Ember.State.extend({
-  hoverLeft: function(manager, controller) {}
+App.DnDTargetNeighborRight = Ember.State.extend({
+  hoverLeft: function(manager) {}
 });
 
-App.TNTargetOther = Ember.State.extend();
+App.DnDTargetOther = Ember.State.extend();
 
-App.TNDragging = Ember.State.extend({
-  determineDragTransition: function(manager, controller, slide, offsetX) {
+App.DnDDragging = Ember.State.extend({
+  determineDragTransition: function(manager, slide, offsetX) {
     var action, dragActions, dragSlidePos, slidePos, _i, _len;
 
     slidePos = slide.get('position');
-    dragSlidePos = controller.get('dragSlide.position');
+    dragSlidePos = manager.controller.get('dragSlide.position');
     dragActions = [
       {
         fun: (function(sPos, dsPos) {
@@ -333,74 +330,76 @@ App.TNDragging = Ember.State.extend({
       }
     }
   },
-  determineHoverEvent: function(manager, controller, slide, offsetX) {
+  determineHoverEvent: function(manager, slide, offsetX) {
     var halfLine;
 
-    halfLine = controller.get('thumbnailWidth') / 2;
+    halfLine = manager.controller.get('thumbnailWidth') / 2;
     if (offsetX > halfLine) {
-      return manager.send("hoverRight", controller, slide);
+      return manager.send("hoverRight", slide);
     } else {
-      return manager.send("hoverLeft", controller, slide);
+      return manager.send("hoverLeft", slide);
     }
   },
-  mouseMove: function(manager, controller, slide, offsetX) {
-    manager.send("determineDragTransition", controller, slide, offsetX);
-    return manager.send("determineHoverEvent", controller, slide, offsetX);
+  mouseMove: function(manager, slide, offsetX) {
+    if (slide) {
+      manager.send("determineDragTransition", slide, offsetX);
+      return manager.send("determineHoverEvent", slide, offsetX);
+    }
   },
   mouseDown: function(manager) {
     return console.log("you should not be able to trigger MouseDown in Dragging Mode!");
   },
-  hoverRight: function(manager, controller, target) {
-    return controller.send("reorderThumbnails", target.get('position') + 1);
+  hoverRight: function(manager, target) {
+    return manager.controller.send("reorderThumbnails", target.get('position') + 1);
   },
-  hoverLeft: function(manager, controller, target) {
-    return controller.send("reorderThumbnails", target.get('position'));
+  hoverLeft: function(manager, target) {
+    return manager.controller.send("reorderThumbnails", target.get('position'));
   },
-  targetSelf: App.TNTargetSelf,
-  targetNeighborLeft: App.TNTargetNeighborLeft,
-  targetNeighborRight: App.TNTargetNeighborRight,
-  targetOther: App.TNTargetOther
+  targetSelf: App.DnDTargetSelf,
+  targetNeighborLeft: App.DnDTargetNeighborLeft,
+  targetNeighborRight: App.DnDTargetNeighborRight,
+  targetOther: App.DnDTargetOther
 });
 
-App.TNInactive = Ember.State.extend({
-  mouseDown: function(manager, controller, slide, xpos) {
+App.DnDInactive = Ember.State.extend({
+  mouseDown: function(manager, slide, xpos) {
     manager.transitionTo("dragging.targetSelf");
-    return controller.send("startDrag", slide, xpos);
+    return manager.controller.send("startDrag", slide, xpos);
   }
 });
 
-App.SlidethumbnailsManager = Ember.StateManager.extend({
+App.DnDManager = Ember.StateManager.extend({
   initialState: 'inactive',
-  inactive: App.TNInactive,
-  dragging: App.TNDragging,
-  stopDragging: function(manager, controller) {
-    controller.send("endDrag");
+  inactive: App.DnDInactive,
+  dragging: App.DnDDragging,
+  stopDragging: function(manager) {
+    manager.controller.send("endDrag");
     return manager.transitionTo("inactive");
   },
-  shouldSelect: function(manager, controller, slide, xpos) {
+  shouldSelect: function(manager, slide, xpos) {
     var dragStartPos;
 
-    dragStartPos = controller.get('dragStartPos');
+    dragStartPos = manager.controller.get('dragStartPos');
     if (Math.abs(dragStartPos - xpos) < 20) {
       return true;
     } else {
       return false;
     }
   },
-  mouseUp: function(manager, controller, slide, xpos) {
-    if (manager.send("shouldSelect", controller, slide, xpos)) {
-      controller.transitionToSlide(slide);
+  mouseUp: function(manager, slide, xpos) {
+    if (manager.send("shouldSelect", slide, xpos)) {
+      manager.controller.transitionToSlide(slide);
     }
-    return manager.send("stopDragging", controller);
+    return manager.send("stopDragging");
   },
-  mouseLeft: function(manager, controller) {
-    return manager.send("stopDragging", controller);
+  mouseLeft: function(manager) {
+    return manager.send("stopDragging");
   },
-  mouseMove: function(manager, controller, slide, xpos) {},
-  hoverRight: function(manager, controller) {
+  mouseMove: function(manager, slide, xpos) {},
+  hoverRight: function(manager) {
     return console.log("hoverRight not caught correctly!");
   },
-  hoverLeft: function(manager, controller) {
+  hoverLeft: function(manager) {
     return console.log("hoverLeft not caught correctly!");
   }
 });
@@ -631,6 +630,15 @@ App.UserController = Ember.ObjectController.extend({
 });
 });
 
+minispade.register('models/FontSetting.js', function() {
+App.FontSetting = DS.Model.extend({
+  size: DS.attr('number'),
+  font: DS.attr('string'),
+  color: DS.attr('string'),
+  alignment: DS.attr('string')
+});
+});
+
 minispade.register('models/Slide.js', function() {
 App.Slide = DS.Model.extend({
   name: DS.attr('string'),
@@ -642,7 +650,8 @@ App.Slide = DS.Model.extend({
   active: DS.attr('boolean', {
     defaultValue: false
   }),
-  slideshow: DS.belongsTo('App.Slideshow')
+  slideshow: DS.belongsTo('App.Slideshow'),
+  theme: DS.belongsTo('App.Theme')
 });
 });
 
@@ -654,6 +663,23 @@ App.Slideshow = DS.Model.extend({
 });
 });
 
+minispade.register('models/Theme.js', function() {
+App.Theme = DS.Model.extend({
+  h1: DS.belongsTo('App.FontSetting'),
+  h2: DS.belongsTo('App.FontSetting'),
+  h3: DS.belongsTo('App.FontSetting'),
+  h4: DS.belongsTo('App.FontSetting'),
+  h5: DS.belongsTo('App.FontSetting'),
+  h6: DS.belongsTo('App.FontSetting'),
+  p: DS.belongsTo('App.FontSetting'),
+  li: DS.belongsTo('App.FontSetting'),
+  div: DS.belongsTo('App.FontSetting'),
+  section: DS.belongsTo('App.FontSetting'),
+  pre: DS.belongsTo('App.FontSetting'),
+  span: DS.belongsTo('App.FontSetting')
+});
+});
+
 minispade.register('models/User.js', function() {
 App.User = DS.Model.extend({
   username: DS.attr('string')
@@ -661,7 +687,7 @@ App.User = DS.Model.extend({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('models/FontSetting.js');minispade.require('models/Theme.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -910,25 +936,7 @@ App.SlideThumbnailView = Em.View.extend({
       return true;
     }
     return false;
-  }).property('controller.dragSlide', 'content'),
-  mouseUp: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    return this.get('controller.manager').send("mouseUp", this.get('controller'), this.get('content'), event.offsetX);
-  },
-  mouseDown: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    return this.get('controller.manager').send("mouseDown", this.get('controller'), this.get('content'), event.offsetX);
-  },
-  mouseEnter: function(event) {},
-  mouseMove: function(event) {
-    return this.get('controller.manager').send("mouseMove", this.get('controller'), this.get('content'), event.offsetX);
-  },
-  drag: function(event) {
-    event.preventDefault();
-    return console.log('should not be seeing this dragevent!');
-  }
+  }).property('controller.dragSlide', 'content')
 });
 });
 
@@ -951,19 +959,66 @@ App.SlideshowsView = Em.View.extend();
 });
 
 minispade.register('views/SlidesthumbnailsView.js', function() {
+minispade.require('controllers/SlidethumbnailsManager.js');
+
 App.SlidethumbnailsView = Em.View.extend({
   tagName: 'div',
   classNames: ['slidethumbnailsviewport'],
+  init: function() {
+    var controller, view;
+
+    this._super();
+    controller = this.get('controller');
+    view = this;
+    this.set("dndManager", App.DnDManager.create({
+      controller: controller,
+      view: view
+    }));
+    return this.get('eventManager').reopen({
+      parentView: this,
+      dndManager: this.dndManager
+    });
+  },
+  eventManager: Ember.Object.create({
+    mouseMove: function(event, view) {
+      var slide;
+
+      if (view !== this) {
+        slide = view.get('content');
+        return this.get('dndManager').send("mouseMove", slide, event.offsetX);
+      }
+    },
+    mouseLeave: function(event, view) {
+      event.preventDefault();
+      if (view === this.get('parentView')) {
+        return this.get('dndManager').send("mouseLeft");
+      }
+    },
+    mouseUp: function(event, view) {
+      var slide;
+
+      event.preventDefault();
+      event.stopPropagation();
+      slide = view.get('content');
+      return this.get('dndManager').send("mouseUp", slide, event.offsetX);
+    },
+    mouseDown: function(event, view) {
+      var slide;
+
+      event.preventDefault();
+      event.stopPropagation();
+      if (view !== this.get('parentView')) {
+        slide = view.get('content');
+        return this.get('dndManager').send("mouseDown", slide, event.offsetX);
+      }
+    }
+  }),
   viewportWidth: (function() {
     var thumbnailCount;
 
     thumbnailCount = this.get('controller.filteredContent.length');
     return "width: " + (thumbnailCount * this.get('controller.thumbnailWrapperWidth')) + "px;";
-  }).property('controller.filteredContent', 'controller.thumbnailWrapperWidth'),
-  mouseLeave: function(event) {
-    event.preventDefault();
-    return this.get('controller.manager').send("mouseLeft", this.get('controller'));
-  }
+  }).property('controller.filteredContent', 'controller.thumbnailWrapperWidth')
 });
 });
 

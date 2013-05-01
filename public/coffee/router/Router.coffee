@@ -1,6 +1,8 @@
 require('models/User.js')
 require('models/Slideshow.js')
 require('models/Slide.js')
+require('models/FontSetting.js')
+require('models/Theme.js')
 
 require('controllers/IndexController.js')
 require('controllers/HeaderController.js')
