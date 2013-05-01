@@ -42,7 +42,15 @@ require('views/SlidesthumbnailsView.js');
 
 require('views/SlideshowsView.js');
 
+require('views/SlideshowView.js');
+
 require('views/UserView.js');
+
+require('views/UserCreateView.js');
+
+require('views/UserEditView.js');
+
+require('views/UserIndexView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -95,10 +103,19 @@ App.SmartRoute = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
   events: {
     transitionToSlideshows: function() {
-      return this.transitionTo("slideshows");
+      return this.transitionToAnimated("slideshows.index", {
+        main: 'flip'
+      });
+    },
+    createEditUser: function() {
+      return this.transitionToAnimated("user", {
+        main: 'flip'
+      });
     },
     updateActiveSlide: function(slide) {
-      return this.transitionTo("slide", slide);
+      return this.transitionToAnimated("slide", {
+        main: 'fade'
+      }, slide);
     },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
@@ -205,6 +222,50 @@ App.SlideRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
+    });
+  }
+});
+
+App.UserIndexRoute = App.SmartRoute.extend({
+  events: {
+    viewEditUser: function() {
+      return this.transitionToAnimated('user.edit', {
+        main: 'flip'
+      });
+    },
+    createNewUser: function() {
+      return this.transitionToAnimated('user.create', {
+        main: 'flip'
+      });
+    }
+  },
+  renderTemplate: function(controller) {
+    return this.render("userIndex", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserRoute = App.SmartRoute.extend();
+
+App.UserCreateRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("userCreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserEditRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("userEdit", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
     });
   }
 });

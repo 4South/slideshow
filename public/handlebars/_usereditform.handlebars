@@ -1,0 +1,15 @@
+<form id = "usereditform">
+  <fieldset>
+    <legend class = "formlabel">Edit User </legend>
+    <label id = "subtitle"> Username </label>
+      {{view App.SlideTextField 
+        valueBinding = "username"}}
+    
+    <div id = "savedStatus"> {{controller.savedStatus}} </div>
+
+    <button class = "btn-small btn-warning" {{action saveUserInfo target="controller"}}>
+      Save 
+    </button>
+    
+  </fieldset>
+</form>

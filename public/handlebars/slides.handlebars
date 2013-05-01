@@ -1,9 +1,9 @@
 {{#each slide in filteredContent}}
-  <div class = "slide">
+  <section class = "presentationslide">
     {{#view contentBinding="slide"}}
       {{partial presentationslide}}
     {{/view}}
-  </div>
+  </section>
 {{else}}
-  <div class="emptyslidesview"><h1>No Slides</h1></div>
+  <section class="emptyslidesview"><h1>No Slides</h1></section>
 {{/each}}

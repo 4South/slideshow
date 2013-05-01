@@ -1,6 +1,5 @@
 Conditionally redirect on successful login IF current route is the indexroute
 create user login/creation shit in header
-CSS for Editing forms on rightbar do not fit small monitors
 can mongo NOT produce the massive-sized ids?
 perhaps move current master to ...legacy or w/e
 
@@ -16,6 +15,10 @@ similarly, for login failures, wrong passwords, etc all these things need clear 
 account creation is a route that is optional (available from the navbar)
 when you create an account, you should be re-directed back to the page you were previously on (if possible)
 
+
+
+BUGS
+When you delete a slide, the newly targetted slide is targetted but it is not highlighted correctly
 something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
 
 CHECK IF REGARDE STILL NEEDS TO BE USED

@@ -79,10 +79,12 @@ App.SlidesController = Em.ArrayController.extend
     return @get('content').findProperty('position', newPosition)
 
   forward: () ->
-    if not @get('atEnd') then @transitionToRoute "slide", @findNewSlide(1)
+    if not @get('atEnd')
+      @transitionToRouteAnimated("slide", {main: 'slideLeft'}, @findNewSlide(1))
 
   back: () ->
-    if not @get('atStart') then @transitionToRoute "slide", @findNewSlide(-1)
+    if not @get('atStart')
+      @transitionToRouteAnimated("slide", {main: 'slideRight'}, @findNewSlide(-1))
 
   createSlide: () ->
     activeShow = @get('currentSlideshow')

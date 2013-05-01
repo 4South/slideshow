@@ -1,0 +1,26 @@
+<section id = "usercreate">    
+  <legend class = "formlabel">Create User </legend>
+  <form id = "usercreate">
+    <fieldset>
+      <label id = "subtitle"> User Name: </label>
+      {{view App.SlideTextField
+            valueBinding = "formUsername"}}
+    
+      <label id = "subtitle"> Password: </label>
+      {{view App.SlideTextField 
+            valueBinding = "formPassword"}}
+  
+      <label id = "subtitle"> Email Address </label>
+      {{view App.SlideTextField 
+            valueBinding = "formEmail"}}
+ 
+
+      <br>
+      <button class = "btn-small btn-warning"
+                {{action "create"
+                  target = "controller"}}
+      >Create</button>    
+    
+    </fieldset>
+  </form>
+</section> 

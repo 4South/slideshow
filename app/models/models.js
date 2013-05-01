@@ -41,6 +41,7 @@ UserSchema.pre('save', function(next) {
 var SlideshowSchema = new mongoose.Schema({
   title: String,
   author: String,
+  description: String,
   _user: [{type: Schema.Types.ObjectId, ref: 'User'}],
 });
 

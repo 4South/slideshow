@@ -3,7 +3,6 @@ require('controllers/SlidethumbnailsManager.js')
 App.SlidethumbnailsView = Em.View.extend
   tagName: 'div'
   classNames: ['slidethumbnailsviewport']
-
   init: () ->
     @_super()
 
@@ -44,7 +43,6 @@ App.SlidethumbnailsView = Em.View.extend
       if view isnt @get('parentView')
         slide = view.get('content')
         @get('dndManager').send "mouseDown", slide, event.offsetX
-
   #in px, used to calculate size of viewport scrollbar
   viewportWidth: (->
     thumbnailCount = @get('controller.filteredContent.length')

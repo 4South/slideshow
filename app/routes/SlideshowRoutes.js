@@ -69,7 +69,7 @@ exports.postSlideshow = function(req, res) {
 
 
 exports.putSlideshow = function(req, res) {
-  Slideshow.findOneAndUpdate({_id: req.params.id}, {$set: req.body.slide},
+  Slideshow.findOneAndUpdate({_id: req.params.id}, {$set: req.body.slideshow},
   function (err, result) {
     var response = {};
     if (err) {

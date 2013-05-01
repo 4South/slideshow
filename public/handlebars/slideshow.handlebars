@@ -1,24 +1,34 @@
-<section id = "splashpage">
-  <h1> Slideshow Title: {{content.title}} </h1>
-  <button class="btn-warning btn-small" {{action "showSlides"}}>
-    Show Slides
-  </button><br>
-
-  {{#if controllers.user.editingMode}}
-  <section id = "editslideshow">
-    <span id = "subtitle"> Edit Title: </span>
-    {{view App.SlideTextField valueBinding = "content.title"}}
-
-    <section id = "slideshowButtons">
-      <button {{action "saveSlideshowTitle"}} class = "btn-small btn-warning">
-        Save
-      </button>  
-      <button {{action "deleteSlideshow"}} class = "btn-small btn-danger">
-        Delete Show
-      </button>
-    </section>
+  <h1> {{content.title}} </h1>
+  <section id = "slideshowDescription">
+    <h4>  {{content.description}} </h4>
+    <button class="btn-warning btn-small" {{action "showSlides"}}>
+      Show Slides
+    </button><br>
   </section>
+  {{#if controllers.user.editingMode}}
+    
+    <form id = "editslideshow">
+      <fieldset>
+        <label id = "subtitle"> Edit Title </label>
+        {{view App.SlideTextField valueBinding = "content.title"}}
+      
+        <label id = "subtitle"> Edit Description: </label>
+        {{view App.SlideTextArea 
+            class = "slideshowText"
+            valueBinding = "content.description"}}
+      
+      
+        <section id = "slideshowButtons">
+          <div id = "savedStatus"> {{controller.savedStatus}} </div>
+          <button {{action "saveSlideshowTitle"}} class = "btn-small btn-warning">
+            Save
+          </button>  
+          <button {{action "deleteSlideshow"}} class = "btn-small btn-danger">
+            Delete Show
+          </button>
+        </section>
+      </fieldset>
+    </form>
+  
 {{/if}}
 
-</section>
- 
