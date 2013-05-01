@@ -16,6 +16,8 @@ require('controllers/SlidesController.js');
 
 require('controllers/SlidethumbnailsController.js');
 
+require('controllers/ThumbnaileditingController.js');
+
 require('controllers/SlideshowsController.js');
 
 require('controllers/SlideshowController.js');

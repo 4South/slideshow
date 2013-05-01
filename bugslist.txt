@@ -17,3 +17,5 @@ account creation is a route that is optional (available from the navbar)
 when you create an account, you should be re-directed back to the page you were previously on (if possible)
 
 something about the list of slideshows needs to change but not yet sure what.  Formatting/style...needs some visual contrast
+
+CHECK IF REGARDE STILL NEEDS TO BE USED

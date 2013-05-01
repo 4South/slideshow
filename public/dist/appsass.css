@@ -287,14 +287,21 @@ div.slidethumbnailsviewport ul#slidethumbnails {
   position: absolute;
   bottom: 10px;
   list-style-type: none;
-  height: 30px;
+  height: 50px;
 }
-div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnail {
+div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper {
   float: left;
   display: inline-block;
-  padding: 0px;
-  margin: 0px;
+  height: 50px;
+  box-sizing: border-box;
+}
+div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper div.slidethumbnail {
+  position: relative;
   height: 30px;
+}
+
+.dragging {
+  font-size: large;
 }
 
 li.controls {

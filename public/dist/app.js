@@ -148,30 +148,6 @@ App.SlidesController = Em.ArrayController.extend({
       return this.transitionToRoute("slide", this.findNewSlide(-1));
     }
   },
-  findTarget: function(slide, array, deltaPos) {
-    return array.findProperty('position', slide.get('position') + deltaPos);
-  },
-  swap: function(dectarget, inctarget, property) {
-    dectarget.decrementProperty(property);
-    inctarget.incrementProperty(property);
-    return this.get('store').commit();
-  },
-  moveDown: function(slide) {
-    var target;
-
-    target = this.findTarget(slide, this.get('filteredContent'), 1, 'position');
-    if (target != null) {
-      return this.swap(target, slide, 'position');
-    }
-  },
-  moveUp: function(slide) {
-    var target;
-
-    target = this.findTarget(slide, this.get('filteredContent'), -1, 'position');
-    if (target != null) {
-      return this.swap(slide, target, 'position');
-    }
-  },
   createSlide: function() {
     var activeShow;
 
@@ -187,28 +163,6 @@ App.SlidesController = Em.ArrayController.extend({
       });
       this.get('store').commit();
       return this.set('newSlideName', '');
-    }
-  },
-  deleteSlide: function(slide) {
-    var arrCon, currentPos, target, withoutDeleted;
-
-    arrCon = this.get('filteredContent');
-    withoutDeleted = arrCon.without(slide);
-    currentPos = slide.get('position');
-    slide.deleteRecord();
-    withoutDeleted.forEach(function(eachslide, index) {
-      return eachslide.set('position', index);
-    });
-    this.get('store').commit();
-    if (this.get('atleastOneSlide')) {
-      target = withoutDeleted.findProperty('position', currentPos);
-      if (target) {
-        return this.replaceRoute('slide', target);
-      } else {
-        return this.replaceRoute('slide', withoutDeleted.get('lastObject'));
-      }
-    } else {
-      return this.replaceRoute('slides');
     }
   }
 });
@@ -253,77 +207,254 @@ App.SlideshowsController = Em.ArrayController.extend({
 });
 
 minispade.register('controllers/SlidethumbnailsController.js', function() {
-App.TNInactive = Ember.State.extend({
-  mouseReleased: function(manager, controller, slide) {
-    controller.send("resetTimer");
-    return controller.send("transitionToSlide", slide);
-  },
-  timeElapsed: function(manager, controller) {
-    return manager.transitionTo("dragging");
-  }
-});
-
-App.TNDragging = Ember.State.extend({
-  mouseReleased: function(manager, controller, slide, target) {
-    controller.send("attemptDrop", slide, target);
-    controller.send("resetTimer");
-    return manager.transitionTo("inactive");
-  }
-});
-
-App.TNManager = Ember.StateManager.extend({
-  initialState: 'inactive',
-  mouseDown: function(manager, controller) {
-    return controller.send("startCounter");
-  },
-  mouseLeft: function(manager, controller) {
-    controller.send("resetTimer");
-    return manager.transitionTo("inactive");
-  },
-  timeElapsed: function(manager, controller) {
-    return manager.transitionTo("inactive");
-  },
-  inactive: App.TNInactive,
-  dragging: App.TNDragging
-});
+minispade.require('controllers/SlidethumbnailsManager.js');
 
 App.SlidethumbnailsController = Ember.ArrayController.extend({
   needs: ['slides'],
   contentBinding: 'controllers.slides.content',
   filteredContentBinding: 'controllers.slides.filteredContent',
-  manager: App.TNManager.create(),
-  thumbnailWidth: 100,
-  triggerTime: 800,
-  pressTime: null,
-  dragging: false,
-  checkTimeDelta: function() {
-    var timeDelta;
+  manager: App.SlidethumbnailsManager.create(),
+  thumbnailWrapperWidth: 160,
+  thumbnailWidth: (function() {
+    return this.get('thumbnailWrapperWidth') * .9;
+  }).property('thumbnailWrapperWidth'),
+  targetPos: null,
+  dragSlide: null,
+  dragStartPos: null,
+  startDrag: function(slide, xpos) {
+    return this.setProperties({
+      dragSlide: slide,
+      dragStartPos: xpos
+    });
+  },
+  endDrag: function() {
+    this.setProperties({
+      dragSlide: null,
+      dragStartPos: null
+    });
+    return this.get('store').commit();
+  },
+  reorderThumbnails: function(newPos) {
+    var dragSlide, filteredSlides, incrementPosition, isTrue, lastObjPos, origPos, range, slide, slides, _i, _j, _k, _len, _ref, _results, _results1;
 
-    timeDelta = Date.now() - this.get('pressTime');
-    if (timeDelta > this.get('triggerTime')) {
-      if (this.get('pressTime') != null) {
-        return this.send("timeElapsed");
-      }
+    dragSlide = this.get('dragSlide');
+    origPos = dragSlide.get('position');
+    slides = this.get('filteredContent');
+    filteredSlides = [];
+    dragSlide.set("position", newPos);
+    if (newPos < origPos) {
+      range = (function() {
+        _results = [];
+        for (var _i = newPos; newPos <= origPos ? _i <= origPos : _i >= origPos; newPos <= origPos ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this);
     } else {
-      return Ember.run.next(this, this.checkTimeDelta);
+      lastObjPos = slides.get('lastObject.position');
+      range = (function() {
+        _results1 = [];
+        for (var _j = newPos; newPos <= lastObjPos ? _j <= lastObjPos : _j >= lastObjPos; newPos <= lastObjPos ? _j++ : _j--){ _results1.push(_j); }
+        return _results1;
+      }).apply(this);
     }
-  },
-  timeElapsed: function() {
-    this.resetTimer();
-    return this.get('manager').send("timeElapsed", this);
-  },
-  startCounter: function() {
-    this.set("pressTime", Date.now());
-    return Ember.run.next(this, this.checkTimeDelta);
-  },
-  resetTimer: function() {
-    return this.set("pressTime", null);
-  },
-  attemptDrop: function(slide, target) {
-    return console.log("filler text for drop attempt");
+    _ref = slides.without(dragSlide);
+    for (_k = 0, _len = _ref.length; _k < _len; _k++) {
+      slide = _ref[_k];
+      isTrue = range.some(function(item) {
+        return item === slide.get('position');
+      });
+      if (isTrue) {
+        filteredSlides.pushObject(slide);
+      }
+    }
+    incrementPosition = function(slide) {
+      return slide.incrementProperty('position');
+    };
+    filteredSlides.forEach(incrementPosition);
+    return slides.forEach(function(slide, index) {
+      return slide.set('position', index);
+    });
   },
   transitionToSlide: function(target) {
     return this.send("updateActiveSlide", target);
+  }
+});
+});
+
+minispade.register('controllers/SlidethumbnailsManager.js', function() {
+App.TNTargetSelf = Ember.State.extend({
+  hoverLeft: function(manager, controller) {},
+  hoverRight: function(manager, controller) {}
+});
+
+App.TNTargetNeighborLeft = Ember.State.extend({
+  hoverRight: function(manager, controller) {}
+});
+
+App.TNTargetNeighborRight = Ember.State.extend({
+  hoverLeft: function(manager, controller) {}
+});
+
+App.TNTargetOther = Ember.State.extend();
+
+App.TNDragging = Ember.State.extend({
+  determineDragTransition: function(manager, controller, slide, offsetX) {
+    var action, dragActions, dragSlidePos, slidePos, _i, _len;
+
+    slidePos = slide.get('position');
+    dragSlidePos = controller.get('dragSlide.position');
+    dragActions = [
+      {
+        fun: (function(sPos, dsPos) {
+          return sPos === dsPos;
+        }),
+        targ: 'targetSelf'
+      }, {
+        fun: (function(sPos, dsPos) {
+          return sPos === dsPos - 1;
+        }),
+        targ: 'targetNeighborLeft'
+      }, {
+        fun: (function(sPos, dsPos) {
+          return sPos === dsPos + 1;
+        }),
+        targ: 'targetNeighborRight'
+      }, {
+        fun: (function(sPos, dsPos) {
+          return true;
+        }),
+        targ: 'targetOther'
+      }
+    ];
+    for (_i = 0, _len = dragActions.length; _i < _len; _i++) {
+      action = dragActions[_i];
+      if (action.fun(slidePos, dragSlidePos)) {
+        manager.transitionTo('dragging.' + action.targ);
+        return;
+      }
+    }
+  },
+  determineHoverEvent: function(manager, controller, slide, offsetX) {
+    var halfLine;
+
+    halfLine = controller.get('thumbnailWidth') / 2;
+    if (offsetX > halfLine) {
+      return manager.send("hoverRight", controller, slide);
+    } else {
+      return manager.send("hoverLeft", controller, slide);
+    }
+  },
+  mouseMove: function(manager, controller, slide, offsetX) {
+    manager.send("determineDragTransition", controller, slide, offsetX);
+    return manager.send("determineHoverEvent", controller, slide, offsetX);
+  },
+  mouseDown: function(manager) {
+    return console.log("you should not be able to trigger MouseDown in Dragging Mode!");
+  },
+  hoverRight: function(manager, controller, target) {
+    return controller.send("reorderThumbnails", target.get('position') + 1);
+  },
+  hoverLeft: function(manager, controller, target) {
+    return controller.send("reorderThumbnails", target.get('position'));
+  },
+  targetSelf: App.TNTargetSelf,
+  targetNeighborLeft: App.TNTargetNeighborLeft,
+  targetNeighborRight: App.TNTargetNeighborRight,
+  targetOther: App.TNTargetOther
+});
+
+App.TNInactive = Ember.State.extend({
+  mouseDown: function(manager, controller, slide, xpos) {
+    manager.transitionTo("dragging.targetSelf");
+    return controller.send("startDrag", slide, xpos);
+  }
+});
+
+App.SlidethumbnailsManager = Ember.StateManager.extend({
+  initialState: 'inactive',
+  inactive: App.TNInactive,
+  dragging: App.TNDragging,
+  stopDragging: function(manager, controller) {
+    controller.send("endDrag");
+    return manager.transitionTo("inactive");
+  },
+  shouldSelect: function(manager, controller, slide, xpos) {
+    var dragStartPos;
+
+    dragStartPos = controller.get('dragStartPos');
+    if (Math.abs(dragStartPos - xpos) < 20) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  mouseUp: function(manager, controller, slide, xpos) {
+    if (manager.send("shouldSelect", controller, slide, xpos)) {
+      controller.transitionToSlide(slide);
+    }
+    return manager.send("stopDragging", controller);
+  },
+  mouseLeft: function(manager, controller) {
+    return manager.send("stopDragging", controller);
+  },
+  mouseMove: function(manager, controller, slide, xpos) {},
+  hoverRight: function(manager, controller) {
+    return console.log("hoverRight not caught correctly!");
+  },
+  hoverLeft: function(manager, controller) {
+    return console.log("hoverLeft not caught correctly!");
+  }
+});
+});
+
+minispade.register('controllers/ThumbnaileditingController.js', function() {
+App.ThumbnaileditingController = Ember.ObjectController.extend({
+  needs: ['slides', 'slide', 'slidethumbnails'],
+  contentBinding: 'controllers.slide.content',
+  findTarget: function(slide, array, deltaPos) {
+    return array.findProperty('position', slide.get('position') + deltaPos);
+  },
+  swap: function(dectarget, inctarget, property) {
+    dectarget.decrementProperty(property);
+    inctarget.incrementProperty(property);
+    return this.get('store').commit();
+  },
+  moveDown: function(slide) {
+    var target;
+
+    target = this.findTarget(slide, this.get('filteredContent'), 1, 'position');
+    if (target != null) {
+      return this.swap(target, slide, 'position');
+    }
+  },
+  moveUp: function(slide) {
+    var target;
+
+    target = this.findTarget(slide, this.get('filteredContent'), -1, 'position');
+    if (target != null) {
+      return this.swap(slide, target, 'position');
+    }
+  },
+  deleteSlide: function(slide) {
+    var arrCon, currentPos, target, withoutDeleted;
+
+    arrCon = this.get('filteredContent');
+    withoutDeleted = arrCon.without(slide);
+    currentPos = slide.get('position');
+    slide.deleteRecord();
+    withoutDeleted.forEach(function(eachslide, index) {
+      return eachslide.set('position', index);
+    });
+    this.get('store').commit();
+    if (this.get('atleastOneSlide')) {
+      target = withoutDeleted.findProperty('position', currentPos);
+      if (target) {
+        return this.replaceRoute('slide', target);
+      } else {
+        return this.replaceRoute('slide', withoutDeleted.get('lastObject'));
+      }
+    } else {
+      return this.replaceRoute('slides');
+    }
   }
 });
 });
@@ -530,7 +661,7 @@ App.User = DS.Model.extend({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -760,27 +891,44 @@ minispade.register('views/SlideThumbnailView.js', function() {
 App.SlideThumbnailView = Em.View.extend({
   templateName: 'slidethumbnail',
   tagName: 'li',
-  classNames: ['slidethumbnail', 'btn', 'btn-warning'],
+  classNames: ['slidethumbnailwrapper'],
+  classNameBindings: ['dragging'],
   attributeBindings: ['style'],
   style: (function() {
-    return "width: " + (this.get('controller.thumbnailWidth')) + "px;";
-  }).property('controller.thumbnailWidth'),
+    return "width: " + (this.get('controller.thumbnailWrapperWidth')) + "px;";
+  }).property('controller.thumbnailWrapperWidth'),
+  innerStyle: (function() {
+    var marginLeft, tnWidth, wrapperWidth;
+
+    tnWidth = this.get('controller.thumbnailWidth');
+    wrapperWidth = this.get('controller.thumbnailWrapperWidth');
+    marginLeft = (wrapperWidth - tnWidth) / 2;
+    return "width: " + tnWidth + "px;\nmargin-left: " + marginLeft + "px;";
+  }).property('controller.thumbnailWidth', 'controller.thumbnailWrapperWidth'),
+  dragging: (function() {
+    if (this.get('content') === this.get('controller.dragSlide')) {
+      return true;
+    }
+    return false;
+  }).property('controller.dragSlide', 'content'),
   mouseUp: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    window.ev = event;
-    return this.get('controller.manager').send("mouseReleased", this.get('controller'), this.get('content'), event.target);
-  },
-  drag: function(event) {
-    event.preventDefault();
-    return console.log('should not be seeing this dragevent!');
+    return this.get('controller.manager').send("mouseUp", this.get('controller'), this.get('content'), event.offsetX);
   },
   mouseDown: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    return this.get('controller.manager').send("mouseDown", this.get('controller'));
+    return this.get('controller.manager').send("mouseDown", this.get('controller'), this.get('content'), event.offsetX);
   },
-  mouseEnter: function(event) {}
+  mouseEnter: function(event) {},
+  mouseMove: function(event) {
+    return this.get('controller.manager').send("mouseMove", this.get('controller'), this.get('content'), event.offsetX);
+  },
+  drag: function(event) {
+    event.preventDefault();
+    return console.log('should not be seeing this dragevent!');
+  }
 });
 });
 
@@ -810,10 +958,9 @@ App.SlidethumbnailsView = Em.View.extend({
     var thumbnailCount;
 
     thumbnailCount = this.get('controller.filteredContent.length');
-    return "width: " + (thumbnailCount * this.get('controller.thumbnailWidth')) + "px;";
-  }).property('controller.filteredContent'),
+    return "width: " + (thumbnailCount * this.get('controller.thumbnailWrapperWidth')) + "px;";
+  }).property('controller.filteredContent', 'controller.thumbnailWrapperWidth'),
   mouseLeave: function(event) {
-    console.log("left the thumbnails area");
     event.preventDefault();
     return this.get('controller.manager').send("mouseLeft", this.get('controller'));
   }
