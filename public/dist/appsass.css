@@ -1,0 +1,588 @@
+* {
+  box-sizing: border-box;
+  margin: none;
+  padding: none;
+  outline: 0;
+}
+
+body, html {
+  background: url("../assets/images/pcb.jpg");
+  background-size: 100% auto;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.appview {
+  height: 100%;
+  position: relative;
+  width: 100%;
+  top: 40px;
+}
+
+section.mainoutlet {
+  height: 75%;
+  min-height: 75%;
+  width: 60%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+section.mainoutlet ul {
+  list-style-type: none;
+}
+
+textarea {
+  min-height: 150px;
+  padding: none;
+  margin: none;
+}
+
+ul, li {
+  padding: 0px;
+  margin: 0px;
+}
+
+li.slidethumbnail {
+  font-family: "Share Tech Mono", serif;
+  font-size: large;
+  width: 100px;
+}
+li.slidethumbnail a.active {
+  color: red;
+}
+
+section#scrollbarWrapper {
+  width: 800px;
+  height: 40px;
+  margin: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+section.slide {
+  padding: 1em 1em;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+section.slide h1 {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 5em;
+  color: #2e74ff;
+  padding: 0.5em;
+  line-height: 1em;
+}
+section.slide h2 {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 3em;
+  color: #2e74ff;
+  padding: 0.4em 0.5em;
+}
+section.slide h3 {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
+  padding: 0.4em 0.5em;
+}
+section.slide pre {
+  text-align: left;
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+  border: none;
+  background: none;
+}
+section.slide pre code {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
+}
+section.slide table {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1.5em;
+  color: white;
+}
+section.slide table td {
+  padding: 0.5em 0.5em;
+}
+section.slide ol {
+  margin: none;
+}
+section.slide ul {
+  list-style-type: none;
+}
+section.slide li {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
+  margin: 0.5em 0.5em;
+  line-height: 1em;
+}
+section.slide p {
+  text-align: center;
+  line-height: 1.5em;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+}
+section.slide p img {
+  border-radius: 10px;
+  border: none;
+  background: none;
+}
+section.slide p a {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
+}
+
+section.slideslist {
+  height: inherit;
+  min-width: 100%;
+  overflow: none;
+  overflow-y: auto;
+}
+
+section.emptyslidesview {
+  height: 250px;
+  width: 80%;
+  margin: auto;
+  overflow: none;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 5em;
+  color: #2e74ff;
+  padding: 0.5em;
+  line-height: 1em;
+}
+
+section.presentationslide {
+  padding: 1em 1em;
+  width: 100%;
+  margin-bottom: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+section.presentationslide h1 {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 5em;
+  color: #2e74ff;
+  padding: 0.5em;
+  line-height: 1em;
+}
+section.presentationslide h2 {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 3em;
+  color: #2e74ff;
+  padding: 0.4em 0.5em;
+}
+section.presentationslide h3 {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
+  padding: 0.4em 0.5em;
+}
+section.presentationslide pre {
+  text-align: left;
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+  border: none;
+  background: none;
+}
+section.presentationslide pre code {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
+}
+section.presentationslide table {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1.5em;
+  color: white;
+}
+section.presentationslide table td {
+  padding: 0.5em 0.5em;
+}
+section.presentationslide ol {
+  margin: none;
+}
+section.presentationslide ul {
+  list-style-type: none;
+}
+section.presentationslide li {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 2.5em;
+  color: white;
+  margin: 0.5em 0.5em;
+  line-height: 1em;
+}
+section.presentationslide p {
+  text-align: center;
+  line-height: 1.5em;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+}
+section.presentationslide p img {
+  border-radius: 10px;
+  border: none;
+  background: none;
+}
+section.presentationslide p a {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 2em;
+  color: white;
+  line-height: 1em;
+}
+
+section#splashpage {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 600px;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+section.usermanagement {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+section#usercreate {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 600px;
+  overflow-x: hidden;
+  text-align: center;
+}
+section#usercreate form {
+  text-align: center;
+}
+section#usercreate form fieldset {
+  width: 30%;
+  margin: auto;
+  text-align: left;
+}
+
+.userinfo {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  padding: 50px;
+}
+
+#usereditform #savedStatus {
+  width: 125px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  background-color: #2e74ff;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 0.75em;
+  color: white;
+  border-radius: 5px;
+}
+
+aside {
+  font-weight: normal;
+  font-family: serif;
+  font-size: 100%;
+  color: white;
+  border: none;
+  vertical-align: baseline;
+  display: block;
+  height: inherit;
+}
+
+aside.leftbar {
+  position: absolute;
+  right: leftpx;
+  top: 0px;
+  width: 225px;
+  height: inherit;
+  overflow-y: auto;
+}
+
+aside.rightbar {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 225px;
+  height: inherit;
+  padding: auto 10px;
+}
+aside.rightbar #slidecreate {
+  color: #c2efff;
+  font-size: 1.25em;
+}
+aside.rightbar #savedStatus {
+  height: 20px;
+  width: 140px;
+  margin-bottom: 10px;
+  background-color: #2e74ff;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 0.75em;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+footer.sitefooter {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+div.slidethumbnailsviewport {
+  height: 40px;
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+div.slidethumbnailsviewport ul#slidethumbnails {
+  list-style-type: none;
+  height: 50px;
+}
+div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper {
+  float: left;
+  display: block;
+  height: 50px;
+  box-sizing: border-box;
+}
+div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper div.slidethumbnail {
+  position: relative;
+  height: 30px;
+}
+
+.dragging {
+  font-size: large;
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  height: 30px;
+}
+
+li.controls {
+  margin-left: 2px;
+  margin-top: 8px;
+  margin-right: 2px;
+}
+
+.btn-mini, .btn-small, .btn {
+  font-family: "Share Tech Mono", serif;
+  font-size: 1em;
+}
+
+.loginfield {
+  width: 100px;
+  margin-top: 10px;
+  margin-right: 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.formlabel {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 1.75em;
+  color: #2e74ff;
+}
+
+#subtitle {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 0.75em;
+  color: #c2efff;
+}
+
+section.slideshowSplashpage {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: absolute;
+}
+section.slideshowSplashpage h1 {
+  text-align: center;
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 3em;
+  color: #2e74ff;
+}
+
+#showthumbnails {
+  height: 80px;
+  padding: 3px;
+  text-align: left;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 0.8em;
+  color: #c2efff;
+  overflow: none;
+}
+
+form#slideshowcreate {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(175, 175, 175, 0.3);
+}
+form#slideshowcreate legend {
+  text-align: center;
+}
+form#slideshowcreate fieldset {
+  width: 100%;
+  text-align: left;
+}
+
+section#slideshowlist {
+  height: 250px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+section#slideshowlist p#showtitle {
+  font-weight: normal;
+  font-family: "Jacques Francois";
+  font-size: 1.2em;
+  color: #2e74ff;
+}
+
+section#slideshowDescription {
+  text-align: left;
+  margin-left: 10%;
+  width: 70%;
+}
+
+form#editslideshow {
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  padding: 10px;
+  height: 50%;
+  width: 500px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  bottom: 0px;
+}
+
+.slideshowText {
+  width: 80%;
+  height: 100px;
+  min-height: 50px;
+}
+
+section#slideshowButtons #savedStatus {
+  width: 125px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  background-color: #2e74ff;
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 0.75em;
+  color: white;
+  border-radius: 5px;
+}
+
+.navbar {
+  background-color: rgba(0, 0, 0, 0);
+  height: 40px;
+  margin-bottom: 0px;
+  position: fixed;
+  width: 100%;
+}
+
+.navbar-inverse .navbar-inner {
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+  background-image: none;
+  border: none;
+  height: 40px;
+}
+
+.headerTextfield {
+  padding-top: 3px;
+  width: 100px;
+  min-width: none;
+  margin-right: 5px;
+}
+.headerTextfield input {
+  width: 100px;
+}
+
+#navlabel {
+  font-family: "Share Tech Mono", serif;
+  color: #2e74ff;
+  vertical-align: middle;
+  display: inline-block;
+  margin-top: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+}

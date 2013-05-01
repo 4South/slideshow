@@ -557,11 +557,11 @@ function program6(depth0,data) {
   hashTypes = {};
   stack1 = helpers.each.call(depth0, "show", "in", "controller.content", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n    </section>\r\n</section>\r\n\r\n<section id = \"slideshowCreation\"\r\n  ");
+  data.buffer.push("\r\n    </section>\r\n</section>\r\n\r\n<section id = \"slideshowCreation\">\r\n  ");
   hashTypes = {};
   stack1 = helpers['if'].call(depth0, "controllers.user.loggedIn", {hash:{},inverse:self.program(6, program6, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n\r\n");
+  data.buffer.push("\r\n</section>\r\n");
   return buffer;
   
 });
@@ -577,14 +577,10 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
     'style': ("view.innerStyle")
   },contexts:[],types:[],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n  ");
+  data.buffer.push(">\r\n  ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "slide.name", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-<<<<<<< HEAD
-  data.buffer.push("\n</div>\n");
-=======
-  data.buffer.push("\r\n");
->>>>>>> 81879a0bebb90ce296970254829c162b351f7fba
+  data.buffer.push("\r\n</div>\r\n");
   return buffer;
   
 });
@@ -709,68 +705,6 @@ function program6(depth0,data) {
   
 });
 
-Ember.TEMPLATES["userCreate"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [2,'>= 1.0.0-rc.3'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
-
-
-  data.buffer.push("<section id = \"usercreate\">    \r\n  <legend class = \"formlabel\">Create User </legend>\r\n  <form id = \"usercreate\">\r\n    <fieldset>\r\n      <label id = \"subtitle\"> User Name: </label>\r\n      ");
-  hashTypes = {'valueBinding': "STRING"};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
-    'valueBinding': ("formUsername")
-  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n    \r\n      <label id = \"subtitle\"> Password: </label>\r\n      ");
-  hashTypes = {'valueBinding': "STRING"};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
-    'valueBinding': ("formPassword")
-  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n  \r\n      <label id = \"subtitle\"> Email Address </label>\r\n      ");
-  hashTypes = {'valueBinding': "STRING"};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
-    'valueBinding': ("formEmail")
-  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n \r\n\r\n      <br>\r\n      <button class = \"btn-small btn-warning\"\r\n                ");
-  hashTypes = {'target': "STRING"};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "create", {hash:{
-    'target': ("controller")
-  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n      >Create</button>    \r\n    \r\n    </fieldset>\r\n  </form>\r\n</section> ");
-  return buffer;
-  
-});
-
-Ember.TEMPLATES["userEdit"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [2,'>= 1.0.0-rc.3'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
-
-function program1(depth0,data) {
-  
-  var buffer = '', stack1, hashTypes, options;
-  data.buffer.push("\r\n  ");
-  hashTypes = {};
-  options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "usereditform", options) : helperMissing.call(depth0, "partial", "usereditform", options))));
-  data.buffer.push("\r\n");
-  return buffer;
-  }
-
-  data.buffer.push("<h4> Username: ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "username", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" </h4>\r\n<button class = \"btn-mini btn-warning\"\r\n  ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "editUserInfo", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("> Edit User Info </button>\r\n\r\n");
-  hashTypes = {};
-  stack1 = helpers['if'].call(depth0, "userEditingMode", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("      \r\n\r\n");
-  return buffer;
-  
-});
-
 Ember.TEMPLATES["userIndex"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
@@ -804,6 +738,68 @@ function program3(depth0,data) {
   stack1 = helpers['if'].call(depth0, "loggedIn", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["usercreate"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<section id = \"usercreate\">    \r\n  <legend class = \"formlabel\">Create User </legend>\r\n  <form id = \"usercreate\">\r\n    <fieldset>\r\n      <label id = \"subtitle\"> User Name: </label>\r\n      ");
+  hashTypes = {'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
+    'valueBinding': ("formUsername")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n    \r\n      <label id = \"subtitle\"> Password: </label>\r\n      ");
+  hashTypes = {'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
+    'valueBinding': ("formPassword")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  \r\n      <label id = \"subtitle\"> Email Address </label>\r\n      ");
+  hashTypes = {'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
+    'valueBinding': ("formEmail")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n \r\n\r\n      <br>\r\n      <button class = \"btn-small btn-warning\"\r\n                ");
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "create", {hash:{
+    'target': ("controller")
+  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n      >Create</button>    \r\n    \r\n    </fieldset>\r\n  </form>\r\n</section> ");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["useredit"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, options;
+  data.buffer.push("\r\n  ");
+  hashTypes = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "usereditform", options) : helperMissing.call(depth0, "partial", "usereditform", options))));
+  data.buffer.push("\r\n");
+  return buffer;
+  }
+
+  data.buffer.push("<h4> Username: ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "username", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(" </h4>\r\n<button class = \"btn-mini btn-warning\"\r\n  ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "editUserInfo", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("> Edit User Info </button>\r\n\r\n");
+  hashTypes = {};
+  stack1 = helpers['if'].call(depth0, "userEditingMode", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("      \r\n\r\n");
   return buffer;
   
 });

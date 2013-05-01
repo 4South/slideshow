@@ -8,6 +8,5 @@ App.Slide = DS.Model.extend({
   active: DS.attr('boolean', {
     defaultValue: false
   }),
-  slideshow: DS.belongsTo('App.Slideshow'),
-  settings: DS.belongsTo('App.SlideSettings')
+  slideshow: DS.belongsTo('App.Slideshow')
 });

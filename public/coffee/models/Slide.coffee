@@ -5,4 +5,4 @@ App.Slide = DS.Model.extend
   content: DS.attr('string', {defaultValue: ""})
   active: DS.attr('boolean', {defaultValue: false})
   slideshow: DS.belongsTo('App.Slideshow')
-  settings: DS.belongsTo('App.SlideSettings')
+  #settings: DS.belongsTo('App.SlideSettings')
