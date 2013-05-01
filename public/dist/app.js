@@ -140,12 +140,16 @@ App.SlidesController = Em.ArrayController.extend({
   },
   forward: function() {
     if (!this.get('atEnd')) {
-      return this.transitionToRoute("slide", this.findNewSlide(1));
+      return this.transitionToRouteAnimated("slide", {
+        main: 'slideLeft'
+      }, this.findNewSlide(1));
     }
   },
   back: function() {
     if (!this.get('atStart')) {
-      return this.transitionToRoute("slide", this.findNewSlide(-1));
+      return this.transitionToRouteAnimated("slide", {
+        main: 'slideRight'
+      }, this.findNewSlide(-1));
     }
   },
   createSlide: function() {
@@ -171,14 +175,25 @@ App.SlidesController = Em.ArrayController.extend({
 minispade.register('controllers/SlideshowController.js', function() {
 App.SlideshowController = Em.ObjectController.extend({
   needs: ['slides', 'user'],
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   showSlides: function() {
-    return this.transitionToRoute("slides");
+    return this.transitionToRouteAnimated("slides", {
+      main: "flip"
+    });
   },
   deleteSlideshow: function() {
     if (confirm("Really delete this slideshow?")) {
       this.get('model').deleteRecord();
       this.get('store').commit();
-      return this.replaceRoute('slideshows');
+      return this.replaceRouteAnimated('slideshows', {
+        main: 'flip'
+      });
     }
   },
   saveSlideshowTitle: function() {
@@ -461,7 +476,7 @@ App.ThumbnaileditingController = Ember.ObjectController.extend({
 
 minispade.register('controllers/UserController.js', function() {
 App.UserController = Ember.ObjectController.extend({
-  needs: ['slideshow'],
+  needs: ['slideshow', 'slide'],
   content: '',
   formUsername: '',
   formPassword: '',
@@ -469,6 +484,7 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  userEditingMode: false,
   editingMode: false,
   editingButtonText: (function() {
     if (this.get('editingMode')) {
@@ -477,6 +493,13 @@ App.UserController = Ember.ObjectController.extend({
       return "goto editing mode";
     }
   }).property('editingMode'),
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
@@ -536,6 +559,14 @@ App.UserController = Ember.ObjectController.extend({
     this.set('formPassword', '');
     return this.set('formEmail', '');
   },
+  editUserInfo: function() {
+    return this.set('userEditingMode', true);
+  },
+  saveUserInfo: function() {
+    this.get('store').commit();
+    this.resetForm();
+    return this.set('userEditingMode', false);
+  },
   userAjax: function(url, type, hash) {
     this.set('errorMessage', '');
     hash.url = url;
@@ -556,7 +587,7 @@ App.UserController = Ember.ObjectController.extend({
           return Ember.run(this, function() {
             this.get('store').load(App.User, data);
             this.set('content', App.User.find(data.id));
-            return this.transitionToRoute('slideshows');
+            return this.transitionToRoute('user');
           });
         },
         error: function(xhr) {
@@ -631,6 +662,15 @@ App.UserController = Ember.ObjectController.extend({
 });
 });
 
+minispade.register('models/FontSettings.js', function() {
+App.FontSettings = DS.Model.extend({
+  alignment: DS.attr('string'),
+  fontStyle: DS.attr('string'),
+  size: DS.attr('number'),
+  color: DS.attr('string')
+});
+});
+
 minispade.register('models/Slide.js', function() {
 App.Slide = DS.Model.extend({
   name: DS.attr('string'),
@@ -642,7 +682,17 @@ App.Slide = DS.Model.extend({
   active: DS.attr('boolean', {
     defaultValue: false
   }),
-  slideshow: DS.belongsTo('App.Slideshow')
+  slideshow: DS.belongsTo('App.Slideshow'),
+  settings: DS.belongsTo('App.SlideSettings')
+});
+});
+
+minispade.register('models/SlideSettings.js', function() {
+App.SlideSettings = DS.Model.extend({
+  header: DS.belongsTo('App.FontSettings'),
+  content: DS.belongsTo('App.FontSettings'),
+  background: DS.attr('string'),
+  logoIsVisible: DS.attr('boolean')
 });
 });
 
@@ -650,18 +700,24 @@ minispade.register('models/Slideshow.js', function() {
 App.Slideshow = DS.Model.extend({
   title: DS.attr('string'),
   author: DS.attr('string'),
+  description: DS.attr('string'),
   user: DS.belongsTo('App.User')
 });
 });
 
 minispade.register('models/User.js', function() {
 App.User = DS.Model.extend({
-  username: DS.attr('string')
+  username: DS.attr('string'),
+  email: DS.attr('string')
 });
 });
 
 minispade.register('router/Router.js', function() {
+<<<<<<< HEAD
 minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/UserView.js');
+=======
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/SlideshowView.js');minispade.require('views/UserView.js');minispade.require('views/UserCreateView.js');minispade.require('views/UserEditView.js');minispade.require('views/UserIndexView.js');
+>>>>>>> 81879a0bebb90ce296970254829c162b351f7fba
 
 App.Router.map(function() {
   this.resource("user", {
@@ -714,10 +770,19 @@ App.SmartRoute = Ember.Route.extend({
 App.ApplicationRoute = Ember.Route.extend({
   events: {
     transitionToSlideshows: function() {
-      return this.transitionTo("slideshows");
+      return this.transitionToAnimated("slideshows.index", {
+        main: 'flip'
+      });
+    },
+    createEditUser: function() {
+      return this.transitionToAnimated("user", {
+        main: 'flip'
+      });
     },
     updateActiveSlide: function(slide) {
-      return this.transitionTo("slide", slide);
+      return this.transitionToAnimated("slide", {
+        main: 'fade'
+      }, slide);
     },
     transitionWithRender: function(name, parameters) {
       var targetRoute;
@@ -824,6 +889,50 @@ App.SlideRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'rightbar',
       controller: "slides"
+    });
+  }
+});
+
+App.UserIndexRoute = App.SmartRoute.extend({
+  events: {
+    viewEditUser: function() {
+      return this.transitionToAnimated('user.edit', {
+        main: 'flip'
+      });
+    },
+    createNewUser: function() {
+      return this.transitionToAnimated('user.create', {
+        main: 'flip'
+      });
+    }
+  },
+  renderTemplate: function(controller) {
+    return this.render("userIndex", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserRoute = App.SmartRoute.extend();
+
+App.UserCreateRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("userCreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
+    });
+  }
+});
+
+App.UserEditRoute = App.SmartRoute.extend({
+  renderTemplate: function(controller) {
+    return this.render("userEdit", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'user'
     });
   }
 });
@@ -935,19 +1044,41 @@ App.SlideThumbnailView = Em.View.extend({
 minispade.register('views/SlidedetailView.js', function() {
 App.SlidedetailView = Em.View.extend({
   classNames: ['slide'],
-  templateName: 'slidedetail'
+  templateName: 'slidedetail',
+  tagName: 'section',
+  contentBinding: 'controller.content'
 });
 });
 
 minispade.register('views/SlidesView.js', function() {
 App.SlidesView = Em.View.extend({
   classNames: ['slideslist'],
+  tagName: 'section',
+  didInsertElement: function() {
+    return $('.slideslist').jScrollPane({
+      autoReinitialise: true
+    });
+  }
+});
+});
+
+minispade.register('views/SlideshowView.js', function() {
+App.SlideshowView = Em.View.extend({
+  classNames: ['slideshowSplashpage'],
   tagName: 'section'
 });
 });
 
 minispade.register('views/SlideshowsView.js', function() {
-App.SlideshowsView = Em.View.extend();
+App.SlideshowsView = Em.View.extend({
+  tagName: 'section',
+  classNames: ['slideshowSplashpage'],
+  didInsertElement: function() {
+    return $('#slideshowlist').jScrollPane({
+      autoReinitialise: true
+    });
+  }
+});
 });
 
 minispade.register('views/SlidesthumbnailsView.js', function() {
@@ -964,6 +1095,26 @@ App.SlidethumbnailsView = Em.View.extend({
     event.preventDefault();
     return this.get('controller.manager').send("mouseLeft", this.get('controller'));
   }
+});
+});
+
+minispade.register('views/UserCreateView.js', function() {
+App.UserCreateView = Em.View.extend();
+});
+
+minispade.register('views/UserEditView.js', function() {
+App.UserEditView = Em.View.extend({
+  templateName: 'userEdit',
+  tagName: 'section',
+  classNames: 'userinfo'
+});
+});
+
+minispade.register('views/UserIndexView.js', function() {
+App.UserIndexView = Em.View.extend({
+  templateName: "userIndex",
+  classNames: 'usermanagement',
+  tagName: 'section'
 });
 });
 

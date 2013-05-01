@@ -1,5 +1,5 @@
 App.UserController = Ember.ObjectController.extend({
-  needs: ['slideshow'],
+  needs: ['slideshow', 'slide'],
   content: '',
   formUsername: '',
   formPassword: '',
@@ -7,6 +7,7 @@ App.UserController = Ember.ObjectController.extend({
   errorMessage: '',
   loginUser: '',
   loginPassword: '',
+  userEditingMode: false,
   editingMode: false,
   editingButtonText: (function() {
     if (this.get('editingMode')) {
@@ -15,6 +16,13 @@ App.UserController = Ember.ObjectController.extend({
       return "goto editing mode";
     }
   }).property('editingMode'),
+  savedStatus: (function() {
+    if (this.get('content.isDirty')) {
+      return "Unsaved Changes";
+    } else {
+      return "All Changes Saved";
+    }
+  }).property('content.isDirty').cacheable(),
   loggedInUser: (function() {
     return this.get('content.username');
   }).property('content.username').cacheable(),
@@ -74,6 +82,14 @@ App.UserController = Ember.ObjectController.extend({
     this.set('formPassword', '');
     return this.set('formEmail', '');
   },
+  editUserInfo: function() {
+    return this.set('userEditingMode', true);
+  },
+  saveUserInfo: function() {
+    this.get('store').commit();
+    this.resetForm();
+    return this.set('userEditingMode', false);
+  },
   userAjax: function(url, type, hash) {
     this.set('errorMessage', '');
     hash.url = url;
@@ -94,7 +110,7 @@ App.UserController = Ember.ObjectController.extend({
           return Ember.run(this, function() {
             this.get('store').load(App.User, data);
             this.set('content', App.User.find(data.id));
-            return this.transitionToRoute('slideshows');
+            return this.transitionToRoute('user');
           });
         },
         error: function(xhr) {

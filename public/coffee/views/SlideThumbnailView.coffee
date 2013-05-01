@@ -5,7 +5,10 @@ App.SlideThumbnailView = Em.View.extend
   classNames: ['slidethumbnailwrapper']
   classNameBindings: ['dragging']
   attributeBindings: ['style']
-
+  # didInsertElement: ->
+    # $('#scrollbarWrapper').data('jsp').reinitialise()
+    # console.log "wrapper reinit"
+  
   style: (->
     "width: #{@get('controller.thumbnailWrapperWidth')}px;"
   ).property('controller.thumbnailWrapperWidth')

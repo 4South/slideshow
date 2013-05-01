@@ -1,7 +1,10 @@
 App.SlidethumbnailsView = Em.View.extend
   tagName: 'div'
   classNames: ['slidethumbnailsviewport']
-
+  # didInsertElement: ->
+    # $('#scrollbarWrapper').jScrollPane
+           # autoReinitialise: true
+  
   #in px, used to calculate size of viewport scrollbar
   viewportWidth: (->
     thumbnailCount = @get('controller.filteredContent.length')

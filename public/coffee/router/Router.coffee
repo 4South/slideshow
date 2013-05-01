@@ -20,7 +20,11 @@ require('views/SlidedetailView.js')
 require('views/SlideThumbnailView.js')
 require('views/SlidesthumbnailsView.js')
 require('views/SlideshowsView.js')
+require('views/SlideshowView.js')
 require('views/UserView.js')
+require('views/UserCreateView.js')
+require('views/UserEditView.js')
+require('views/UserIndexView.js')
 
 #main router definition
 App.Router.map () ->
@@ -46,15 +50,22 @@ App.SmartRoute = Ember.Route.extend
     @render 'blankrightbar',
                     outlet: 'rightbar'
                     into: 'application'
-    #MAY WANT TO ALSO WIPE THE CENTER 
-
+    # MAY WANT TO ALSO WIPE THE CENTER 
+    # @render 'blankmain',
+                  # outlet: 'main'
+                  # into: 'application'
+    
+    
 App.ApplicationRoute = Ember.Route.extend
   events:
     transitionToSlideshows: () ->
-      @transitionTo("slideshows")
-
+      @transitionToAnimated("slideshows.index",{main:'flip'})
+    
+    createEditUser: ->
+      @transitionToAnimated("user", {main:'flip'})
+      
     updateActiveSlide: (slide) ->
-      @transitionTo("slide", slide)
+      @transitionToAnimated("slide", {main:'fade'} ,slide)
 
     #currently not using, may delete
     transitionWithRender: (name, parameters) ->
@@ -141,3 +152,30 @@ App.SlideRoute = App.SmartRoute.extend
                     outlet: 'rightbar'
                     controller: "slides"
 
+App.UserIndexRoute = App.SmartRoute.extend
+  events:
+    viewEditUser: ->
+      @transitionToAnimated('user.edit', {main: 'flip'})
+    createNewUser: ->
+      @transitionToAnimated('user.create', {main: 'flip'})
+  renderTemplate: (controller)->
+    @render "userIndex",
+                    into: 'application'
+                    outlet: 'main'
+                    controller: 'user'
+
+App.UserRoute = App.SmartRoute.extend()                    
+                    
+App.UserCreateRoute = App.SmartRoute.extend
+  renderTemplate: (controller)->
+    @render "userCreate",
+      into: 'application'
+      outlet: 'main'
+      controller: 'user'
+      
+App.UserEditRoute = App.SmartRoute.extend
+  renderTemplate: (controller)->
+    @render "userEdit",
+      into: 'application'
+      outlet: 'main'
+      controller: 'user'

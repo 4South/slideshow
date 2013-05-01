@@ -1,5 +1,5 @@
 App.UserController = Ember.ObjectController.extend
-  needs: ['slideshow']
+  needs: ['slideshow', 'slide']
   content: ''
   formUsername: ''
   formPassword: ''
@@ -7,12 +7,19 @@ App.UserController = Ember.ObjectController.extend
   errorMessage: ''
   loginUser: ''
   loginPassword: ''
+  userEditingMode: false
   editingMode: false
   
   editingButtonText: (->
     return if @get('editingMode') then "goto viewing mode" else "goto editing mode"
   ).property('editingMode')
-
+  
+  savedStatus: (->
+    if @get('content.isDirty')
+      return "Unsaved Changes"
+    else return "All Changes Saved"
+  ).property('content.isDirty').cacheable()
+  
   loggedInUser:(->
     return @get('content.username')
   ).property('content.username').cacheable()
@@ -63,6 +70,13 @@ App.UserController = Ember.ObjectController.extend
     @set('formPassword', '')
     @set('formEmail', '')
   
+  editUserInfo: ->
+    @set 'userEditingMode', true
+  
+  saveUserInfo: ->
+    @get('store').commit()
+    @resetForm()
+    @set('userEditingMode', false)
 
   userAjax: (url, type, hash) ->
     #reset user errorMessage
@@ -87,7 +101,7 @@ App.UserController = Ember.ObjectController.extend
           Ember.run(@, () ->
             @get('store').load(App.User, data)
             @set('content', App.User.find(data.id))
-            @transitionToRoute('slideshows')
+            @transitionToRoute('user')
           )
         error: (xhr) ->
           Ember.run(@, () ->
@@ -148,4 +162,5 @@ App.UserController = Ember.ObjectController.extend
         Ember.run(@, ()->
           @set('errorMessage', 'logout failed')
         )
-     )
+     )    
+
