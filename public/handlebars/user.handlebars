@@ -20,7 +20,7 @@
   <li> <p id = "navlabel">username</p> </li>
   
   <li class = "headerTextfield">
-    <form class="navbar-form">
+    <form class="navbar-form" data-ajax="false">
       {{input type=text
               value=loginUser
               maxlength=10
@@ -31,7 +31,7 @@
   <li> <p id = "navlabel">password</p> </li>
   
   <li class = "headerTextfield">
-    <form class="navbar-form">
+    <form class="navbar-form" data-ajax="false">
       {{input type=password 
               value=loginPassword
               maxlength=10
@@ -40,7 +40,7 @@
   </li>
   
   <li class = "controls">
-    <button class="btn-mini btn-warning" {{action login}}>Login</button>
+    <button class="btn-mini btn-warning" type = "button"{{action login}}>Login</button>
   </li>
 
   <li class = "controls">

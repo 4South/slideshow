@@ -1,30 +1,13 @@
-section.slides
-  position: relative
-  height: inherit
-  min-height: 95%
-  margin-left: auto
-  margin-right: auto
-  width: 800px
-  overflow: none
-  overflow-y: auto
-  ul
-    list-style-type: none
-
 section.slideslist
-  position: relative
   height: inherit
-  min-height: 95%
-  margin-left: auto
-  margin-right: auto
-  width: 800px
+  min-width: 100%
   overflow: none
   overflow-y: auto
   
-div.emptyslidesview
+section.emptyslidesview
   height: 250px
   width: 80%
   margin: auto
-  margin-top: 25px
   overflow: none
   overflow-y: auto
   background-color: rgba(0, 0, 0, 0.8)
@@ -33,3 +16,54 @@ div.emptyslidesview
   @include fontsettings(normal, 'Share Tech Mono', 5em, $lightblue)
   padding: .5em
   line-height: 1em
+  
+section.presentationslide
+  padding: 1em 1em
+  width: 100%
+  margin-bottom: 5px
+  background-color: rgba(0, 0, 0, 0.8)
+  border-radius: 10px
+  @include center
+  h1
+    @include fontsettings(normal, 'Share Tech Mono', 5em, $lightblue)
+    padding: .5em
+    line-height: 1em
+  h2
+    @include fontsettings(normal, 'Jacques Francois', 3em, $lightblue)
+    padding: .4em .5em 
+  h3
+    @include fontsettings(normal, 'Jacques Francois', 2.5em, white)
+    padding: .4em .5em 
+
+  pre
+    text-align: left
+    width: 90%
+    @include center
+    @include bareBGandBorder
+    code
+      @include fontsettings(normal, 'Share Tech Mono', 2em, white)
+      line-height: 1em
+
+  table
+    @include fontsettings(normal, 'Share Tech Mono', 1.5em, white)
+    td
+      padding: .5em .5em 
+  ol
+    margin: none
+  ul
+    list-style-type: none
+  li
+    @include fontsettings(normal, 'Jacques Francois', 2.5em, white)
+    margin: .5em .5em 
+    line-height: 1em
+
+  p
+    text-align: center
+    line-height: 1.5em
+    @include fontsettings(normal, 'Share Tech Mono', 2em, white)
+    img
+      border-radius: 10px
+      @include bareBGandBorder
+    a
+      @include fontsettings(normal, 'Share Tech Mono', 2em, white)
+      line-height: 1em

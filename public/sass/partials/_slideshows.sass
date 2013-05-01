@@ -1,3 +1,16 @@
+section.slideshowSplashpage
+  @include fontsettings(normal, 'Share Tech Mono', 1em, $lightblue)
+  line-height: 1em
+  background-color: rgba(0, 0, 0, 0.8)
+  border-radius: 10px
+  width: 100%
+  height: 100%
+  text-align: center
+  position: absolute
+  h1
+    text-align: center
+    @include fontsettings(normal, 'Jacques Francois', 3em, $lightblue)
+ 
 #showthumbnails
   height: 80px
   padding: 3px
@@ -7,14 +20,20 @@
   border-radius: 5px
   @include fontsettings(normal, 'Jacques Francois', .8em, $lightbluewhite)
   overflow: none
-  
+
 form#slideshowcreate
   margin-left: auto
   margin-right: auto
-  height: 175px
-  width: 275px
   background-color: rgba(175, 175, 175, 0.3)
-  border-radius: 5px
+  legend
+    text-align: center  
   fieldset
     width: 100%
-    text-align: center
+    text-align: left
+
+section#slideshowlist
+  height: 250px
+  overflow-y: scroll
+  overflow-x: hidden
+  p#showtitle
+    @include fontsettings(normal, 'Jacques Francois', 1.2em, $lightblue)

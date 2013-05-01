@@ -88,12 +88,16 @@ App.SlidesController = Em.ArrayController.extend({
   },
   forward: function() {
     if (!this.get('atEnd')) {
-      return this.transitionToRoute("slide", this.findNewSlide(1));
+      return this.transitionToRouteAnimated("slide", {
+        main: 'slideLeft'
+      }, this.findNewSlide(1));
     }
   },
   back: function() {
     if (!this.get('atStart')) {
-      return this.transitionToRoute("slide", this.findNewSlide(-1));
+      return this.transitionToRouteAnimated("slide", {
+        main: 'slideRight'
+      }, this.findNewSlide(-1));
     }
   },
   findTarget: function(slide, array, deltaPos) {

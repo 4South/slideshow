@@ -3,7 +3,10 @@ App.SlideThumbnailView = Em.View.extend
   tagName: 'li'
   classNames: ['slidethumbnail', 'btn', 'btn-warning']
   attributeBindings: ['style']
-
+  # didInsertElement: ->
+    # $('#scrollbarWrapper').data('jsp').reinitialise()
+    # console.log "wrapper reinit"
+  
   style: (->
     "width: #{@get('controller.thumbnailWidth')}px;"
   ).property('controller.thumbnailWidth')
