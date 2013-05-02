@@ -1,35 +1,26 @@
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
 App.SlidethumbnailsController = Ember.ArrayController.extend({
   needs: ['slides'],
   contentBinding: 'controllers.slides.content',
   filteredContentBinding: 'controllers.slides.filteredContent',
-  thumbnailWrapperWidth: 160,
-  thumbnailWidth: (function() {
-    return this.get('thumbnailWrapperWidth') * .9;
-  }).property('thumbnailWrapperWidth'),
-  targetPos: null,
-  dragSlide: null,
-  dragStartPos: null,
-  startDrag: function(slide, xpos) {
-    return this.setProperties({
-      dragSlide: slide,
-      dragStartPos: xpos
-    });
-  },
-  endDrag: function() {
-    this.setProperties({
-      dragSlide: null,
-      dragStartPos: null
-    });
-    return this.get('store').commit();
-  },
-  reorderThumbnails: function(newPos) {
-    var dragSlide, filteredSlides, incrementPosition, isTrue, lastObjPos, origPos, range, slide, slides, _i, _j, _k, _len, _ref, _results, _results1;
+  reorderThumbnails: function(newPos, targetSlide, dragSlide) {
+    var inRange, incrementPos, origPos, range, setPosByIndex, slides, _i, _j, _ref, _results, _results1;
 
-    dragSlide = this.get('dragSlide');
-    origPos = dragSlide.get('position');
     slides = this.get('filteredContent');
-    filteredSlides = [];
-    dragSlide.set("position", newPos);
+    origPos = dragSlide.get('position');
+    inRange = function(slide, index, slides) {
+      var _ref;
+
+      return _ref = slide.get('position'), __indexOf.call(this, _ref) >= 0;
+    };
+    incrementPos = function(slide, index, slides) {
+      return slide.incrementProperty('position');
+    };
+    setPosByIndex = function(slide, index, slides) {
+      return slide.set('position', index);
+    };
+    dragSlide.set('position', newPos);
     if (newPos < origPos) {
       range = (function() {
         _results = [];
@@ -37,30 +28,14 @@ App.SlidethumbnailsController = Ember.ArrayController.extend({
         return _results;
       }).apply(this);
     } else {
-      lastObjPos = slides.get('lastObject.position');
       range = (function() {
         _results1 = [];
-        for (var _j = newPos; newPos <= lastObjPos ? _j <= lastObjPos : _j >= lastObjPos; newPos <= lastObjPos ? _j++ : _j--){ _results1.push(_j); }
+        for (var _j = newPos, _ref = slides.get('lastObject.position'); newPos <= _ref ? _j <= _ref : _j >= _ref; newPos <= _ref ? _j++ : _j--){ _results1.push(_j); }
         return _results1;
       }).apply(this);
     }
-    _ref = slides.without(dragSlide);
-    for (_k = 0, _len = _ref.length; _k < _len; _k++) {
-      slide = _ref[_k];
-      isTrue = range.some(function(item) {
-        return item === slide.get('position');
-      });
-      if (isTrue) {
-        filteredSlides.pushObject(slide);
-      }
-    }
-    incrementPosition = function(slide) {
-      return slide.incrementProperty('position');
-    };
-    filteredSlides.forEach(incrementPosition);
-    return slides.forEach(function(slide, index) {
-      return slide.set('position', index);
-    });
+    slides.without(dragSlide).filter(inRange, range).forEach(incrementPos);
+    return slides.forEach(setPosByIndex);
   },
   transitionToSlide: function(target) {
     return this.send("updateActiveSlide", target);

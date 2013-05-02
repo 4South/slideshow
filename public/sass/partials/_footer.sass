@@ -3,24 +3,28 @@ footer.sitefooter
   background-color: rgba(0, 0, 0, .8) 
 
 div.slidethumbnailsviewport
-  height: 40px
+  height: 80px
   width: 800px
   margin-left: auto
   margin-right: auto
-  ul#slidethumbnails
+  overflow-x: auto
+  overflow-y: hidden
+  position: relative
+  ul.slidethumbnails
+    position: absolute
     list-style-type: none
+    bottom: 10px
     height: 50px
     li.slidethumbnailwrapper
       float: left
-      display: block
+      display: inline-block
       height: 50px
-      box-sizing: border-box
       div.slidethumbnail
         position: relative
         height: 30px
+
 .dragging
   font-size: large
-  display: block
   padding: 0px
   margin: 0px
   height: 30px

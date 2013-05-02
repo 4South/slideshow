@@ -29,6 +29,7 @@ App.DnDDragging = Ember.State.extend
   determineDragTransition: (manager, slide, offsetX) ->
     slidePos = slide.get('position')
     dragSlidePos = manager.controller.get('dragSlide.position')
+
     dragActions = [
       {fun: ((sPos, dsPos) -> sPos is dsPos), targ: 'targetSelf'}
       {fun: ((sPos, dsPos) -> sPos is dsPos-1), targ: 'targetNeighborLeft'}
@@ -36,30 +37,39 @@ App.DnDDragging = Ember.State.extend
       {fun: ((sPos, dsPos) -> true), targ: 'targetOther'}
     ]
     for action in dragActions
-      if action.fun(slidePos, dragSlidePos)
+      if action.fun(slidePos, dragSlidePos) is true
         manager.transitionTo 'dragging.' + action.targ
         return
 
   determineHoverEvent: (manager, slide, offsetX) ->
-    halfLine = manager.controller.get('thumbnailWidth')/2
+    halfLine = manager.view.get('thumbnailWidth')/2
    
-    if offsetX > halfLine
-      manager.send "hoverRight", slide
-    else
-      manager.send "hoverLeft", slide
+    message = if offsetX > halfLine then 'hoverRight' else 'hoverLeft'
+    manager.send message, slide
 
-  mouseMove: (manager, slide, offsetX) ->
+  mouseMove: (manager, slide, event, view) ->
+    manager.view.updateDraggingThumbnail event.pageX, event.pageY
     if slide
-      manager.send "determineDragTransition", slide, offsetX
-      manager.send "determineHoverEvent", slide, offsetX
+      manager.send "determineDragTransition", slide, event.offsetX
+      manager.send "determineHoverEvent", slide, event.offsetX
 
-  mouseDown: (manager) ->
-    console.log "you should not be able to trigger MouseDown in Dragging Mode!"
+  mouseDown: (manager) -> console.log "mousedown triggerd in dragging!"
+
+  mouseUp: (manager, slide, offsetX) -> manager.send "stopDragging"
+
+  mouseLeft: (manager) -> manager.send "stopDragging"
 
   hoverRight: (manager, target) ->
-    manager.controller.send "reorderThumbnails", target.get('position')+1
+    manager.controller.send "reorderThumbnails",
+                            target.get('position')+1,
+                            target,
+                            manager.view.get('dragSlide')
+
   hoverLeft: (manager, target) ->
-    manager.controller.send "reorderThumbnails", target.get('position')
+    manager.controller.send "reorderThumbnails",
+                            target.get('position'),
+                            target,
+                            manager.view.get('dragSlide')
 
   #child States
   targetSelf: App.DnDTargetSelf
@@ -67,41 +77,52 @@ App.DnDDragging = Ember.State.extend
   targetNeighborRight: App.DnDTargetNeighborRight
   targetOther: App.DnDTargetOther
 
+#Selecting State
+App.DnDSelecting = Ember.State.extend
+
+  mouseDown: (manager) -> console.log "mouseDown fired in selecting"
+
+  mouseMove: (manager, slide, event, view) ->
+    dragStartOffset = manager.view.get('dragStartOffset')
+    if Math.abs(dragStartOffset - event.offsetX) > 20
+      manager.view.startDrag(slide, view)
+      manager.transitionTo "dragging.targetSelf"
+
+  mouseUp: (manager, slide, xpos) ->
+    manager.controller.transitionToSlide slide
+
+  mouseLeft: (manager) ->
+    manager.transitionTo "inactive"
+  
 #Base State for Manager
 App.DnDInactive = Ember.State.extend
 
   mouseDown: (manager, slide, xpos) ->
-    manager.transitionTo "dragging.targetSelf"
-    manager.controller.send "startDrag", slide, xpos
+    manager.view.recordStartOffset(slide, xpos)
+    manager.transitionTo "selecting"
 
 App.DnDManager = Ember.StateManager.extend
 
   initialState: 'inactive'
+
   #states
   inactive: App.DnDInactive
+  selecting: App.DnDSelecting
   dragging: App.DnDDragging
 
   #methods that are universal to all states 
   stopDragging: (manager) ->
-    manager.controller.send "endDrag"
+    manager.view.endDrag(manager.view.get('dragSlide'))
     manager.transitionTo "inactive"
 
-  shouldSelect: (manager, slide, xpos) ->
-    dragStartPos = manager.controller.get('dragStartPos')
-    if Math.abs(dragStartPos - xpos) < 20 then true else false
-      
-  mouseUp: (manager, slide, xpos) ->
-    if manager.send "shouldSelect", slide, xpos
-      manager.controller.transitionToSlide slide
-    manager.send "stopDragging"
+  mouseDown: (manager) -> throw new Ember.Error "mouseDown not handled"
 
-  mouseLeft: (manager) ->
-    manager.send "stopDragging"
+  mouseUp: (manager) -> return
 
-  mouseMove: (manager, slide, xpos) -> return
+  mouseLeft: (manager) -> return
 
-  #do some cleanup before transitioning
-  hoverRight: (manager) ->
-    console.log "hoverRight not caught correctly!"
-  hoverLeft: (manager) ->
-    console.log "hoverLeft not caught correctly!"
+  mouseMove: (manager) -> return
+
+  hoverRight: (manager) -> console.log "hoverRight handled incorrectly"
+
+  hoverLeft: (manager) -> console.log "hoverLeft handled incorrectly"

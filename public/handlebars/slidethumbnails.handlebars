@@ -1,8 +1,5 @@
-{{#view App.SlidethumbnailsView}}
-  <ul id="slidethumbnails" {{bindAttr style="view.viewportWidth"}}>
-  {{#each slide in controller.filteredContent}}
-    {{view App.SlideThumbnailView contentBinding="slide"}}
-  {{/each}}
-  </ul>
-
-{{/view}}
+<ul class="slidethumbnails" {{bindAttr style="view.portStyle"}}>
+{{#each slide in controller.filteredContent}}
+  {{view App.SlideThumbnailView contentBinding="slide"}}
+{{/each}}
+</ul>

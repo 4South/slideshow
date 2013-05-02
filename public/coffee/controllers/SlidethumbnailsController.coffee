@@ -4,59 +4,34 @@ App.SlidethumbnailsController = Ember.ArrayController.extend
   contentBinding: 'controllers.slides.content'
   filteredContentBinding: 'controllers.slides.filteredContent'
 
-  thumbnailWrapperWidth: 160
-  
-  #thumbnail itself is always a bit smaller than its container
-  thumbnailWidth: (->
-    @get('thumbnailWrapperWidth') * .9
-  ).property('thumbnailWrapperWidth')
-  
-  #position of current droptarget 
-  targetPos: null
-  
-  #stores currently dragging slide
-  dragSlide: null
-  #stores starting drag position
-  dragStartPos: null
-
-  #MODEL FLAG TO INDICATE THE SLIDE BEING DRAGGED
-  startDrag: (slide, xpos) ->
-    @setProperties dragSlide: slide, dragStartPos: xpos
-
-  endDrag: () ->
-    @setProperties dragSlide: null, dragStartPos: null
-    @get('store').commit()
-
-  reorderThumbnails: (newPos) ->
-    dragSlide = @get('dragSlide')
-    #store dragSlide.pos in origPos
-    origPos = dragSlide.get('position')
+  reorderThumbnails: (newPos, targetSlide, dragSlide) ->
     slides = @get('filteredContent')
-    filteredSlides = []
+    origPos = dragSlide.get('position')
+    
+    #filter function
+    inRange = (slide, index, slides) ->
+      return slide.get('position') in @
 
-    dragSlide.set "position", newPos
+    #map function
+    incrementPos = (slide, index, slides) ->
+      slide.incrementProperty('position')
 
-    #set range of slides to increment
+    #map function to set position by array index
+    setPosByIndex = (slide, index, slides) ->
+      slide.set('position', index)
+
+    #set new dragSlide position
+    dragSlide.set('position', newPos)
+
     if newPos < origPos
       range = [newPos..origPos]
     else
-      lastObjPos = slides.get('lastObject.position')
-      range = [newPos..lastObjPos]
+      range = [newPos..slides.get('lastObject.position')]
 
-    #get list of slides in range w/o dragSlide
-    for slide in slides.without(dragSlide)
-      isTrue = range.some((item) -> item is slide.get('position'))
-      if isTrue then filteredSlides.pushObject slide
-    
-    #helper function for incrementing
-    incrementPosition = (slide) ->
-      return slide.incrementProperty('position')
-
-    #increment slides in range
-    filteredSlides.forEach(incrementPosition)
-
-    #forEach slide, remap 'position' attribute by array index
-    slides.forEach( (slide, index) -> slide.set('position', index))
-
+    #increment position value of all slides in the range
+    slides.without(dragSlide).filter(inRange, range).forEach(incrementPos)
+    #remap position by array index
+    slides.forEach(setPosByIndex)
+     
   transitionToSlide: (target) ->
     @send "updateActiveSlide", target

@@ -592,35 +592,40 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashTypes;
-  data.buffer.push("\n  <ul id=\"slidethumbnails\" ");
-  hashTypes = {'style': "STRING"};
-  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
-    'style': ("view.viewportWidth")
-  },contexts:[],types:[],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\n  ");
-  hashTypes = {};
-  stack1 = helpers.each.call(depth0, "slide", "in", "controller.filteredContent", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n  </ul>\n\n");
-  return buffer;
-  }
-function program2(depth0,data) {
-  
   var buffer = '', hashTypes;
-  data.buffer.push("\n    ");
+  data.buffer.push("\n  ");
   hashTypes = {'contentBinding': "STRING"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideThumbnailView", {hash:{
     'contentBinding': ("slide")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\n  ");
+  data.buffer.push("\n");
   return buffer;
   }
 
+  data.buffer.push("<ul class=\"slidethumbnails\" ");
+  hashTypes = {'style': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'style': ("view.portStyle")
+  },contexts:[],types:[],hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n");
   hashTypes = {};
-  stack1 = helpers.view.call(depth0, "App.SlidethumbnailsView", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data});
+  stack1 = helpers.each.call(depth0, "slide", "in", "controller.filteredContent", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\n");
+  data.buffer.push("\n</ul>\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["slidethumbnailsviewport"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<div class=\"slidethumbnailsviewport\">\n  ");
+  hashTypes = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n</div>\n");
   return buffer;
   
 });

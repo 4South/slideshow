@@ -5,20 +5,12 @@ App.SlideThumbnailView = Em.View.extend({
   classNameBindings: ['dragging'],
   attributeBindings: ['style'],
   style: (function() {
-    return "width: " + (this.get('controller.thumbnailWrapperWidth')) + "px;";
-  }).property('controller.thumbnailWrapperWidth'),
+    return "width: " + (this.get('parentView.thumbnailWrapperWidth')) + "px;";
+  }).property('parentView.thumbnailWrapperWidth'),
   innerStyle: (function() {
-    var marginLeft, tnWidth, wrapperWidth;
-
-    tnWidth = this.get('controller.thumbnailWidth');
-    wrapperWidth = this.get('controller.thumbnailWrapperWidth');
-    marginLeft = (wrapperWidth - tnWidth) / 2;
-    return "width: " + tnWidth + "px;\nmargin-left: " + marginLeft + "px;";
-  }).property('controller.thumbnailWidth', 'controller.thumbnailWrapperWidth'),
+    return "width: " + (this.get('parentView.thumbnailWidth')) + "px;";
+  }).property('parentView.thumbnailWidth'),
   dragging: (function() {
-    if (this.get('content') === this.get('controller.dragSlide')) {
-      return true;
-    }
-    return false;
-  }).property('controller.dragSlide', 'content')
+    return this.get('content.isDragging');
+  }).property('content.isDragging')
 });

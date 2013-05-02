@@ -222,38 +222,29 @@ App.SlideshowsController = Em.ArrayController.extend({
 });
 
 minispade.register('controllers/SlidethumbnailsController.js', function() {
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
 App.SlidethumbnailsController = Ember.ArrayController.extend({
   needs: ['slides'],
   contentBinding: 'controllers.slides.content',
   filteredContentBinding: 'controllers.slides.filteredContent',
-  thumbnailWrapperWidth: 160,
-  thumbnailWidth: (function() {
-    return this.get('thumbnailWrapperWidth') * .9;
-  }).property('thumbnailWrapperWidth'),
-  targetPos: null,
-  dragSlide: null,
-  dragStartPos: null,
-  startDrag: function(slide, xpos) {
-    return this.setProperties({
-      dragSlide: slide,
-      dragStartPos: xpos
-    });
-  },
-  endDrag: function() {
-    this.setProperties({
-      dragSlide: null,
-      dragStartPos: null
-    });
-    return this.get('store').commit();
-  },
-  reorderThumbnails: function(newPos) {
-    var dragSlide, filteredSlides, incrementPosition, isTrue, lastObjPos, origPos, range, slide, slides, _i, _j, _k, _len, _ref, _results, _results1;
+  reorderThumbnails: function(newPos, targetSlide, dragSlide) {
+    var inRange, incrementPos, origPos, range, setPosByIndex, slides, _i, _j, _ref, _results, _results1;
 
-    dragSlide = this.get('dragSlide');
-    origPos = dragSlide.get('position');
     slides = this.get('filteredContent');
-    filteredSlides = [];
-    dragSlide.set("position", newPos);
+    origPos = dragSlide.get('position');
+    inRange = function(slide, index, slides) {
+      var _ref;
+
+      return _ref = slide.get('position'), __indexOf.call(this, _ref) >= 0;
+    };
+    incrementPos = function(slide, index, slides) {
+      return slide.incrementProperty('position');
+    };
+    setPosByIndex = function(slide, index, slides) {
+      return slide.set('position', index);
+    };
+    dragSlide.set('position', newPos);
     if (newPos < origPos) {
       range = (function() {
         _results = [];
@@ -261,30 +252,14 @@ App.SlidethumbnailsController = Ember.ArrayController.extend({
         return _results;
       }).apply(this);
     } else {
-      lastObjPos = slides.get('lastObject.position');
       range = (function() {
         _results1 = [];
-        for (var _j = newPos; newPos <= lastObjPos ? _j <= lastObjPos : _j >= lastObjPos; newPos <= lastObjPos ? _j++ : _j--){ _results1.push(_j); }
+        for (var _j = newPos, _ref = slides.get('lastObject.position'); newPos <= _ref ? _j <= _ref : _j >= _ref; newPos <= _ref ? _j++ : _j--){ _results1.push(_j); }
         return _results1;
       }).apply(this);
     }
-    _ref = slides.without(dragSlide);
-    for (_k = 0, _len = _ref.length; _k < _len; _k++) {
-      slide = _ref[_k];
-      isTrue = range.some(function(item) {
-        return item === slide.get('position');
-      });
-      if (isTrue) {
-        filteredSlides.pushObject(slide);
-      }
-    }
-    incrementPosition = function(slide) {
-      return slide.incrementProperty('position');
-    };
-    filteredSlides.forEach(incrementPosition);
-    return slides.forEach(function(slide, index) {
-      return slide.set('position', index);
-    });
+    slides.without(dragSlide).filter(inRange, range).forEach(incrementPos);
+    return slides.forEach(setPosByIndex);
   },
   transitionToSlide: function(target) {
     return this.send("updateActiveSlide", target);
@@ -339,36 +314,40 @@ App.DnDDragging = Ember.State.extend({
     ];
     for (_i = 0, _len = dragActions.length; _i < _len; _i++) {
       action = dragActions[_i];
-      if (action.fun(slidePos, dragSlidePos)) {
+      if (action.fun(slidePos, dragSlidePos) === true) {
         manager.transitionTo('dragging.' + action.targ);
         return;
       }
     }
   },
   determineHoverEvent: function(manager, slide, offsetX) {
-    var halfLine;
+    var halfLine, message;
 
-    halfLine = manager.controller.get('thumbnailWidth') / 2;
-    if (offsetX > halfLine) {
-      return manager.send("hoverRight", slide);
-    } else {
-      return manager.send("hoverLeft", slide);
-    }
+    halfLine = manager.view.get('thumbnailWidth') / 2;
+    message = offsetX > halfLine ? 'hoverRight' : 'hoverLeft';
+    return manager.send(message, slide);
   },
-  mouseMove: function(manager, slide, offsetX) {
+  mouseMove: function(manager, slide, event, view) {
+    manager.view.updateDraggingThumbnail(event.pageX, event.pageY);
     if (slide) {
-      manager.send("determineDragTransition", slide, offsetX);
-      return manager.send("determineHoverEvent", slide, offsetX);
+      manager.send("determineDragTransition", slide, event.offsetX);
+      return manager.send("determineHoverEvent", slide, event.offsetX);
     }
   },
   mouseDown: function(manager) {
-    return console.log("you should not be able to trigger MouseDown in Dragging Mode!");
+    return console.log("mousedown triggerd in dragging!");
+  },
+  mouseUp: function(manager, slide, offsetX) {
+    return manager.send("stopDragging");
+  },
+  mouseLeft: function(manager) {
+    return manager.send("stopDragging");
   },
   hoverRight: function(manager, target) {
-    return manager.controller.send("reorderThumbnails", target.get('position') + 1);
+    return manager.controller.send("reorderThumbnails", target.get('position') + 1, target, manager.view.get('dragSlide'));
   },
   hoverLeft: function(manager, target) {
-    return manager.controller.send("reorderThumbnails", target.get('position'));
+    return manager.controller.send("reorderThumbnails", target.get('position'), target, manager.view.get('dragSlide'));
   },
   targetSelf: App.DnDTargetSelf,
   targetNeighborLeft: App.DnDTargetNeighborLeft,
@@ -376,46 +355,54 @@ App.DnDDragging = Ember.State.extend({
   targetOther: App.DnDTargetOther
 });
 
+App.DnDSelecting = Ember.State.extend({
+  mouseDown: function(manager) {
+    return console.log("mouseDown fired in selecting");
+  },
+  mouseMove: function(manager, slide, event, view) {
+    var dragStartOffset;
+
+    dragStartOffset = manager.view.get('dragStartOffset');
+    if (Math.abs(dragStartOffset - event.offsetX) > 20) {
+      manager.view.startDrag(slide, view);
+      return manager.transitionTo("dragging.targetSelf");
+    }
+  },
+  mouseUp: function(manager, slide, xpos) {
+    return manager.controller.transitionToSlide(slide);
+  },
+  mouseLeft: function(manager) {
+    return manager.transitionTo("inactive");
+  }
+});
+
 App.DnDInactive = Ember.State.extend({
   mouseDown: function(manager, slide, xpos) {
-    manager.transitionTo("dragging.targetSelf");
-    return manager.controller.send("startDrag", slide, xpos);
+    manager.view.recordStartOffset(slide, xpos);
+    return manager.transitionTo("selecting");
   }
 });
 
 App.DnDManager = Ember.StateManager.extend({
   initialState: 'inactive',
   inactive: App.DnDInactive,
+  selecting: App.DnDSelecting,
   dragging: App.DnDDragging,
   stopDragging: function(manager) {
-    manager.controller.send("endDrag");
+    manager.view.endDrag(manager.view.get('dragSlide'));
     return manager.transitionTo("inactive");
   },
-  shouldSelect: function(manager, slide, xpos) {
-    var dragStartPos;
-
-    dragStartPos = manager.controller.get('dragStartPos');
-    if (Math.abs(dragStartPos - xpos) < 20) {
-      return true;
-    } else {
-      return false;
-    }
+  mouseDown: function(manager) {
+    throw new Ember.Error("mouseDown not handled");
   },
-  mouseUp: function(manager, slide, xpos) {
-    if (manager.send("shouldSelect", slide, xpos)) {
-      manager.controller.transitionToSlide(slide);
-    }
-    return manager.send("stopDragging");
-  },
-  mouseLeft: function(manager) {
-    return manager.send("stopDragging");
-  },
-  mouseMove: function(manager, slide, xpos) {},
+  mouseUp: function(manager) {},
+  mouseLeft: function(manager) {},
+  mouseMove: function(manager) {},
   hoverRight: function(manager) {
-    return console.log("hoverRight not caught correctly!");
+    return console.log("hoverRight handled incorrectly");
   },
   hoverLeft: function(manager) {
-    return console.log("hoverLeft not caught correctly!");
+    return console.log("hoverLeft handled incorrectly");
   }
 });
 });
@@ -1025,22 +1012,14 @@ App.SlideThumbnailView = Em.View.extend({
   classNameBindings: ['dragging'],
   attributeBindings: ['style'],
   style: (function() {
-    return "width: " + (this.get('controller.thumbnailWrapperWidth')) + "px;";
-  }).property('controller.thumbnailWrapperWidth'),
+    return "width: " + (this.get('parentView.thumbnailWrapperWidth')) + "px;";
+  }).property('parentView.thumbnailWrapperWidth'),
   innerStyle: (function() {
-    var marginLeft, tnWidth, wrapperWidth;
-
-    tnWidth = this.get('controller.thumbnailWidth');
-    wrapperWidth = this.get('controller.thumbnailWrapperWidth');
-    marginLeft = (wrapperWidth - tnWidth) / 2;
-    return "width: " + tnWidth + "px;\nmargin-left: " + marginLeft + "px;";
-  }).property('controller.thumbnailWidth', 'controller.thumbnailWrapperWidth'),
+    return "width: " + (this.get('parentView.thumbnailWidth')) + "px;";
+  }).property('parentView.thumbnailWidth'),
   dragging: (function() {
-    if (this.get('content') === this.get('controller.dragSlide')) {
-      return true;
-    }
-    return false;
-  }).property('controller.dragSlide', 'content')
+    return this.get('content.isDragging');
+  }).property('content.isDragging')
 });
 });
 
@@ -1089,12 +1068,26 @@ minispade.require('controllers/SlidethumbnailsManager.js');
 
 App.SlidethumbnailsView = Em.View.extend({
   tagName: 'div',
+  templateName: 'slidethumbnails',
   classNames: ['slidethumbnailsviewport'],
+  thumbnailWrapperWidth: 160,
+  thumbnailWidth: (function() {
+    return this.get('thumbnailWrapperWidth') * .9;
+  }).property('thumbnailWrapperWidth'),
+  portStyle: (function() {
+    var thumbnailCount;
+
+    thumbnailCount = this.get('controller.filteredContent.length');
+    return "width: " + (thumbnailCount * this.get('thumbnailWrapperWidth')) + "px;";
+  }).property('controller.filteredContent', 'thumbnailWrapperWidth'),
+  dragSlide: null,
+  dragStartOffset: null,
+  draggingThumbnail: null,
   init: function() {
     var controller, view;
 
     this._super();
-    controller = this.get('controller');
+    controller = this.get('container').lookup('controller:slidethumbnails');
     view = this;
     this.set("dndManager", App.DnDManager.create({
       controller: controller,
@@ -1111,11 +1104,12 @@ App.SlidethumbnailsView = Em.View.extend({
 
       if (view !== this) {
         slide = view.get('content');
-        return this.get('dndManager').send("mouseMove", slide, event.offsetX);
+        return this.get('dndManager').send("mouseMove", slide, event, view);
       }
     },
     mouseLeave: function(event, view) {
       event.preventDefault();
+      event.stopPropagation();
       if (view === this.get('parentView')) {
         return this.get('dndManager').send("mouseLeft");
       }
@@ -1139,12 +1133,40 @@ App.SlidethumbnailsView = Em.View.extend({
       }
     }
   }),
-  viewportWidth: (function() {
-    var thumbnailCount;
+  recordStartOffset: function(slide, xpos) {
+    return this.set("dragStartOffset", xpos);
+  },
+  configureCursorImage: function(viewEl) {
+    var clone, image;
 
-    thumbnailCount = this.get('controller.filteredContent.length');
-    return "width: " + (thumbnailCount * this.get('controller.thumbnailWrapperWidth')) + "px;";
-  }).property('controller.filteredContent', 'controller.thumbnailWrapperWidth')
+    clone = viewEl.clone();
+    image = clone.find('.slidethumbnail');
+    image.removeClass('btn-warning');
+    image.addClass('btn-primary');
+    return image;
+  },
+  startDrag: function(slide, view) {
+    this.set("dragSlide", slide);
+    slide.set("isDragging", true);
+    this.draggingThumbnail = this.configureCursorImage(view.$());
+    return this.draggingThumbnail.appendTo('body');
+  },
+  endDrag: function(dragSlide) {
+    dragSlide.set("isDragging", false);
+    this.setProperties({
+      dragSlide: null,
+      dragStartOffset: null
+    });
+    this.draggingThumbnail.remove();
+    return this.get('controller.store').commit();
+  },
+  updateDraggingThumbnail: function(cursorX, cursorY) {
+    return this.draggingThumbnail.css({
+      position: 'absolute',
+      left: cursorX,
+      top: cursorY
+    });
+  }
 });
 });
 

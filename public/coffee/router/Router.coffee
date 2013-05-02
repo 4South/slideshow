@@ -131,7 +131,6 @@ App.SlidesRoute = App.SmartRoute.extend
     return App.Slide.find()
 
 App.SlideIndexRoute = App.SmartRoute.extend()
-
 App.SlideRoute = App.SmartRoute.extend
   renderTemplate: (controller) ->
     @render "showcontrols",
@@ -155,6 +154,7 @@ App.SlideRoute = App.SmartRoute.extend
                     controller: "slides"
 
 App.UserIndexRoute = App.SmartRoute.extend
+
   events:
     viewEditUser: ->
       @transitionToAnimated('user.edit', {main: 'flip'})
@@ -166,7 +166,7 @@ App.UserIndexRoute = App.SmartRoute.extend
                     outlet: 'main'
                     controller: 'user'
 
-App.UserRoute = App.SmartRoute.extend()                    
+App.UserRoute = App.SmartRoute.extend()
                     
 App.UserCreateRoute = App.SmartRoute.extend
   renderTemplate: (controller)->

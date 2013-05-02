@@ -44,36 +44,40 @@ App.DnDDragging = Ember.State.extend({
     ];
     for (_i = 0, _len = dragActions.length; _i < _len; _i++) {
       action = dragActions[_i];
-      if (action.fun(slidePos, dragSlidePos)) {
+      if (action.fun(slidePos, dragSlidePos) === true) {
         manager.transitionTo('dragging.' + action.targ);
         return;
       }
     }
   },
   determineHoverEvent: function(manager, slide, offsetX) {
-    var halfLine;
+    var halfLine, message;
 
-    halfLine = manager.controller.get('thumbnailWidth') / 2;
-    if (offsetX > halfLine) {
-      return manager.send("hoverRight", slide);
-    } else {
-      return manager.send("hoverLeft", slide);
-    }
+    halfLine = manager.view.get('thumbnailWidth') / 2;
+    message = offsetX > halfLine ? 'hoverRight' : 'hoverLeft';
+    return manager.send(message, slide);
   },
-  mouseMove: function(manager, slide, offsetX) {
+  mouseMove: function(manager, slide, event, view) {
+    manager.view.updateDraggingThumbnail(event.pageX, event.pageY);
     if (slide) {
-      manager.send("determineDragTransition", slide, offsetX);
-      return manager.send("determineHoverEvent", slide, offsetX);
+      manager.send("determineDragTransition", slide, event.offsetX);
+      return manager.send("determineHoverEvent", slide, event.offsetX);
     }
   },
   mouseDown: function(manager) {
-    return console.log("you should not be able to trigger MouseDown in Dragging Mode!");
+    return console.log("mousedown triggerd in dragging!");
+  },
+  mouseUp: function(manager, slide, offsetX) {
+    return manager.send("stopDragging");
+  },
+  mouseLeft: function(manager) {
+    return manager.send("stopDragging");
   },
   hoverRight: function(manager, target) {
-    return manager.controller.send("reorderThumbnails", target.get('position') + 1);
+    return manager.controller.send("reorderThumbnails", target.get('position') + 1, target, manager.view.get('dragSlide'));
   },
   hoverLeft: function(manager, target) {
-    return manager.controller.send("reorderThumbnails", target.get('position'));
+    return manager.controller.send("reorderThumbnails", target.get('position'), target, manager.view.get('dragSlide'));
   },
   targetSelf: App.DnDTargetSelf,
   targetNeighborLeft: App.DnDTargetNeighborLeft,
@@ -81,45 +85,53 @@ App.DnDDragging = Ember.State.extend({
   targetOther: App.DnDTargetOther
 });
 
+App.DnDSelecting = Ember.State.extend({
+  mouseDown: function(manager) {
+    return console.log("mouseDown fired in selecting");
+  },
+  mouseMove: function(manager, slide, event, view) {
+    var dragStartOffset;
+
+    dragStartOffset = manager.view.get('dragStartOffset');
+    if (Math.abs(dragStartOffset - event.offsetX) > 20) {
+      manager.view.startDrag(slide, view);
+      return manager.transitionTo("dragging.targetSelf");
+    }
+  },
+  mouseUp: function(manager, slide, xpos) {
+    return manager.controller.transitionToSlide(slide);
+  },
+  mouseLeft: function(manager) {
+    return manager.transitionTo("inactive");
+  }
+});
+
 App.DnDInactive = Ember.State.extend({
   mouseDown: function(manager, slide, xpos) {
-    manager.transitionTo("dragging.targetSelf");
-    return manager.controller.send("startDrag", slide, xpos);
+    manager.view.recordStartOffset(slide, xpos);
+    return manager.transitionTo("selecting");
   }
 });
 
 App.DnDManager = Ember.StateManager.extend({
   initialState: 'inactive',
   inactive: App.DnDInactive,
+  selecting: App.DnDSelecting,
   dragging: App.DnDDragging,
   stopDragging: function(manager) {
-    manager.controller.send("endDrag");
+    manager.view.endDrag(manager.view.get('dragSlide'));
     return manager.transitionTo("inactive");
   },
-  shouldSelect: function(manager, slide, xpos) {
-    var dragStartPos;
-
-    dragStartPos = manager.controller.get('dragStartPos');
-    if (Math.abs(dragStartPos - xpos) < 20) {
-      return true;
-    } else {
-      return false;
-    }
+  mouseDown: function(manager) {
+    throw new Ember.Error("mouseDown not handled");
   },
-  mouseUp: function(manager, slide, xpos) {
-    if (manager.send("shouldSelect", slide, xpos)) {
-      manager.controller.transitionToSlide(slide);
-    }
-    return manager.send("stopDragging");
-  },
-  mouseLeft: function(manager) {
-    return manager.send("stopDragging");
-  },
-  mouseMove: function(manager, slide, xpos) {},
+  mouseUp: function(manager) {},
+  mouseLeft: function(manager) {},
+  mouseMove: function(manager) {},
   hoverRight: function(manager) {
-    return console.log("hoverRight not caught correctly!");
+    return console.log("hoverRight handled incorrectly");
   },
   hoverLeft: function(manager) {
-    return console.log("hoverLeft not caught correctly!");
+    return console.log("hoverLeft handled incorrectly");
   }
 });

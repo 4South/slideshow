@@ -393,29 +393,32 @@ footer.sitefooter {
 }
 
 div.slidethumbnailsviewport {
-  height: 40px;
+  height: 80px;
   width: 800px;
   margin-left: auto;
   margin-right: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
 }
-div.slidethumbnailsviewport ul#slidethumbnails {
+div.slidethumbnailsviewport ul.slidethumbnails {
+  position: absolute;
   list-style-type: none;
+  bottom: 10px;
   height: 50px;
 }
-div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper {
+div.slidethumbnailsviewport ul.slidethumbnails li.slidethumbnailwrapper {
   float: left;
-  display: block;
+  display: inline-block;
   height: 50px;
-  box-sizing: border-box;
 }
-div.slidethumbnailsviewport ul#slidethumbnails li.slidethumbnailwrapper div.slidethumbnail {
+div.slidethumbnailsviewport ul.slidethumbnails li.slidethumbnailwrapper div.slidethumbnail {
   position: relative;
   height: 30px;
 }
 
 .dragging {
   font-size: large;
-  display: block;
   padding: 0px;
   margin: 0px;
   height: 30px;
