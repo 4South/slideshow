@@ -28,6 +28,8 @@ require('controllers/SlideshowController.js');
 
 require('controllers/UserController.js');
 
+require('controllers/FontsettingController.js');
+
 require('views/SlideTextField.js');
 
 require('views/ApplicationView.js');
@@ -44,6 +46,8 @@ require('views/SlideshowsView.js');
 
 require('views/SlideshowView.js');
 
+require('views/SlideshowcreateView.js');
+
 require('views/UserView.js');
 
 require('views/UserCreateView.js');
@@ -51,6 +55,10 @@ require('views/UserCreateView.js');
 require('views/UserEditView.js');
 
 require('views/UserIndexView.js');
+
+require('views/FontsettingView.js');
+
+require('views/FontsettingContainerView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -66,6 +74,9 @@ App.Router.map(function() {
   return this.resource("slideshows", {
     path: '/slideshows'
   }, function() {
+    this.route("slideshowcreate", {
+      path: '/create'
+    });
     return this.resource("slideshow", {
       path: '/:slideshow_id'
     }, function() {
@@ -104,6 +115,11 @@ App.ApplicationRoute = Ember.Route.extend({
   events: {
     transitionToSlideshows: function() {
       return this.transitionToAnimated("slideshows.index", {
+        main: 'flip'
+      });
+    },
+    goToSlideshowCreation: function() {
+      return this.transitionToAnimated("slideshows.slideshowcreate", {
         main: 'flip'
       });
     },
@@ -161,6 +177,23 @@ App.SlideshowIndexRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'main',
       controller: 'slideshow'
+    });
+  }
+});
+
+App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend({
+  setupControllers: function(controller, model) {
+    var ssCon;
+
+    ssCon = this.controllerFor('slideshows');
+    return ssCon.set("availableThemes", App.Theme.find());
+  },
+  renderTemplate: function(controller, model) {
+    this._super();
+    return this.render("slideshowcreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'slideshows'
     });
   }
 });

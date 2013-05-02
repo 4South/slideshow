@@ -1,23 +1,30 @@
 <section id = "slideshowViewList">
+  <h1> Welcome to 4-South Ember Slideshows </h1>
   <h5> Choose a Slideshow to view</h5>
-    <section class = "row" id = "slideshowlist">
-      {{#each show in controller.content}}
-        <div class="span2">
-        {{#linkTo "slideshow" show}}
-          <section id="showthumbnails">
-           <p id = "showtitle"> {{show.title}} </p>
-            Author: &nbsp; {{show.author}}
-          </section>  
-        {{/linkTo}}
-        </div>    
-      {{/each}}
-    </section>
+  
+  <section class = "row" id = "slideshowlist">
+    {{#each show in controller.content}}
+      <div class="span2">
+      {{#linkTo "slideshow" show}}
+        <section id="showthumbnails">
+         <p id = "showtitle"> {{show.title}} </p>
+          Author: &nbsp; {{show.author}}
+        </section>  
+      {{/linkTo}}
+      </div>        
+    {{/each}}
+  </section>
+  
+  <section id = "slideshowCreation">
+    {{#if controllers.user.loggedIn}}
+      <button class = "btn-small btn-warning"
+        {{action "goToSlideshowCreation"}}>
+        Create New Slideshow
+      </button>
+    {{else}}  
+      <h3> Please login to create a slideshow </h3>
+    {{/if}}
+  </section> 
+ 
 </section>
 
-<section id = "slideshowCreation">
-  {{#if controllers.user.loggedIn}}
-    {{partial slideshowcreate}}
-  {{else}}  
-    <h3> Please login to create a slideshow </h3>
-  {{/if}}
-</section>

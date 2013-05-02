@@ -59,18 +59,18 @@ exports.formatThemeResponse = function(model) {
   if (model) {
     var formattedModel = model.toObject();
     formattedModel.id = formattedModel._id;
-    formattedModel.h1 = formattedModel._id;
-    formattedModel.h2 = formattedModel._id;
-    formattedModel.h3 = formattedModel._id;
-    formattedModel.h4 = formattedModel._id;
-    formattedModel.h5 = formattedModel._id;
-    formattedModel.h6 = formattedModel._id;
-    formattedModel.section = formattedModel._section;
-    formattedModel.pre = formattedModel._pre;
-    formattedModel.div = formattedModel._div;
-    formattedModel.p = formattedModel._p;
-    formattedModel.li = formattedModel._li;
-    formattedModel.span = formattedModel._span;
+    formattedModel.h1_id = formattedModel._h1;
+    formattedModel.h2_id = formattedModel._h2;
+    formattedModel.h3_id = formattedModel._h3;
+    formattedModel.h4_id = formattedModel._h4;
+    formattedModel.h5_id = formattedModel._h5;
+    formattedModel.h6_id = formattedModel._h6;
+    formattedModel.section_id = formattedModel._section;
+    formattedModel.pre_id = formattedModel._pre;
+    formattedModel.div_id = formattedModel._div;
+    formattedModel.p_id = formattedModel._p;
+    formattedModel.li_id = formattedModel._li;
+    formattedModel.span_id = formattedModel._span;
 
     delete formattedModel._id;
     delete formattedModel.__v; 

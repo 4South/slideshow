@@ -474,7 +474,7 @@ section.slideshowSplashpage h1 {
   text-align: center;
   font-weight: normal;
   font-family: "Jacques Francois";
-  font-size: 3em;
+  font-size: 2em;
   color: #2e74ff;
 }
 
@@ -506,7 +506,10 @@ form#slideshowcreate fieldset {
 }
 
 section#slideshowlist {
-  height: 250px;
+  height: 400px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -515,6 +518,10 @@ section#slideshowlist p#showtitle {
   font-family: "Jacques Francois";
   font-size: 1.2em;
   color: #2e74ff;
+}
+
+section#slideshowCreation {
+  margin-top: 10px;
 }
 
 section#slideshowDescription {
@@ -552,6 +559,62 @@ section#slideshowButtons #savedStatus {
   font-size: 0.75em;
   color: white;
   border-radius: 5px;
+}
+
+section#slideshowcreate {
+  font-weight: normal;
+  font-family: "Share Tech Mono";
+  font-size: 1em;
+  color: #2e74ff;
+  line-height: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  height: 100%;
+  overflow-x: hidden;
+  text-align: center;
+}
+section#slideshowcreate select {
+  font-size: 0.75em;
+  height: 25px;
+}
+section#slideshowcreate h6 {
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
+section#slideshowcreate hr {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+section#slideshowcreate #fontSettingsList {
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  background-color: rgba(125, 125, 125, 0.3);
+  border-radius: 10px;
+  padding: 5px;
+}
+section#slideshowcreate #fontSettingsList h6 {
+  font-weight: normal;
+  font-family: "Jacque Francois";
+  font-size: 1.1em;
+  color: #c2efff;
+}
+section#slideshowcreate #fontSettingsList select {
+  font-size: 0.65em;
+  /* without this, it won't work */
+  border-color: #999999;
+  height: 20px;
+  width: 100px;
+  margin-bottom: 5px;
+}
+section#slideshowcreate #fontSettingsList li {
+  border-bottom: 1px solid white;
+}
+section#slideshowcreate #fontSettingsList li:last-child {
+  border-bottom: none;
 }
 
 .navbar {

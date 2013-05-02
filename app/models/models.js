@@ -62,6 +62,7 @@ var FontSettingSchema = new mongoose.Schema({
 });
 
 var ThemeSchema = new mongoose.Schema({
+  name:     String,
   _h1:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
   _h2:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],
   _h3:      [{type: Schema.Types.ObjectId, ref: 'FontSetting'}],

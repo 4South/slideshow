@@ -1,4 +1,5 @@
 App.Theme = DS.Model.extend({
+  name: DS.attr('string'),
   h1: DS.belongsTo('App.FontSetting'),
   h2: DS.belongsTo('App.FontSetting'),
   h3: DS.belongsTo('App.FontSetting'),

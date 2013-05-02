@@ -14,6 +14,7 @@ require('controllers/ThumbnaileditingController.js')
 require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
+require('controllers/FontsettingController.js')
 
 require('views/SlideTextField.js')
 require('views/ApplicationView.js')
@@ -23,10 +24,13 @@ require('views/SlideThumbnailView.js')
 require('views/SlidesthumbnailsView.js')
 require('views/SlideshowsView.js')
 require('views/SlideshowView.js')
+require('views/SlideshowcreateView.js')
 require('views/UserView.js')
 require('views/UserCreateView.js')
 require('views/UserEditView.js')
 require('views/UserIndexView.js')
+require('views/FontsettingView.js')
+require('views/FontsettingContainerView.js')
 
 #main router definition
 App.Router.map () ->
@@ -34,6 +38,7 @@ App.Router.map () ->
     @route "create", {path: '/create'}
     @route "edit", {path: '/edit'}
   @resource "slideshows", {path: '/slideshows'}, ->
+    @route "slideshowcreate", {path: '/create'}
     @resource "slideshow", {path: '/:slideshow_id'}, ->
       @resource "slides", {path: '/slides'}, ->
         @resource "slide", {path: '/:slide_id'}
@@ -62,6 +67,9 @@ App.ApplicationRoute = Ember.Route.extend
   events:
     transitionToSlideshows: () ->
       @transitionToAnimated("slideshows.index",{main:'flip'})
+    
+    goToSlideshowCreation: ->
+      @transitionToAnimated("slideshows.slideshowcreate", {main: 'flip'})
     
     createEditUser: ->
       @transitionToAnimated("user", {main:'flip'})
@@ -100,6 +108,18 @@ App.SlideshowIndexRoute = App.SmartRoute.extend
                     outlet: 'main'
                     controller: 'slideshow'
 
+App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend
+  setupControllers: (controller, model)->
+    ssCon = @controllerFor 'slideshows'
+    ssCon.set "availableThemes", App.Theme.find()
+  renderTemplate: (controller, model) ->
+    @_super()
+    @render "slideshowcreate",
+                  into: 'application'
+                  outlet: 'main'
+                  controller: 'slideshows'        
+                    
+                    
 App.SlideshowRoute = App.SmartRoute.extend()
 
 App.SlidesIndexRoute = App.SmartRoute.extend

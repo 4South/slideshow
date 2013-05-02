@@ -9,7 +9,7 @@ section.slideshowSplashpage
   position: absolute
   h1
     text-align: center
-    @include fontsettings(normal, 'Jacques Francois', 3em, $lightblue)
+    @include fontsettings(normal, 'Jacques Francois', 2em, $lightblue)
  
 #showthumbnails
   height: 80px
@@ -32,8 +32,14 @@ form#slideshowcreate
     text-align: left
 
 section#slideshowlist
-  height: 250px
+  height: 400px
+  width: 80%
+  margin-left: auto
+  margin-right: auto
   overflow-y: scroll
   overflow-x: hidden
   p#showtitle
     @include fontsettings(normal, 'Jacques Francois', 1.2em, $lightblue)
+
+section#slideshowCreation
+  margin-top: 10px

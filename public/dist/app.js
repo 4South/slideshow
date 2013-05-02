@@ -21,11 +21,33 @@ Ember.Application.initializer({
     return userCon.sessionLogin();
   }
 });
+
+App.register('controller:fontsetting', App.FontsettingController, {
+  singleton: false
+});
 });
 
 minispade.register('controllers/ApplicationController.js', function() {
 App.ApplicationController = Ember.Controller.extend({
   needs: ['slide', 'user', 'slides', 'slideshow']
+});
+});
+
+minispade.register('controllers/FontsettingController.js', function() {
+App.FontsettingController = Em.ObjectController.extend({
+  defaultFontSetting: Em.Object.create({
+    size: '10',
+    color: 'white',
+    font: 'monospace',
+    alignment: 'center'
+  }),
+  h1: null,
+  pre: null,
+  div: null,
+  section: null,
+  span: null,
+  li: null,
+  p: null
 });
 });
 
@@ -217,7 +239,9 @@ App.SlideshowsController = Em.ArrayController.extend({
     });
     this.get('store').commit();
     return this.set('newName', '');
-  }
+  },
+  availableThemes: null,
+  selectedTheme: null
 });
 });
 
@@ -657,15 +681,6 @@ App.FontSetting = DS.Model.extend({
 });
 });
 
-minispade.register('models/FontSettings.js', function() {
-App.FontSettings = DS.Model.extend({
-  alignment: DS.attr('string'),
-  fontStyle: DS.attr('string'),
-  size: DS.attr('number'),
-  color: DS.attr('string')
-});
-});
-
 minispade.register('models/Slide.js', function() {
 App.Slide = DS.Model.extend({
   name: DS.attr('string'),
@@ -702,6 +717,7 @@ App.Slideshow = DS.Model.extend({
 
 minispade.register('models/Theme.js', function() {
 App.Theme = DS.Model.extend({
+  name: DS.attr('string'),
   h1: DS.belongsTo('App.FontSetting'),
   h2: DS.belongsTo('App.FontSetting'),
   h3: DS.belongsTo('App.FontSetting'),
@@ -725,7 +741,7 @@ App.User = DS.Model.extend({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('models/FontSetting.js');minispade.require('models/Theme.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/SlideshowView.js');minispade.require('views/UserView.js');minispade.require('views/UserCreateView.js');minispade.require('views/UserEditView.js');minispade.require('views/UserIndexView.js');
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('models/FontSetting.js');minispade.require('models/Theme.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('controllers/FontsettingController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/SlideshowView.js');minispade.require('views/SlideshowcreateView.js');minispade.require('views/UserView.js');minispade.require('views/UserCreateView.js');minispade.require('views/UserEditView.js');minispade.require('views/UserIndexView.js');minispade.require('views/FontsettingView.js');minispade.require('views/FontsettingContainerView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -741,6 +757,9 @@ App.Router.map(function() {
   return this.resource("slideshows", {
     path: '/slideshows'
   }, function() {
+    this.route("slideshowcreate", {
+      path: '/create'
+    });
     return this.resource("slideshow", {
       path: '/:slideshow_id'
     }, function() {
@@ -779,6 +798,11 @@ App.ApplicationRoute = Ember.Route.extend({
   events: {
     transitionToSlideshows: function() {
       return this.transitionToAnimated("slideshows.index", {
+        main: 'flip'
+      });
+    },
+    goToSlideshowCreation: function() {
+      return this.transitionToAnimated("slideshows.slideshowcreate", {
         main: 'flip'
       });
     },
@@ -836,6 +860,23 @@ App.SlideshowIndexRoute = App.SmartRoute.extend({
       into: 'application',
       outlet: 'main',
       controller: 'slideshow'
+    });
+  }
+});
+
+App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend({
+  setupControllers: function(controller, model) {
+    var ssCon;
+
+    ssCon = this.controllerFor('slideshows');
+    return ssCon.set("availableThemes", App.Theme.find());
+  },
+  renderTemplate: function(controller, model) {
+    this._super();
+    return this.render("slideshowcreate", {
+      into: 'application',
+      outlet: 'main',
+      controller: 'slideshows'
     });
   }
 });
@@ -978,6 +1019,44 @@ App.ApplicationView = Em.View.extend({
 });
 });
 
+minispade.register('views/FontsettingContainerView.js', function() {
+App.FontsettingContainerView = Em.ContainerView.extend({
+  childViews: ['h1', 'pre', 'div', 'section', 'span', 'li', 'p'],
+  h1: App.FontsettingView.create({
+    headline: '<h1 ... h6> Set the Properties for h1. Each successive header is 10% smaller.'
+  }),
+  pre: App.FontsettingView.create({
+    headline: '<pre> This is used for Code Blocks'
+  }),
+  div: App.FontsettingView.create({
+    headline: '<div>'
+  }),
+  section: App.FontsettingView.create({
+    headline: '<section>'
+  }),
+  span: App.FontsettingView.create({
+    headline: '<span>'
+  }),
+  li: App.FontsettingView.create({
+    headline: '<li>'
+  }),
+  p: App.FontsettingView.create({
+    headline: '<p>'
+  })
+});
+});
+
+minispade.register('views/FontsettingView.js', function() {
+App.FontsettingView = Em.View.extend({
+  headline: 'default',
+  templateName: 'fontsetting',
+  controller: App.FontsettingController.create({
+    singleton: false
+  }),
+  tagName: 'li'
+});
+});
+
 minispade.register('views/SlideTextField.js', function() {
 App.SlideTextField = Em.TextField.extend({
   keyUp: function(e) {
@@ -1049,6 +1128,10 @@ App.SlideshowView = Em.View.extend({
   classNames: ['slideshowSplashpage'],
   tagName: 'section'
 });
+});
+
+minispade.register('views/SlideshowcreateView.js', function() {
+App.SlideshowcreateView = Em.View.extend();
 });
 
 minispade.register('views/SlideshowsView.js', function() {

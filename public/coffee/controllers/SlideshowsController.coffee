@@ -12,3 +12,5 @@ App.SlideshowsController = Em.ArrayController.extend
     @get('store').commit()
     @set('newName', '')
     
+  availableThemes: null
+  selectedTheme: null

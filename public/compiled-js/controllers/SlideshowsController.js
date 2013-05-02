@@ -12,5 +12,7 @@ App.SlideshowsController = Em.ArrayController.extend({
     });
     this.get('store').commit();
     return this.set('newName', '');
-  }
+  },
+  availableThemes: null,
+  selectedTheme: null
 });
