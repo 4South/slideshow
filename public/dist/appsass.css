@@ -613,9 +613,6 @@ section#slideshowcreate #fontSettingsList select {
 section#slideshowcreate #fontSettingsList li {
   border-bottom: 1px solid white;
 }
-section#slideshowcreate #fontSettingsList li:last-child {
-  border-bottom: none;
-}
 
 .navbar {
   background-color: rgba(0, 0, 0, 0);

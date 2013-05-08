@@ -53,6 +53,7 @@ exports.postSlideshow = function(req, res) {
   var creationHash = req.body.slideshow;
 
   creationHash._user = creationHash.user_id;
+  creationHash._theme = creationHash.theme_id;
   delete creationHash.user_id;
   
   Slideshow.create(creationHash, 

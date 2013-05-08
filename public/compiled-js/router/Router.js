@@ -4,9 +4,11 @@ require('models/Slideshow.js');
 
 require('models/Slide.js');
 
-require('models/FontSetting.js');
+require('models/Fontsetting.js');
 
 require('models/Theme.js');
+
+require('models/FontsettingDefault.js');
 
 require('controllers/IndexController.js');
 
@@ -29,6 +31,8 @@ require('controllers/SlideshowController.js');
 require('controllers/UserController.js');
 
 require('controllers/FontsettingController.js');
+
+require('controllers/FontsettingsController.js');
 
 require('views/SlideTextField.js');
 
@@ -58,7 +62,9 @@ require('views/UserIndexView.js');
 
 require('views/FontsettingView.js');
 
-require('views/FontsettingContainerView.js');
+require('views/FontsettingsView.js');
+
+require('views/SampletextView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -182,9 +188,10 @@ App.SlideshowIndexRoute = App.SmartRoute.extend({
 });
 
 App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend({
-  setupControllers: function(controller, model) {
+  setupController: function(controller, model) {
     var ssCon;
 
+    App.Fontsetting.find();
     ssCon = this.controllerFor('slideshows');
     return ssCon.set("availableThemes", App.Theme.find());
   },

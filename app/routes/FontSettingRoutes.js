@@ -8,7 +8,7 @@ exports.getFontSettings = function(req, res) {
     if (err){
       res.json({message: err});  
     } else {
-      response['fontSettings'] = results.map(formatFontSettingResponse);
+      response['fontsettings'] = results.map(formatFontSettingResponse);
       res.send(response);
     }
   });
@@ -18,10 +18,11 @@ exports.getFontSettings = function(req, res) {
 exports.getFontSettingById = function(req, res){
   FontSetting.findById(req.params.id,
   function(err, result){
+    var response = {};
     if (err){
       res.json({message: err});  
     } else {
-      response['fontSetting'] = formatFontSettingResponse(result);
+      response['fontsetting'] = formatFontSettingResponse(result);
       res.send(response);
     }
   });
@@ -41,7 +42,7 @@ exports.deleteFontSettingById = function(req, res) {
 };
 
 exports.postFontSetting = function(req, res) {
-  var creationHash = req.body.fontSetting;
+  var creationHash = req.body.fontsetting;
 
   FontSetting.create(creationHash, 
   function (err, result) {
@@ -49,7 +50,7 @@ exports.postFontSetting = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['fontSetting'] = formatFontSettingResponse(result);
+      response['fontsetting'] = formatFontSettingResponse(result);
       res.send(response);
     } 
   });
@@ -62,7 +63,7 @@ exports.putFontSetting = function(req, res) {
     if (err) {
       res.json({message: err});
     } else {
-      response['fontSetting'] = formatFontSettingResponse(result);
+      response['fontsetting'] = formatFontSettingResponse(result);
       res.send(response);
     }
   });

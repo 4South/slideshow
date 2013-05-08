@@ -188,25 +188,6 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   
 });
 
-Ember.TEMPLATES["_slideshowcreate"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [2,'>= 1.0.0-rc.3'];
-helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
-
-
-  data.buffer.push("<form id = \"slideshowcreate\">\r\n  <fieldset>\r\n    <legend class = \"formlabel\">Create New Slideshow</legend>\r\n    <label id = \"subtitle\">New Slideshow Title</label>\r\n    \r\n    ");
-  hashTypes = {'valueBinding': "STRING"};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
-    'valueBinding': ("controller.newName")
-  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n\r\n    <br>\r\n   <button class = \"btn-warning btn-mini\"\r\n           ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "createSlideshow", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(">\r\n           Create\r\n           </button>  </fieldset>\r\n  </form>\r\n");
-  return buffer;
-  
-});
-
 Ember.TEMPLATES["_usereditform"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
@@ -329,33 +310,60 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
 Ember.TEMPLATES["fontsetting"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Ember.Handlebars.helpers; data = data || {};
-  var buffer = '', stack1, hashTypes, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = '', hashTypes, escapeExpression=this.escapeExpression;
 
 
   data.buffer.push("<h6> ");
   hashTypes = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.headline", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("</h6>\r\n\r\n<div class = \"row\"> \r\n  <div class = \"span2\">\r\n    font: ");
+  data.buffer.push(" -> ");
   hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" \r\n  </div>\r\n  \r\n  <div class = \"span2\">\r\n    size: ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" \r\n  </div>\r\n  \r\n  <div class = \"span2\">  \r\n    color: ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" \r\n  </div>\r\n  \r\n  <div class = \"span2\">\r\n    alignment: ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n  </div>\r\n\r\n\r\n  <div class = \"span1\">\r\n     ");
-  hashTypes = {};
-  options = {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers.partial),stack1 ? stack1.call(depth0, "sampletext", options) : helperMissing.call(depth0, "partial", "sampletext", options))));
-  data.buffer.push("\r\n  </div>\r\n  ");
-  hashTypes = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "controller", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n</div>");
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.content", {hash:{},contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("</h6>\r\n<div class = \"row-fluid\"> \r\n  <div class = \"span2\">\r\n    font: ");
+  hashTypes = {'prompt': "STRING",'contentBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{
+    'prompt': ("Select a Font"),
+    'contentBinding': ("controller.fontlist"),
+    'valueBinding': ("view.content.font")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  </div>\r\n  \r\n  <div class = \"span2\">\r\n    size: ");
+  hashTypes = {'prompt': "STRING",'contentBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{
+    'prompt': ("Select Font Size"),
+    'contentBinding': ("controller.sizelist"),
+    'valueBinding': ("view.content.size")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  </div>\r\n  \r\n  <div class = \"span2\">  \r\n    color: ");
+  hashTypes = {'prompt': "STRING",'contentBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{
+    'prompt': ("Select Font Color"),
+    'contentBinding': ("controller.colorlist"),
+    'valueBinding': ("view.content.color")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  </div>\r\n  \r\n\r\n  <div class = \"span2\">\r\n    alignment: ");
+  hashTypes = {'prompt': "STRING",'contentBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Em.Select", {hash:{
+    'prompt': ("Select alignment"),
+    'contentBinding': ("controller.alignmentlist"),
+    'valueBinding': ("view.content.alignment")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  </div>\r\n\r\n\r\n  <div class = \"span4\">\r\n     ");
+  hashTypes = {'contentBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SampletextView", {hash:{
+    'contentBinding': ("view.content")
+  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n  </div>\r\n</div>");
   return buffer;
+  
+});
+
+Ember.TEMPLATES["fontsettings"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  
+
+
+  data.buffer.push("containerview - might delete this file                        \r\n");
   
 });
 
@@ -417,6 +425,16 @@ function program2(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n");
   return buffer;
+  
+});
+
+Ember.TEMPLATES["sampletext"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  
+
+
+  data.buffer.push("Sample\r\n");
   
 });
 
@@ -565,10 +583,30 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
     'optionLabelPath': ("content.name"),
     'selectionBinding': ("controller.selectedTheme")
   },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
-  data.buffer.push(" \r\n\r\n  </span>\r\n\r\n  <section id = \"fontSettingsList\">\r\n    <ul>\r\n      ");
+  data.buffer.push(" \r\n\r\n  </span>\r\n\r\n  <section id = \"fontSettingsList\">\r\n    ");
+  hashTypes = {'controllerBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.FontsettingsView", {hash:{
+    'controllerBinding': ("controllers.fontsettings")
+  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(" \r\n    \r\n  </section>\r\n  \r\n  <section id = \"themeCreate\">\r\n    Theme Name: ");
+  hashTypes = {'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
+    'valueBinding': ("newThemeName")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n    <button class = \"btn-small btn-warning\"\r\n    ");
   hashTypes = {};
-  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.FontsettingContainerView", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n    </ul>\r\n  </section>\r\n  \r\n</section>\r\n");
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "saveTheme", {hash:{},contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("> Save Theme</button>\r\n  </section>  \r\n  \r\n  <section id = \"slideshowCreateField\">\r\n    Show Name: ");
+  hashTypes = {'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.SlideTextField", {hash:{
+    'valueBinding': ("newSlideshowName")
+  },contexts:[depth0],types:["ID"],hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n    <button class = \"btn-small btn-warning\"\r\n    ");
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "createSlideshow", {hash:{
+    'target': ("controller")
+  },contexts:[depth0],types:["STRING"],hashTypes:hashTypes,data:data})));
+  data.buffer.push(">Create Slideshow</button>\r\n  </section>\r\n  \r\n  \r\n</section>\r\n");
   return buffer;
   
 });

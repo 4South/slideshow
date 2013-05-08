@@ -1,0 +1,39 @@
+section#slideshowcreate
+  select
+    font-size: .75em
+    height: 25px
+  @include fontsettings(normal, 'Share Tech Mono', 1em, $lightblue)
+  line-height: 1em
+  background-color: rgba(0, 0, 0, 0.8)
+  border-radius: 10px
+  height: 100%
+  overflow-x: hidden
+  text-align: center
+  h6
+    margin: 0px
+    padding: 0px
+    display: inline
+  hr
+    margin-top: 0px
+    margin-bottom: 0px
+    padding: 0px
+    
+  #fontSettingsList
+    width: 96%
+    margin-left: auto
+    margin-right: auto
+    text-align: left  
+    background-color: rgba(125, 125, 125, 0.3)
+    border-radius: 10px
+    padding: 5px
+    h6
+      @include fontsettings(normal, 'Jacque Francois', 1.1em, $lightbluewhite)
+    select
+      font-size: .65em
+      /* without this, it won't work */
+      border-color: #999    
+      height: 20px
+      width: 100px
+      margin-bottom: 5px
+    li
+      border-bottom: 1px solid white

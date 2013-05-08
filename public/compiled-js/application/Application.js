@@ -24,7 +24,3 @@ Ember.Application.initializer({
     return userCon.sessionLogin();
   }
 });
-
-App.register('controller:fontsetting', App.FontsettingController, {
-  singleton: false
-});

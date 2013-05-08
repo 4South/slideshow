@@ -15,5 +15,4 @@ Ember.Application.initializer
   initialize: (container, application) ->
     userCon = container.lookup('controller:user')
     userCon.sessionLogin()
-    
-App.register('controller:fontsetting', App.FontsettingController, {singleton: false })
+   

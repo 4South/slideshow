@@ -21,10 +21,6 @@ Ember.Application.initializer({
     return userCon.sessionLogin();
   }
 });
-
-App.register('controller:fontsetting', App.FontsettingController, {
-  singleton: false
-});
 });
 
 minispade.register('controllers/ApplicationController.js', function() {
@@ -35,15 +31,36 @@ App.ApplicationController = Ember.Controller.extend({
 
 minispade.register('controllers/FontsettingController.js', function() {
 App.FontsettingController = Em.ObjectController.extend({
-  defaultFontSetting: Em.Object.create({
-    size: '10',
-    color: 'white',
-    font: 'monospace',
-    alignment: 'center'
-  }),
+  fontlist: ['monospace', 'Share Tech Mono', 'Jacque Francois', 'helvetica', 'arial'],
+  colorlist: ['black', 'white', 'yellow', 'green', 'blue', "#2e74ff", "#c2efff"],
+  sizelist: ['22', '24', '26', '28', '30', '32', '34', '36'],
+  alignmentlist: ['left', 'center']
+});
+});
+
+minispade.register('controllers/FontsettingsController.js', function() {
+App.FontsettingsController = Em.ArrayController.extend({
+  fontlist: ['monospace', 'Share Tech Mono', 'Jacque Francois', 'helvetica', 'arial'],
+  colorlist: ['black', 'white', 'yellow', 'green', 'blue', "#2e74ff", "#c2efff"],
+  sizelist: ['22', '24', '26', '28', '30', '32', '34', '36'],
+  alignmentlist: ['left', 'center'],
+  init: function() {
+    this.set('h1', App.FontsettingDefault.create());
+    this.set('div', App.FontsettingDefault.create());
+    this.set('pre', App.FontsettingDefault.create());
+    this.set('section', App.FontsettingDefault.create());
+    this.set('span', App.FontsettingDefault.create());
+    this.set('li', App.FontsettingDefault.create());
+    return this.set('p', App.FontsettingDefault.create());
+  },
   h1: null,
-  pre: null,
+  h2: null,
+  h3: null,
+  h4: null,
+  h5: null,
+  h6: null,
   div: null,
+  pre: null,
   section: null,
   span: null,
   li: null,
@@ -226,22 +243,74 @@ App.SlideshowController = Em.ObjectController.extend({
 
 minispade.register('controllers/SlideshowsController.js', function() {
 App.SlideshowsController = Em.ArrayController.extend({
-  newName: '',
-  needs: ['user', 'slideshow'],
+  needs: ['user', 'slideshow', 'fontsettings'],
+  newThemeName: null,
+  newSlideshowName: null,
+  availableThemes: null,
+  selectedTheme: null,
+  selectedThemeObserver: (function() {
+    var ST;
+
+    ST = this.get('selectedTheme');
+    if (this.get('selectedTheme')) {
+      this.set('controllers.fontsettings.h1', ST.get('h1'));
+      this.set('controllers.fontsettings.li', ST.get('li'));
+      this.set('controllers.fontsettings.p', ST.get('p'));
+      this.set('controllers.fontsettings.pre', ST.get('pre'));
+      this.set('controllers.fontsettings.section', ST.get('section'));
+      return this.set('controllers.fontsettings.span', ST.get('span'));
+    }
+  }).observes('selectedTheme'),
   createSlideshow: function() {
-    var newshow, user;
+    var theme, user;
 
     user = this.get('controllers.user.content');
-    newshow = App.Slideshow.createRecord({
-      title: this.get('newName'),
-      user: user,
-      author: user.get('username')
-    });
+    theme = this.get('selectedTheme');
+    if (theme) {
+      App.Slideshow.createRecord({
+        title: this.get('newSlideshowName'),
+        user: user,
+        author: user.get('username'),
+        theme: theme
+      });
+    }
     this.get('store').commit();
-    return this.set('newName', '');
+    return this.set('newSlideshowName', '');
   },
-  availableThemes: null,
-  selectedTheme: null
+  saveTheme: function() {
+    var FS, fontSettings, fsCon, i, item, savedFontSettings, _i, _len;
+
+    fsCon = this.get('controllers.fontsettings');
+    fontSettings = [fsCon.get('h1'), fsCon.get('p'), fsCon.get('li'), fsCon.get('section'), fsCon.get('pre'), fsCon.get('div'), fsCon.get('span')];
+    savedFontSettings = [];
+    i = 0;
+    for (_i = 0, _len = fontSettings.length; _i < _len; _i++) {
+      item = fontSettings[_i];
+      FS = App.Fontsetting.createRecord({
+        size: item.get('size'),
+        font: item.get('font'),
+        color: item.get('color'),
+        alignment: item.get('alignment')
+      });
+      savedFontSettings[i] = FS;
+      i++;
+    }
+    this.get('store').commit();
+    return Ember.run.later(this, this.createThemeAndCommit, savedFontSettings, 500);
+  },
+  createThemeAndCommit: function(savedFontSettings) {
+    App.Theme.createRecord({
+      name: this.get('newThemeName'),
+      h1: savedFontSettings[0],
+      p: savedFontSettings[1],
+      li: savedFontSettings[2],
+      section: savedFontSettings[3],
+      pre: savedFontSettings[4],
+      div: savedFontSettings[5],
+      span: savedFontSettings[6]
+    });
+    return this.get('store').commit();
+  }
 });
 });
 
@@ -672,12 +741,21 @@ App.UserController = Ember.ObjectController.extend({
 });
 });
 
-minispade.register('models/FontSetting.js', function() {
-App.FontSetting = DS.Model.extend({
+minispade.register('models/Fontsetting.js', function() {
+App.Fontsetting = DS.Model.extend({
   size: DS.attr('number'),
   font: DS.attr('string'),
   color: DS.attr('string'),
   alignment: DS.attr('string')
+});
+});
+
+minispade.register('models/FontsettingDefault.js', function() {
+App.FontsettingDefault = Ember.Object.extend({
+  size: '32',
+  font: 'Share Tech Mono',
+  color: '#c2efff',
+  alignment: 'left'
 });
 });
 
@@ -711,25 +789,26 @@ App.Slideshow = DS.Model.extend({
   title: DS.attr('string'),
   author: DS.attr('string'),
   description: DS.attr('string'),
-  user: DS.belongsTo('App.User')
+  user: DS.belongsTo('App.User'),
+  theme: DS.belongsTo('App.Theme')
 });
 });
 
 minispade.register('models/Theme.js', function() {
 App.Theme = DS.Model.extend({
   name: DS.attr('string'),
-  h1: DS.belongsTo('App.FontSetting'),
-  h2: DS.belongsTo('App.FontSetting'),
-  h3: DS.belongsTo('App.FontSetting'),
-  h4: DS.belongsTo('App.FontSetting'),
-  h5: DS.belongsTo('App.FontSetting'),
-  h6: DS.belongsTo('App.FontSetting'),
-  p: DS.belongsTo('App.FontSetting'),
-  li: DS.belongsTo('App.FontSetting'),
-  div: DS.belongsTo('App.FontSetting'),
-  section: DS.belongsTo('App.FontSetting'),
-  pre: DS.belongsTo('App.FontSetting'),
-  span: DS.belongsTo('App.FontSetting')
+  h1: DS.belongsTo('App.Fontsetting'),
+  h2: DS.belongsTo('App.Fontsetting'),
+  h3: DS.belongsTo('App.Fontsetting'),
+  h4: DS.belongsTo('App.Fontsetting'),
+  h5: DS.belongsTo('App.Fontsetting'),
+  h6: DS.belongsTo('App.Fontsetting'),
+  p: DS.belongsTo('App.Fontsetting'),
+  li: DS.belongsTo('App.Fontsetting'),
+  div: DS.belongsTo('App.Fontsetting'),
+  section: DS.belongsTo('App.Fontsetting'),
+  pre: DS.belongsTo('App.Fontsetting'),
+  span: DS.belongsTo('App.Fontsetting')
 });
 });
 
@@ -741,7 +820,7 @@ App.User = DS.Model.extend({
 });
 
 minispade.register('router/Router.js', function() {
-minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('models/FontSetting.js');minispade.require('models/Theme.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('controllers/FontsettingController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/SlideshowView.js');minispade.require('views/SlideshowcreateView.js');minispade.require('views/UserView.js');minispade.require('views/UserCreateView.js');minispade.require('views/UserEditView.js');minispade.require('views/UserIndexView.js');minispade.require('views/FontsettingView.js');minispade.require('views/FontsettingContainerView.js');
+minispade.require('models/User.js');minispade.require('models/Slideshow.js');minispade.require('models/Slide.js');minispade.require('models/Fontsetting.js');minispade.require('models/Theme.js');minispade.require('models/FontsettingDefault.js');minispade.require('controllers/IndexController.js');minispade.require('controllers/HeaderController.js');minispade.require('controllers/ApplicationController.js');minispade.require('controllers/SlideController.js');minispade.require('controllers/SlidesController.js');minispade.require('controllers/SlidethumbnailsController.js');minispade.require('controllers/ThumbnaileditingController.js');minispade.require('controllers/SlideshowsController.js');minispade.require('controllers/SlideshowController.js');minispade.require('controllers/UserController.js');minispade.require('controllers/FontsettingController.js');minispade.require('controllers/FontsettingsController.js');minispade.require('views/SlideTextField.js');minispade.require('views/ApplicationView.js');minispade.require('views/SlidesView.js');minispade.require('views/SlidedetailView.js');minispade.require('views/SlideThumbnailView.js');minispade.require('views/SlidesthumbnailsView.js');minispade.require('views/SlideshowsView.js');minispade.require('views/SlideshowView.js');minispade.require('views/SlideshowcreateView.js');minispade.require('views/UserView.js');minispade.require('views/UserCreateView.js');minispade.require('views/UserEditView.js');minispade.require('views/UserIndexView.js');minispade.require('views/FontsettingView.js');minispade.require('views/FontsettingsView.js');minispade.require('views/SampletextView.js');
 
 App.Router.map(function() {
   this.resource("user", {
@@ -865,9 +944,10 @@ App.SlideshowIndexRoute = App.SmartRoute.extend({
 });
 
 App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend({
-  setupControllers: function(controller, model) {
+  setupController: function(controller, model) {
     var ssCon;
 
+    App.Fontsetting.find();
     ssCon = this.controllerFor('slideshows');
     return ssCon.set("availableThemes", App.Theme.find());
   },
@@ -1050,10 +1130,63 @@ minispade.register('views/FontsettingView.js', function() {
 App.FontsettingView = Em.View.extend({
   headline: 'default',
   templateName: 'fontsetting',
-  controller: App.FontsettingController.create({
-    singleton: false
-  }),
   tagName: 'li'
+});
+});
+
+minispade.register('views/FontsettingsView.js', function() {
+App.FontsettingsView = Em.ContainerView.extend({
+  childViews: ['h1', 'div', 'pre', 'section', 'span', 'li', 'p'],
+  tagName: 'ul',
+  h1: App.FontsettingView.create({
+    headline: 'headers',
+    contentBinding: 'controller.h1'
+  }),
+  div: App.FontsettingView.create({
+    headline: '<div>',
+    contentBinding: 'controller.div'
+  }),
+  pre: App.FontsettingView.create({
+    headline: '<pre>',
+    contentBinding: 'controller.pre'
+  }),
+  li: App.FontsettingView.create({
+    headline: '<li>',
+    contentBinding: 'controller.li'
+  }),
+  p: App.FontsettingView.create({
+    headline: '<p>',
+    contentBinding: 'controller.p'
+  }),
+  section: App.FontsettingView.create({
+    headline: '<section>',
+    contentBinding: 'controller.section'
+  }),
+  span: App.FontsettingView.create({
+    headline: '<span>',
+    contentBinding: 'controller.span'
+  })
+});
+});
+
+minispade.register('views/SampletextView.js', function() {
+App.SampletextView = Em.View.extend({
+  attributeBindings: ['style'],
+  templateName: 'sampletext',
+  tagName: 'section',
+  style: (function() {
+    var alignment, alignmentString, color, colorString, font, fontString, size, sizeString;
+
+    alignment = this.get('content.alignment');
+    size = this.get('content.size');
+    color = this.get('content.color');
+    font = this.get('content.font');
+    alignmentString = "text-align:" + alignment + ";";
+    sizeString = "font-size:" + size + "px;";
+    colorString = "color:" + color + ";";
+    fontString = "font-family:" + font + ";";
+    return alignmentString + sizeString + colorString + fontString;
+  }).property('content.alignment', 'content.font', 'content.size', 'content.color').cacheable()
 });
 });
 

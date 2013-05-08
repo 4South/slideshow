@@ -72,10 +72,10 @@ app.get('/themes', themeRoutes.getThemes);
 app.get('/themes/:id', themeRoutes.getThemeById);
 app.post('/themes', themeRoutes.postTheme);
 app.put('themes/:id', themeRoutes.putTheme);
-app.get('/fontSettings', fontSettingRoutes.getFontSettings);
-app.get('/fontSettings/:id', fontSettingRoutes.getFontSettingById);
-app.post('/fontSettings', fontSettingRoutes.postFontSetting);
-app.put('fontSettings/:id', fontSettingRoutes.putFontSetting);
+app.get('/fontsettings', fontSettingRoutes.getFontSettings);
+app.get('/fontsettings/:id', fontSettingRoutes.getFontSettingById);
+app.post('/fontsettings', fontSettingRoutes.postFontSetting);
+app.put('/fontsettings/:id', fontSettingRoutes.putFontSetting);
 
 
 

@@ -1,8 +1,9 @@
 require('models/User.js')
 require('models/Slideshow.js')
 require('models/Slide.js')
-require('models/FontSetting.js')
+require('models/Fontsetting.js')
 require('models/Theme.js')
+require('models/FontsettingDefault.js')
 
 require('controllers/IndexController.js')
 require('controllers/HeaderController.js')
@@ -15,6 +16,7 @@ require('controllers/SlideshowsController.js')
 require('controllers/SlideshowController.js')
 require('controllers/UserController.js')
 require('controllers/FontsettingController.js')
+require('controllers/FontsettingsController.js')
 
 require('views/SlideTextField.js')
 require('views/ApplicationView.js')
@@ -30,7 +32,8 @@ require('views/UserCreateView.js')
 require('views/UserEditView.js')
 require('views/UserIndexView.js')
 require('views/FontsettingView.js')
-require('views/FontsettingContainerView.js')
+require('views/FontsettingsView.js')
+require('views/SampletextView.js')
 
 #main router definition
 App.Router.map () ->
@@ -109,7 +112,8 @@ App.SlideshowIndexRoute = App.SmartRoute.extend
                     controller: 'slideshow'
 
 App.SlideshowsSlideshowcreateRoute = App.SmartRoute.extend
-  setupControllers: (controller, model)->
+  setupController: (controller, model)->
+    App.Fontsetting.find()
     ssCon = @controllerFor 'slideshows'
     ssCon.set "availableThemes", App.Theme.find()
   renderTemplate: (controller, model) ->

@@ -1,4 +1,4 @@
-App.FontSetting = DS.Model.extend
+App.Fontsetting = DS.Model.extend
   size:           DS.attr 'number'
   font:           DS.attr 'string'
   color:          DS.attr 'string'

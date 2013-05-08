@@ -3,3 +3,4 @@ App.Slideshow = DS.Model.extend
   author: DS.attr('string')
   description: DS.attr('string')
   user: DS.belongsTo('App.User')
+  theme: DS.belongsTo('App.Theme')

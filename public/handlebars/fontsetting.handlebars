@@ -1,0 +1,40 @@
+<h6> {{view.headline}} -> {{view.content}}</h6>
+<div class = "row-fluid"> 
+  <div class = "span2">
+    font: {{view Em.Select
+              prompt = "Select a Font"
+              contentBinding = "controller.fontlist"
+              valueBinding = "view.content.font"
+          }}
+  </div>
+  
+  <div class = "span2">
+    size: {{view Em.Select
+              prompt = "Select Font Size"
+              contentBinding = "controller.sizelist"
+              valueBinding = "view.content.size"
+          }}
+  </div>
+  
+  <div class = "span2">  
+    color: {{view Em.Select
+              prompt = "Select Font Color"
+              contentBinding = "controller.colorlist"
+              valueBinding = "view.content.color"
+            }}
+  </div>
+  
+
+  <div class = "span2">
+    alignment: {{view Em.Select
+                  prompt = "Select alignment"
+                  contentBinding = "controller.alignmentlist"
+                  valueBinding = "view.content.alignment"
+                }}
+  </div>
+
+
+  <div class = "span4">
+     {{view "App.SampletextView" contentBinding = "view.content"}}
+  </div>
+</div>

@@ -43,6 +43,7 @@ var SlideshowSchema = new mongoose.Schema({
   author: String,
   description: String,
   _user: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  _theme: [{type: Schema.Types.ObjectId, ref: 'User'}],
 });
 
 var SlideSchema = new mongoose.Schema({

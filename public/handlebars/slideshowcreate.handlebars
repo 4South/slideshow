@@ -1,0 +1,31 @@
+<section id = "slideshowcreate">
+  <h3>Slideshow Creation</h3>
+  <span style = "display:block;">
+  {{view Ember.Select
+    prompt = "Please choose a theme"
+    contentBinding = "controller.availableThemes"
+    optionValuePath = "content.name"
+    optionLabelPath= "content.name"
+    selectionBinding = "controller.selectedTheme"}} 
+
+  </span>
+
+  <section id = "fontSettingsList">
+    {{view "App.FontsettingsView" controllerBinding = "controllers.fontsettings"}} 
+    
+  </section>
+  
+  <section id = "themeCreate">
+    Theme Name: {{view App.SlideTextField valueBinding = "newThemeName"}}
+    <button class = "btn-small btn-warning"
+    {{action "saveTheme"}}> Save Theme</button>
+  </section>  
+  
+  <section id = "slideshowCreateField">
+    Show Name: {{view App.SlideTextField valueBinding = "newSlideshowName"}}
+    <button class = "btn-small btn-warning"
+    {{action "createSlideshow" target = "controller"}}>Create Slideshow</button>
+  </section>
+  
+  
+</section>
